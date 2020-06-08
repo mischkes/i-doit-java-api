@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api.rest;
+package com.cargarantie.idoit.api.jasonrpc;
 
 
 public class IdoitVersion extends IdoitRequest<IdoitVersionResponse>{

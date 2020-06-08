@@ -1,9 +1,8 @@
 package com.cargarantie.idoit.api;
 
 import com.cargarantie.idoit.api.model.IdoitObject;
-import com.cargarantie.idoit.api.rest.Batch;
-import com.cargarantie.idoit.api.rest.IdoitRequest;
-import com.cargarantie.idoit.api.rest.NamedRequest;
+import com.cargarantie.idoit.api.jasonrpc.Batch;
+import com.cargarantie.idoit.api.jasonrpc.IdoitRequest;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

@@ -1,9 +1,12 @@
 package com.cargarantie.idoit.api.model;
 
+import com.cargarantie.idoit.api.model.param.CategoryId;
+import com.cargarantie.idoit.api.model.param.ObjectId;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
 
 @Data
@@ -12,15 +15,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public abstract class IdoitCategory {
 
+  @JsonProperty(access = Access.WRITE_ONLY)
+  private CategoryId id;
+  @JsonProperty(value = "objID", access = Access.WRITE_ONLY)
+  private ObjectId objId;
   private String description;
-  private int id;
 
-  public String categoryName() {
-    if (this.getClass().isAnnotationPresent(IdoitCategoryName.class)) {
-      return getClass().getAnnotation(IdoitCategoryName.class).value();
-    } else {
-      throw new IllegalStateException("IdoitCategory classes must specify the IdoitCategoryName"
-          + " annotation");
-    }
+  public void setObjId(int objId) {
+    this.objId = new ObjectId(objId);
   }
 }

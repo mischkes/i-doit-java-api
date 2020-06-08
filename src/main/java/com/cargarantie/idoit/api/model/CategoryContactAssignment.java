@@ -14,9 +14,4 @@ public class CategoryContactAssignment extends IdoitCategory {
   private int contact;
   private String role;
   private String primary;
-
-  @Override
-  public String categoryName() {
-    return "C__CATG__CONTACT";
-  }
 }

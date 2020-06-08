@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api.rest;
+package com.cargarantie.idoit.api.jasonrpc;
 
 import java.util.ArrayList;
 import java.util.List;

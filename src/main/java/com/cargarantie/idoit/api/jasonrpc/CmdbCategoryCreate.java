@@ -1,6 +1,8 @@
-package com.cargarantie.idoit.api.rest;
+package com.cargarantie.idoit.api.jasonrpc;
 
+import com.cargarantie.idoit.api.model.AllIdoitModels;
 import com.cargarantie.idoit.api.model.IdoitCategory;
+import com.cargarantie.idoit.api.model.param.ObjectId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -28,11 +30,14 @@ Example:
 @Data
 @AllArgsConstructor
 public class CmdbCategoryCreate extends IdoitRequest<CreateResponse> {
-  private int objID;
   private IdoitCategory data;
 
   public String getCatgId() {
-    return data.categoryName();
+    return AllIdoitModels.getName(data);
+  }
+
+  public ObjectId getObjID() {
+    return data.getObjId();
   }
 
   @Override

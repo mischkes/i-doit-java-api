@@ -1,7 +1,6 @@
-package com.cargarantie.idoit.api.rest;
+package com.cargarantie.idoit.api.jasonrpc;
 
-import java.util.Map;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RestClient {
   ObjectMapper mapper = new ObjectMapper();

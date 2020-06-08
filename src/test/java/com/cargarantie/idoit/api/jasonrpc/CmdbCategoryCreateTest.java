@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api.rest;
+package com.cargarantie.idoit.api.jasonrpc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

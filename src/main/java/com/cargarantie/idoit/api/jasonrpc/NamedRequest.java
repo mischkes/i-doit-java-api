@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api.rest;
+package com.cargarantie.idoit.api.jasonrpc;
 
 import lombok.Data;
 
