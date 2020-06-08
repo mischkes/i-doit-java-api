@@ -6,10 +6,6 @@ public enum StandardCategories implements IdoitModelReference {
   General("C__CATG__GLOBAL", CategoryGeneral.class),
   ContactAssignment("C__CATG__CONTACT", CategoryContactAssignment.class);
 
-  static {
-    AllIdoitModels.register(Arrays.asList(StandardCategories.values()));
-  }
-
   private final String modelName;
   private final Class<?> modelClass;
 

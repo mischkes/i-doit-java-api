@@ -1,11 +1,17 @@
 package com.cargarantie.idoit.api.model;
 
+import static com.cargarantie.idoit.api.TestUtil.parseJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.cargarantie.idoit.api.IdoitObjectMapper;
+import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.jsonrpc.JsonRpcResult;
+import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -15,53 +21,37 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
 class CategoryGeneralTest {
-  @Test
-  void testCategoryName() {
-    //Assertions.assertThat(new CategoryGeneral().categoryName()).isEqualTo("C__CATG__GLOBAL");
-  }
-
-  @Test
-  void constructCatGeneral(){
-    //new CategoryGeneral().setCre
-    CategoryGeneral.builder().category(Dialog.fromTitle("Other"));
-  }
+  ObjectMapper mapper = IdoitObjectMapper.mapper;
 
   @Test
   void testReadJson() throws IOException {
-    ObjectMapper mapper = idoitMapper();
+    CategoryGeneral g = loadCategory();
 
+    assertThat(g.getStatus()).isEqualTo(new Dialog(2, "Normal","LC__CMDB__RECORD_STATUS__NORMAL", ""));
+    assertThat(g.getCreated()).isEqualTo("2015-05-04T18:02:10");
+    assertThat(g.getId()).isEqualTo(CategoryId.of(1412));
+    assertThat(g.getObjId()).isEqualTo(ObjectId.of(1412));
+  }
+
+  private CategoryGeneral loadCategory() throws IOException {
     JsonRpcResult rpcResult = mapper
         .readValue(Util.getResource("json/categoryGeneralRead.json"), JsonRpcResult.class);
-    CategoryGeneral general = mapper.convertValue(rpcResult.getResult().get(0), CategoryGeneral.class);
-
-    System.out.println(general);
-
-    System.out.println(mapper.writeValueAsString(general));
+    return mapper.convertValue(rpcResult.getResult().get(0), CategoryGeneral.class);
   }
 
-  public ObjectMapper idoitMapper() {
-    ObjectMapper mapper = new ObjectMapper();
+  @Test
+  void writeJson_shouldWriteCorrectJsonString() throws IOException {
+    CategoryGeneral g =  loadCategory();
 
-    mapper.setSerializationInclusion(Include.NON_NULL);
-    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
-    mapper.registerModule(idoitMapperJavaTimeModule());
+    String actual = mapper.writeValueAsString(g);
 
-    return mapper;
+    String expected = "{'description':'<p>some description</p>','title':'Laptop 001','status':2,'purpose':1,'category':2,'sysid':'CLIENT_001412','cmdb_status':6,'type':10,'tag':null}";
+    assertThat(parseJson(actual)).isEqualTo(parseJson(expected));
+    System.out.println(actual);
+
   }
-
-  public JavaTimeModule idoitMapperJavaTimeModule() {
-    JavaTimeModule javaTimeModule = new JavaTimeModule();
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
-    javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
-
-    return javaTimeModule;
-  }
-
-
 }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class CmdbCategoryCreateTest {
   @Test
   void testMethodString() {
-    CmdbCategoryCreate obj = new CmdbCategoryCreate(0, null);
+    CmdbCategoryCreate obj = new CmdbCategoryCreate(null);
     assertThat(obj.getMethod()).isEqualTo("cmdb.category.create");
   }
 }
