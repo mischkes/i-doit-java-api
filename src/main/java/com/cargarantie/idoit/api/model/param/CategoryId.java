@@ -14,6 +14,15 @@ public class CategoryId {
     this.id = Integer.parseInt(id);
   }
 
+  @JsonCreator
+  private CategoryId(int id) {
+    this.id = id;
+  }
+
+  public static CategoryId of(int id) {
+    return new CategoryId(id);
+  }
+
   @JsonValue
   public int getId() {
     return id;

@@ -17,6 +17,10 @@ public class ObjectId {
     this.id = id;
   }
 
+  public static ObjectId of(int id) {
+    return new ObjectId(id);
+  }
+
   @JsonValue
   public int getId() {
     return id;

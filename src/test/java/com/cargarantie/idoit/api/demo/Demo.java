@@ -8,6 +8,7 @@ import com.cargarantie.idoit.api.jasonrpc.IdoitVersion;
 import com.cargarantie.idoit.api.jasonrpc.IdoitVersionResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
+import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectBrowser;
 import com.cargarantie.idoit.api.model.param.ObjectId;
@@ -31,8 +32,8 @@ public class Demo {
     // More complex request with several parameters
     // Create a category for an existing object: Define the category DTO, and combine
     // it with an object id inside a CmdbCategoryCreate
-    CategoryContactAssignment category = new CategoryContactAssignment(234, "Admin", "yes");
-    category.setObjId(123);
+    CategoryContactAssignment category = CategoryContactAssignment.builder().id(CategoryId.of(123))
+        .objId(ObjectId.of(234)).role("Admin").primary("yes").build();
     CreateResponse created = session.send(new CmdbCategoryCreate(category));
     System.out.println(
         "Created category with id:" + created.getId() + " Message:" + created.getMessage());
@@ -55,21 +56,21 @@ public class Demo {
     // An object consists of several categories, which consist of parameters. To update an object,
     // each of the changed categories needs 1 update request.
 
-    // Read all DemoObjects that exist.
-    List<CustomObject> demoObjects = session.readObjects(CustomObject.class);
-    demoObjects.forEach(o -> System.out.println("Object with id " + o.getId() + ": " + o));
+    // Read all CustomObjects that exist.
+    List<CustomObject> customObjects = session.readObjects(CustomObject.class);
+    customObjects.forEach(o -> System.out.println("Object with id " + o.getId() + ": " + o));
 
     // Get updated objects, maybe from an external source
     Collection<CustomObject> updateObjects = getUpdates();
 
     // Update all changed categories of all changed objects with a single statement. Updates will
     // be performed in batch.
-    session.upsertObjects(demoObjects, updateObjects);
+    session.upsertObjects(customObjects, updateObjects);
   }
 
   void categoryObjectHandling() {
     // Definition - most categories are defined like DTOs, with lombok magic as require.
-    // Creation can use a builder. Comples parameters provide static factories. Parameters
+    // Creation can use a builder. Complex parameters provide static factories. Parameters
     // only have 1 value for update, even when they have multiple values for read.
     CustomCategory category = CustomCategory.builder()
         .dateField(LocalDateTime.now())
