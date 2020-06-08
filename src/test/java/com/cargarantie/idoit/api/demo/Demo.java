@@ -1,11 +1,11 @@
 package com.cargarantie.idoit.api.demo;
 
 import com.cargarantie.idoit.api.IdoitSession;
-import com.cargarantie.idoit.api.jasonrpc.Batch;
-import com.cargarantie.idoit.api.jasonrpc.CmdbCategoryCreate;
-import com.cargarantie.idoit.api.jasonrpc.CreateResponse;
-import com.cargarantie.idoit.api.jasonrpc.IdoitVersion;
-import com.cargarantie.idoit.api.jasonrpc.IdoitVersionResponse;
+import com.cargarantie.idoit.api.jsonrpc.Batch;
+import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryCreate;
+import com.cargarantie.idoit.api.jsonrpc.CreateResponse;
+import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
+import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.param.CategoryId;
@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Test;
 
 public class Demo {
 

@@ -3,7 +3,7 @@ package com.cargarantie.idoit.api.model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cargarantie.idoit.api.model.param.Dialog;
-import com.cargarantie.idoit.api.jasonrpc.JsonRpcResult;
+import com.cargarantie.idoit.api.jsonrpc.JsonRpcResult;
 import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;

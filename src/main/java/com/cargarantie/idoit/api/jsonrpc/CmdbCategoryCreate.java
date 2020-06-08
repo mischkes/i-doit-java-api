@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api.jasonrpc;
+package com.cargarantie.idoit.api.jsonrpc;
 
 import com.cargarantie.idoit.api.model.AllIdoitModels;
 import com.cargarantie.idoit.api.model.IdoitCategory;
