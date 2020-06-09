@@ -23,16 +23,16 @@ public class CategoryGeneral extends IdoitCategory {
   private String title;
   private Dialog status;
   @JsonProperty(access = Access.WRITE_ONLY)
-  @Setter(AccessLevel.NONE)
+  @Setter(AccessLevel.PACKAGE)
   private LocalDateTime created;
   @JsonProperty(access = Access.WRITE_ONLY)
-  @Getter(AccessLevel.NONE)
+  @Getter(AccessLevel.PACKAGE)
   private String createdBy;
   @JsonProperty(access = Access.WRITE_ONLY)
-  @Getter(AccessLevel.NONE)
+  @Getter(AccessLevel.PACKAGE)
   private LocalDateTime changed;
   @JsonProperty(access = Access.WRITE_ONLY)
-  @Getter(AccessLevel.NONE)
+  @Getter(AccessLevel.PACKAGE)
   private String changedBy;
   private Dialog purpose;
   private Dialog category;

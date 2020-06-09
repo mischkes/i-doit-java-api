@@ -1,6 +1,6 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-import com.cargarantie.idoit.api.model.AllIdoitModels;
+import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import lombok.AllArgsConstructor;
@@ -33,7 +33,7 @@ public class CmdbCategoryCreate extends IdoitRequest<CreateResponse> {
   private IdoitCategory data;
 
   public String getCatgId() {
-    return AllIdoitModels.getName(data);
+    return AllModels.getName(data);
   }
 
   public ObjectId getObjID() {

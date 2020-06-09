@@ -2,12 +2,19 @@ package com.cargarantie.idoit.api;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.InputStream;
 import lombok.SneakyThrows;
 
 public class TestUtil {
 
   @SneakyThrows
   public static Object parseJson(String json) {
+    ObjectMapper mapper = getObjectMapper();
+    return mapper.readValue(json, Object.class);
+  }
+
+  @SneakyThrows
+  public static Object parseJson(InputStream json) {
     ObjectMapper mapper = getObjectMapper();
     return mapper.readValue(json, Object.class);
   }

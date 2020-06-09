@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
-class CategoryGeneralTest {
+public class CategoryGeneralTest {
   ObjectMapper mapper = IdoitObjectMapper.mapper;
 
   @Test
@@ -53,5 +53,15 @@ class CategoryGeneralTest {
     assertThat(parseJson(actual)).isEqualTo(parseJson(expected));
     System.out.println(actual);
 
+  }
+
+  public static void setCreatedData(CategoryGeneral category, LocalDateTime createdAt, String createdBy) {
+    category.setCreated(createdAt);
+    category.setCreatedBy(createdBy);
+  }
+
+  public static void setChangedData(CategoryGeneral category, LocalDateTime changedAt, String changedBy) {
+    category.setChanged(changedAt);
+    category.setChangedBy(changedBy);
   }
 }

@@ -11,10 +11,10 @@ public class JsonRpcRequest<T extends IdoitRequest> {
   private T params;
   private String id;
 
-  public String version() {
+  public String getJsonrpc() {
     return "2.0";
   }
-  public String method() {
+  public String getMethod() {
     return params.getMethod();
   }
 }

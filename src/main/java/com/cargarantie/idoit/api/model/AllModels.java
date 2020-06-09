@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public enum AllIdoitModels {
+public enum AllModels {
   Instance;
 
   static {
@@ -26,6 +26,12 @@ public enum AllIdoitModels {
   }
 
   public static String getName(Object o) {
-    return Instance.classToName.get(o.getClass());
+    return getName(o.getClass());
+  }
+  public static String getName(Class<?> clazz) {
+    return Instance.classToName.get(clazz);
+  }
+  public static Class<?> getClass(String name) {
+    return Instance.nameToClass.get(name);
   }
 }
