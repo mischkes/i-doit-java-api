@@ -2,12 +2,12 @@ package com.cargarantie.idoit.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryCreate;
+import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Filter;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Ordering;
-import com.cargarantie.idoit.api.jsonrpc.CreateResponse;
+import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
@@ -99,14 +99,26 @@ class JsonRpcClient_demoIdoitDeIT {
   }
 
   @Test
-  void test_sendCategoryCreateRequest() {
+  void test_sendCategorySaveRequest_forUpdate() {
     IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
-        .contact(158).role("Administrator").primary("no").build();
-    CmdbCategoryCreate request = new CmdbCategoryCreate(contactAssignment);
+        .contact(158).role("User").primary("no").build();
+    CmdbCategorySave request = new CmdbCategorySave(contactAssignment, 868);
 
-    CreateResponse response = client.send(request);
+    CategorySaveResponse response = client.send(request);
 
-    assertThat(response.getMessage()).isEmpty();
-    assertThat(response.getId()).isPositive();
+    assertThat(response.getMessage()).matches("Category entry successfully saved");
+    assertThat(response.getEntry()).isEqualTo(868);
+  }
+
+  @Test
+  void test_sendCategorySaveRequest_forCreate() {
+    IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
+        .contact(158).role("User").primary("no").build();
+    CmdbCategorySave request = new CmdbCategorySave(contactAssignment);
+
+    CategorySaveResponse response = client.send(request);
+
+    assertThat(response.getMessage()).matches("Category entry successfully saved");
+    assertThat(response.getEntry()).isGreaterThan(868);
   }
 }

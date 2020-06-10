@@ -2,8 +2,8 @@ package com.cargarantie.idoit.api.demo;
 
 import com.cargarantie.idoit.api.IdoitSession;
 import com.cargarantie.idoit.api.jsonrpc.Batch;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryCreate;
-import com.cargarantie.idoit.api.jsonrpc.CreateResponse;
+import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
+import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
@@ -33,22 +33,22 @@ public class Demo {
     // it with an object id inside a CmdbCategoryCreate
     CategoryContactAssignment category = CategoryContactAssignment.builder().id(CategoryId.of(123))
         .objId(ObjectId.of(234)).role("Admin").primary("yes").build();
-    CreateResponse created = session.send(new CmdbCategoryCreate(category));
+    CategorySaveResponse created = session.send(new CmdbCategorySave(category));
     System.out.println(
-        "Created category with id:" + created.getId() + " Message:" + created.getMessage());
+        "Created category with id:" + created.getEntry() + " Message:" + created.getMessage());
   }
 
   void batchRpcRequest() {
     // A batch is constructed from multiple independent Rpc requests. Every request has a name,
     // which becomes the key for accessing the response
-    Batch<CreateResponse> batch = new Batch<>();
-    batch.add("contact", new CmdbCategoryCreate(new CategoryContactAssignment()))
-        .add("general", new CmdbCategoryCreate(new CategoryGeneral()))
-        .add("contact2", new CmdbCategoryCreate(new CategoryContactAssignment()));
+    Batch<CategorySaveResponse> batch = new Batch<>();
+    batch.add("contact", new CmdbCategorySave(new CategoryContactAssignment()))
+        .add("general", new CmdbCategorySave(new CategoryGeneral()))
+        .add("contact2", new CmdbCategorySave(new CategoryContactAssignment()));
 
-    Map<String, CreateResponse> result = session.send(batch);
+    Map<String, CategorySaveResponse> result = session.send(batch);
 
-    System.out.println("Id of created general category is " + result.get("general").getId());
+    System.out.println("Id of created general category is " + result.get("general").getEntry());
   }
 
   void fullObjectUpdates() {

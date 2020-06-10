@@ -4,9 +4,9 @@ import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /*
 Example:
@@ -31,20 +31,25 @@ Example:
  */
 @Data
 @AllArgsConstructor
-public class CmdbCategoryCreate extends IdoitRequest<CreateResponse> {
+@NoArgsConstructor
+public class CmdbCategorySave extends IdoitRequest<CategorySaveResponse> {
   private IdoitCategory data;
+  private Integer entry; //for multi-value categories, not supplying this will always create a new entry
+
+  public CmdbCategorySave(IdoitCategory data) {
+    this.data = data;
+  }
 
   public String getCategory() {
     return AllModels.getName(data);
   }
 
-  @JsonProperty("objID")
-  public ObjectId getObjID() {
+  public ObjectId getObject() {
     return data.getObjId();
   }
 
   @Override
-  public Class<CreateResponse> getResponseClass() {
-    return CreateResponse.class;
+  public Class<CategorySaveResponse> getResponseClass() {
+    return CategorySaveResponse.class;
   }
 }

@@ -1,5 +1,9 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
+import com.cargarantie.idoit.api.IdoitObjectMapper;
+import com.cargarantie.idoit.api.model.IdoitCategory;
+import java.util.List;
+import java.util.Map;
 import lombok.Data;
 
 /*
@@ -16,8 +20,6 @@ Example:
 }
  */
 @Data
-public class CreateResponse {
-  private Integer id;
-  private String message;
-  private boolean success;
+public class CategoryReadResponse<T extends IdoitCategory> extends IdoitResponse {
+  private T result;
 }

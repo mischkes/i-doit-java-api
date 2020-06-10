@@ -1,10 +1,8 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-import com.cargarantie.idoit.api.IdoitObjectMapper;
-import com.cargarantie.idoit.api.model.IdoitCategory;
-import java.util.List;
-import java.util.Map;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /*
 Example:
@@ -20,6 +18,10 @@ Example:
 }
  */
 @Data
-public class ReadResponse<T extends IdoitCategory> extends IdoitResponse {
-  private T result;
+@AllArgsConstructor
+@NoArgsConstructor
+public class CategorySaveResponse {
+  private int entry;
+  private String message;
+  private boolean success;
 }

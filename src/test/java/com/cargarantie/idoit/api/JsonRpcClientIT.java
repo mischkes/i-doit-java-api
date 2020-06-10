@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
+import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Filter;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Ordering;
@@ -14,8 +16,10 @@ import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse.Login;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
+import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.CategoryGeneralTest;
+import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectId;
@@ -119,6 +123,36 @@ class JsonRpcClientIT {
     CategoryGeneralTest
         .setChangedData(expectedResult, LocalDateTime.parse("2017-07-03T14:54:59"), "admin");
     assertThat(actualResponse).isEqualTo(expectedResult);
+  }
+
+  @Test
+  void test_sendCategorySave_forUpdate() {
+    mockRestResponse("CategorySaveResponse");
+
+    IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
+        .contact(158).role("User").primary("no").build();
+    CmdbCategorySave request = new CmdbCategorySave(contactAssignment, 871);
+    CategorySaveResponse actualResponse = client.send(request);
+
+    Object expectedRequest = testDataAsMap("CmdbCategorySave_update");
+    assertThat(actualRequest).isEqualTo(expectedRequest);
+    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,"Category entry successfully saved", true);
+    assertThat(actualResponse).isEqualTo(expectedResponse);
+  }
+
+  @Test
+  void test_sendCategorySaveRequest_forCreate() {
+    mockRestResponse("CategorySaveResponse");
+
+    IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
+        .contact(158).role("User").primary("no").build();
+    CmdbCategorySave request = new CmdbCategorySave(contactAssignment);
+    CategorySaveResponse actualResponse = client.send(request);
+
+    Object expectedRequest = testDataAsMap("CmdbCategorySave_create");
+    assertThat(actualRequest).isEqualTo(expectedRequest);
+    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,"Category entry successfully saved", true);
+    assertThat(actualResponse).isEqualTo(expectedResponse);
   }
 
   private Object testDataAsMap(String fileName) {
