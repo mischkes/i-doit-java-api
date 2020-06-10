@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CmdbCategoryRead<T extends IdoitCategory> extends IdoitRequest<ReadResponse<T>> {
+public class CmdbCategoryRead<T extends IdoitCategory> extends IdoitRequest<T> {
   @JsonProperty("objID")
   int objId;
   Class<T> category;
@@ -28,7 +28,7 @@ public class CmdbCategoryRead<T extends IdoitCategory> extends IdoitRequest<Read
   }
 
   @Override
-  public Class<ReadResponse<T>> getResponseClass() {
-    return null; //this request has special handling
+  public Class<T> getResponseClass() {
+    return category;
   }
 }

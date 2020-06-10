@@ -1,43 +1,40 @@
-/*package com.cargarantie.idoit.api;
+package com.cargarantie.idoit.api;
 
-import com.cargarantie.idoit.syncjobs.idoit.model.IdoitCategory;
-import com.cargarantie.idoit.syncjobs.idoit.model.IdoitCategoryName;
-import com.cargarantie.idoit.syncjobs.idoit.model.IdoitObject;
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
+import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
+import com.cargarantie.idoit.api.model.IdoitObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.idoit.api.cmdb.CMDBObject;
-import com.idoit.api.cmdb.ObjectTypeConstants;
-import com.idoit.api.cmdb.category.CMDBCategory;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.Data;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-@Service
-@Slf4j
 public class ObjectsUpserter {
 
-  private final ObjectMapper mapper;
+  private final ObjectMapper mapper = IdoitObjectMapper.mapper;
+  private final IdoitSession session;
 
-  @Autowired
-  public ObjectsUpserter(@Qualifier("idoitMapper") ObjectMapper mapper) {
-    this.mapper = mapper;
+  public ObjectsUpserter(IdoitSession session) {
+    this.session = session;
   }
 
   @SneakyThrows
-  public <T extends IdoitObject> void upsert(IdoitSession session, Collection<T> currentObjects,
+  public <T extends IdoitObject> void upsert(Collection<GeneralObjectData> currentObjects,
       Collection<T> updateObjects) {
-    Map<Object, T> currentObjectsMapped = currentObjects.stream()
-        .collect(Collectors.toMap(o -> o.getGeneral().getSysid(), Function.identity()));
+    Map<String, GeneralObjectData> currentObjectsMapped = currentObjects.stream()
+        .collect(Collectors.toMap(o -> o.getSysid(), Function.identity()));
 
-    updateObjects
-        .forEach(o -> upsert(session, currentObjectsMapped.get(o.getGeneral().getSysid()), o));
+    LabeledObjects labeledObjects = new LabeledObjects();
+    labeledObjects.toCreate = updateObjects.stream()
+        .filter(o -> currentObjects.remove(o.getGeneral().getSysid()))
+        .collect(Collectors.toList());
+    labeledObjects.toDelete = currentObjectsMapped.values();
+    labeledObjects.toUpsert = updateObjects;
+
+    List<IdoitRequest<?>> changes;
   }
 
   @SneakyThrows
@@ -47,39 +44,29 @@ public class ObjectsUpserter {
     if (currentObject == null) {
       currentObject = createObject(session, updateObject);
     }
-
-    Map<String, Object> change = new UpsertChangeBuilder(
-        mapper.convertValue(currentObject, Map.class),
-        mapper.convertValue(updateObject, Map.class)
-    ).build();
-
-    T changeObject = (T) mapper.convertValue(change, updateObject.getClass());
-    if (changeObject != null) {
-      log.info("Making change {}", changeObject);
-      update(session, changeObject, currentObject);
-    }
   }
 
   @SneakyThrows
   private <T extends IdoitObject> T createObject(IdoitSession session, T referenceObject) {
-    CMDBObject newObject = session.object()
+ /*   CMDBObject newObject = session.object()
         .create(ObjectTypeConstants.TYPE_CLIENT, referenceObject.getTitle());
 
     T typedObject = (T) referenceObject.getClass().newInstance();
     typedObject.setId(newObject.getID());
-    return typedObject;
+    return typedObject;*/
+    return null;
   }
 
   private <T extends IdoitObject> void update(IdoitSession session, T dataObject, T idObject) {
-    ReflectionUtils.doWithFields(dataObject.getClass(), field -> {
+ /*   ReflectionUtils.doWithFields(dataObject.getClass(), field -> {
       if (field.getType().isAnnotationPresent(IdoitCategoryName.class)) {
         field.setAccessible(true);
         updateCategory(session, idObject.getId(), (IdoitCategory) field.get(dataObject),
             (IdoitCategory) field.get(idObject));
       }
-    });
+    });*/
   }
-
+/*
   @SneakyThrows
   private void updateCategory(IdoitSession session, int objectId, IdoitCategory category,
       IdoitCategory categoryId) {
@@ -104,6 +91,13 @@ public class ObjectsUpserter {
       //configured for future updates, but create() currently returns null. This means future
       //updates with the same category will crash
     }
+  }*/
+
+  @Data
+  private static class LabeledObjects {
+
+    Collection<GeneralObjectData> toDelete;
+    Collection<? extends IdoitObject> toCreate;
+    Collection<? extends IdoitObject> toUpsert;
   }
 }
-*/

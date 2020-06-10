@@ -3,6 +3,8 @@ package com.cargarantie.idoit.api.jsonrpc;
 import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.ObjectId;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -32,10 +34,11 @@ Example:
 public class CmdbCategoryCreate extends IdoitRequest<CreateResponse> {
   private IdoitCategory data;
 
-  public String getCatgId() {
+  public String getCategory() {
     return AllModels.getName(data);
   }
 
+  @JsonProperty("objID")
   public ObjectId getObjID() {
     return data.getObjId();
   }

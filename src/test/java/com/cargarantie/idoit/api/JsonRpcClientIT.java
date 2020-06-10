@@ -6,7 +6,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
-import com.cargarantie.idoit.api.jsonrpc.ReadResponse;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Filter;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Ordering;
+import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
+import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
+import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse.Login;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.CategoryGeneralTest;
 import com.cargarantie.idoit.api.model.param.CategoryId;
@@ -24,7 +31,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class JsonRpcClientTestIT {
+class JsonRpcClientIT {
 
   private static final String testDataFolder = "json/JsonRpcClientTest/";
 
@@ -35,7 +42,7 @@ class JsonRpcClientTestIT {
   private ObjectMapper mapper = IdoitObjectMapper.mapper;
   private JsonRpcClient client;
 
-  void mockRestResult(String resultFile) {
+  void mockRestResponse(String resultFile) {
     when(restClient.post(anyString())).thenAnswer(a -> {
       actualRequest = parseJson(a.getArgument(0, String.class));
       return testData(resultFile);
@@ -49,11 +56,51 @@ class JsonRpcClientTestIT {
   }
 
   @Test
+  void test_sendVersionRequest() {
+    mockRestResponse("VersionResponse");
+
+    IdoitVersion request = new IdoitVersion();
+    IdoitVersionResponse actualResponse = client.send(request);
+
+    Object expectedRequest = testDataAsMap("IdoitVersion");
+    assertThat(actualRequest).isEqualTo(expectedRequest);
+    IdoitVersionResponse expectedResponse = IdoitVersionResponse.builder().version("1.14.2")
+        .step("").type("PRO").login(Login.builder().userid(9).name("i-doit Systemadministrator ")
+            .mail("i-doit@acme-it.example").username("admin").tenant("ACME IT Solutions")
+            .language("en").build())
+        .build();
+    assertThat(actualResponse).isEqualTo(expectedResponse);
+  }
+
+  @Test
+  void test_sendObjectsReadRequest() {
+    mockRestResponse("ObjectsReadResponse");
+
+    CmdbObjectsRead request = CmdbObjectsRead.builder()
+        .filter(Filter.builder().type("C__OBJTYPE__CLIENT").build())
+        .orderBy(Ordering.title)
+        .build();
+    ObjectsReadResponse actualResponse = client.send(request);
+
+    Object expectedRequest = testDataAsMap("CmdbObjectsRead");
+    assertThat(actualRequest).isEqualTo(expectedRequest);
+    GeneralObjectData expextedResult = GeneralObjectData.builder().id(5189).title("Laptop")
+        .sysid("CLIENT_005189").type(10)
+        .created(LocalDateTime.parse("2020-03-18T15:05:42"))
+        .updated(LocalDateTime.parse("2020-03-18T15:05:43"))
+        .typeTitle("Client").typeGroupTitle("Hardware").status(2).cmdbStatus(6)
+        .cmdbStatusTitle("in operation")
+        .image("https://demo.i-doit.com/images/objecttypes/empty.png").build();
+    assertThat(actualResponse.getObjects().get(0)).isEqualTo(expextedResult);
+    assertThat(actualResponse.getObjects()).hasSize(28);
+  }
+
+  @Test
   void test_sendCategoryReadRequest() {
-    mockRestResult("ReadResponse");
+    mockRestResponse("ReadResponse");
 
     CmdbCategoryRead<CategoryGeneral> request = new CmdbCategoryRead(1412, CategoryGeneral.class);
-    ReadResponse<CategoryGeneral> actualResult = client.send(request);
+    CategoryGeneral actualResponse = client.send(request);
 
     Object expectedRequest = testDataAsMap("CmdbCategoryRead");
     assertThat(actualRequest).isEqualTo(expectedRequest);
@@ -71,7 +118,7 @@ class JsonRpcClientTestIT {
         .setCreatedData(expectedResult, LocalDateTime.parse("2015-05-04T18:02:10"), "admin");
     CategoryGeneralTest
         .setChangedData(expectedResult, LocalDateTime.parse("2017-07-03T14:54:59"), "admin");
-    assertThat(actualResult.getResult()).isEqualTo(expectedResult);
+    assertThat(actualResponse).isEqualTo(expectedResult);
   }
 
   private Object testDataAsMap(String fileName) {

@@ -3,7 +3,6 @@ package com.cargarantie.idoit.api;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
 import com.cargarantie.idoit.api.jsonrpc.JsonRpcRequest;
-import com.cargarantie.idoit.api.jsonrpc.ReadResponse;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,43 +25,37 @@ public class JsonRpcClient {
   }
 
   @SneakyThrows
-  <T extends IdoitCategory> ReadResponse<T> send(CmdbCategoryRead<T> request) {
-    Map<String, Object> json = getJsonObject(request);
-
-    Class<T> categoryClass = request.getCategoryClass();
-    ReadResponse<T> response = new ReadResponse<>();
-    Object result = ((List<Object>) json.get("result")).get(0); //there is always only one result
-    T category = mapper.convertValue(result, categoryClass);
-    response.setResult(category);
-
-    return response;
+  <T extends IdoitCategory> T send(CmdbCategoryRead<T> request) {
+    Object resultJson = ((List<Object>) getResult(request)).get(0); //result is always a list of 1;
+    return mapper.convertValue(resultJson, request.getCategoryClass());
   }
 
   @SneakyThrows
   <T> T send(IdoitRequest<T> request) {
-    Map<String, Object> json = getJsonObject(request);
-    T result = mapper.convertValue(json, request.getResponseClass());
-    System.out.println(result);
-    return result;
+    Object resultJson = getResult(request);
+    return mapper.convertValue(resultJson, request.getResponseClass());
   }
 
   @SneakyThrows
-  private <T> Map<String, Object> getJsonObject(IdoitRequest<T> request) {
+  private <T> Object getResult(IdoitRequest<T> request) {
     request.setApiKey("c1ia5q");
     JsonRpcRequest<?> jsonRpcRequest = new JsonRpcRequest<>(request, "0");
     String requestJson = mapper.writeValueAsString(jsonRpcRequest);
-    System.out.println(requestJson);
+    System.out.println("Request: " + requestJson);
 
     InputStream result = restClient.post(requestJson);
 
     Map<String, Object> json = mapper.readValue(result, jsonMapTypeRef);
-    System.out.println(json);
+    System.out.println("Result: " + json);
 
     if (json.containsKey("error")) {
       //read the error into an entity, then throw an exception
       return null;
+    } else {
+      System.out.println("Result: " + json.get("result"));
+      //maybe throw an error if this node does not exist
+      return json.get("result");
     }
-    return json;
   }
 
   //<T> Map<String, T> send(Batch<T> requests);
