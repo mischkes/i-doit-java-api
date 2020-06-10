@@ -23,5 +23,4 @@ Example:
 public class CategorySaveResponse {
   private int entry;
   private String message;
-  private boolean success;
 }

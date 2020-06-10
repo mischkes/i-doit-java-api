@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectCreate;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Filter;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Ordering;
@@ -12,6 +13,7 @@ import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse.Login;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
@@ -52,6 +54,16 @@ class JsonRpcClient_demoIdoitDeIT {
             .language("en").build())
         .build();
     assertThat(actualResponse).isEqualTo(expectedResponse);
+  }
+
+  @Test
+  void test_sendObjectCreateRequest() {
+    CmdbObjectCreate request = new CmdbObjectCreate("C__OBJTYPE__SERVER", "My little server");
+
+    ObjectCreateResponse response = client.send(request);
+
+    assertThat(response.getId()).isGreaterThan(0);
+    assertThat(response.getMessage()).isEqualTo("Object was successfully created");
   }
 
   @Test

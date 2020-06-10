@@ -1,0 +1,9 @@
+{
+  "id": "0",
+  "jsonrpc": "2.0",
+  "result": {
+    "id": 5243,
+    "message": "Object was successfully created",
+    "success": true
+  }
+}

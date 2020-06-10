@@ -8,12 +8,14 @@ import static org.mockito.Mockito.when;
 import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectCreate;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Filter;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Ordering;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse.Login;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
@@ -77,6 +79,19 @@ class JsonRpcClientIT {
   }
 
   @Test
+  void test_sendObjectCreateRequest() {
+    mockRestResponse("ObjectCreateResponse");
+
+    CmdbObjectCreate request = new CmdbObjectCreate("C__OBJTYPE__SERVER", "My little server");
+    ObjectCreateResponse actualResponse = client.send(request);
+
+    Object expectedRequest = testDataAsMap("CmdbObjectCreate");
+    assertThat(actualRequest).isEqualTo(expectedRequest);
+    ObjectCreateResponse expectedResponse = new ObjectCreateResponse(5243, "Object was successfully created");
+    assertThat(actualResponse).isEqualTo(expectedResponse);
+  }
+
+  @Test
   void test_sendObjectsReadRequest() {
     mockRestResponse("ObjectsReadResponse");
 
@@ -136,7 +151,7 @@ class JsonRpcClientIT {
 
     Object expectedRequest = testDataAsMap("CmdbCategorySave_update");
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,"Category entry successfully saved", true);
+    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,"Category entry successfully saved");
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
 
@@ -151,7 +166,7 @@ class JsonRpcClientIT {
 
     Object expectedRequest = testDataAsMap("CmdbCategorySave_create");
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,"Category entry successfully saved", true);
+    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,"Category entry successfully saved");
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
 
