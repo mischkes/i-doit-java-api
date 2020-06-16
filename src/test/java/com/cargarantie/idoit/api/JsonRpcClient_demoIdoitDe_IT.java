@@ -29,8 +29,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * This test tests directly against demo.i-doit.de
+ * It might turn out to fragile, but it can provide the most confidence that
+ * everything is correct.
+ */
 @ExtendWith(MockitoExtension.class)
-class JsonRpcClient_demoIdoitDeIT {
+class JsonRpcClient_demoIdoitDe_IT {
 
   private ObjectMapper mapper = IdoitObjectMapper.mapper;
   private JsonRpcClient client;

@@ -34,20 +34,33 @@ public class ObjectsUpserter {
     labeledObjects.toDelete = currentObjectsMapped.values();
     labeledObjects.toUpsert = updateObjects;
 
-    List<IdoitRequest<?>> changes;
+    labeledObjects.toCreate.forEach(o -> {
+      //gather create Requests
+    });
+
+    //? how is
+
+    //launch all create requests
+    //set id to object
+
+    //gather update requests, for each category
+    //gather delete requests
+    //launch requests
+    //set category ids to object
+
   }
 
   @SneakyThrows
-  private <T extends IdoitObject> void upsert(IdoitSession session, T currentObject,
+  private <T extends IdoitObject> void upsert(T currentObject,
       T updateObject) {
 
     if (currentObject == null) {
-      currentObject = createObject(session, updateObject);
+      currentObject = createObject(updateObject);
     }
   }
 
   @SneakyThrows
-  private <T extends IdoitObject> T createObject(IdoitSession session, T referenceObject) {
+  private <T extends IdoitObject> T createObject(T referenceObject) {
  /*   CMDBObject newObject = session.object()
         .create(ObjectTypeConstants.TYPE_CLIENT, referenceObject.getTitle());
 
@@ -57,7 +70,7 @@ public class ObjectsUpserter {
     return null;
   }
 
-  private <T extends IdoitObject> void update(IdoitSession session, T dataObject, T idObject) {
+  private <T extends IdoitObject> void update(T dataObject, T idObject) {
  /*   ReflectionUtils.doWithFields(dataObject.getClass(), field -> {
       if (field.getType().isAnnotationPresent(IdoitCategoryName.class)) {
         field.setAccessible(true);
