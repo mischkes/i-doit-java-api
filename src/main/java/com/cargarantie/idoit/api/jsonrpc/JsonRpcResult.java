@@ -1,5 +1,6 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -164,6 +165,7 @@ Another example "method": "cmdb.object.delete":
 @AllArgsConstructor
 @NoArgsConstructor
 public class JsonRpcResult {
-  private Integer id;
-  private List<Object> result;
+  private String id;
+  private Object result;
+  private Object error;
 }

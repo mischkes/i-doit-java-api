@@ -10,14 +10,13 @@ import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectCreate;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Filter;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Ordering;
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse.Login;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
-import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.CategoryGeneralTest;
@@ -27,8 +26,10 @@ import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ class JsonRpcClientIT {
 
   @BeforeEach
   void setUp() {
-    client = new JsonRpcClient(restClient);
+    client = new JsonRpcClient(restClient, "c1ia5q");
   }
 
   @Test
@@ -87,7 +88,8 @@ class JsonRpcClientIT {
 
     Object expectedRequest = testDataAsMap("CmdbObjectCreate");
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    ObjectCreateResponse expectedResponse = new ObjectCreateResponse(5243, "Object was successfully created");
+    ObjectCreateResponse expectedResponse = new ObjectCreateResponse(5243,
+        "Object was successfully created");
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
 
@@ -95,10 +97,8 @@ class JsonRpcClientIT {
   void test_sendObjectsReadRequest() {
     mockRestResponse("ObjectsReadResponse");
 
-    CmdbObjectsRead request = CmdbObjectsRead.builder()
-        .filter(Filter.builder().type("C__OBJTYPE__CLIENT").build())
-        .orderBy(Ordering.title)
-        .build();
+    CmdbObjectsRead<?> request = CmdbObjectsRead.builder().filterTypeName("C__OBJTYPE__CLIENT")
+        .orderBy(Ordering.title).build();
     ObjectsReadResponse actualResponse = client.send(request);
 
     Object expectedRequest = testDataAsMap("CmdbObjectsRead");
@@ -116,6 +116,8 @@ class JsonRpcClientIT {
 
   @Test
   void test_sendCategoryReadRequest() {
+    System.out.println(Arrays.stream("".split(",")).collect(Collectors.toSet()).size());
+
     mockRestResponse("ReadResponse");
 
     CmdbCategoryRead<CategoryGeneral> request = new CmdbCategoryRead(1412, CategoryGeneral.class);
@@ -151,7 +153,8 @@ class JsonRpcClientIT {
 
     Object expectedRequest = testDataAsMap("CmdbCategorySave_update");
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,"Category entry successfully saved");
+    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,
+        "Category entry successfully saved");
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
 
@@ -166,8 +169,17 @@ class JsonRpcClientIT {
 
     Object expectedRequest = testDataAsMap("CmdbCategorySave_create");
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,"Category entry successfully saved");
+    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,
+        "Category entry successfully saved");
     assertThat(actualResponse).isEqualTo(expectedResponse);
+  }
+
+  @Test
+  void testExpandCustomCategory() {
+    Object json = testDataAsMap("categoryClientResult");
+
+    System.out.println(JsonRpcClient.expandCustomFields(json));
+
   }
 
   private Object testDataAsMap(String fileName) {
@@ -175,7 +187,7 @@ class JsonRpcClientIT {
   }
 
   @SneakyThrows
-  private InputStream testData(String fileName) {
-    return Util.getResource(testDataFolder + fileName + ".json").openStream();
+  private String testData(String fileName) {
+    return Util.getResourceAsString(testDataFolder + fileName + ".json");
   }
 }

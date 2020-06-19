@@ -4,6 +4,9 @@ import com.cargarantie.idoit.api.IdoitSession;
 import com.cargarantie.idoit.api.jsonrpc.Batch;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
 import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Filter;
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
@@ -56,7 +59,7 @@ public class Demo {
     // each of the changed categories needs 1 update request.
 
     // Read all CustomObjects that exist.
-    List<CustomObject> customObjects = session.readObjects(CustomObject.class);
+    List<GeneralObjectData> customObjects = null;//TODO: session.send(CmdbObjectsRead.builder().filter()CustomObject.class);
     customObjects.forEach(o -> System.out.println("Object with id " + o.getId() + ": " + o));
 
     // Get updated objects, maybe from an external source
@@ -64,7 +67,7 @@ public class Demo {
 
     // Update all changed categories of all changed objects with a single statement. Updates will
     // be performed in batch.
-    session.upsertObjects(customObjects, updateObjects);
+    session.upsert(customObjects, updateObjects);
   }
 
   void categoryObjectHandling() {

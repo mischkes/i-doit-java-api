@@ -1,0 +1,33 @@
+{
+  "id": "821",
+  "objID": "11457",
+  "f_popup_c_1581595935188": {
+    "identifier": "Form"
+  },
+  "f_popup_c_1581421490617": {
+    "identifier": "OS"
+  },
+  "f_text_c_1581421491453": null,
+  "f_popup_c_1581421518089": {
+    "identifier": "Manufacturer"
+  },
+  "f_popup_c_1581421518780": {
+    "identifier": "Model_Name"
+  },
+  "f_text_c_1581421862822": null,
+  "f_popup_c_1581421868467": {
+    "id": "51",
+    "title": "FAAST",
+    "const": null,
+    "title_lang": "FAAST",
+    "identifier": "CPU"
+  },
+  "f_popup_c_1581421880679": {
+    "identifier": "RAM"
+  },
+  "f_popup_c_1581595990260": {
+    "identifier": "HD_Type"
+  },
+  "f_text_c_1581595997348": null,
+  "description": ""
+}

@@ -4,6 +4,7 @@ import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -19,7 +20,8 @@ public class CmdbCategoryRead<T extends IdoitCategory> extends IdoitRequest<T> {
   }
 
   public String getCategory() {
-    return AllModels.getName(category);
+    return Optional.ofNullable(AllModels.getName(category))
+        .orElseThrow(() -> new IllegalStateException("Class " + category + " is not registered as a category in " + AllModels.class));
   }
 
   @JsonIgnore

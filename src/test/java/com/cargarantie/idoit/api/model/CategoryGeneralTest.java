@@ -21,6 +21,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
@@ -39,8 +40,8 @@ public class CategoryGeneralTest {
 
   private CategoryGeneral loadCategory() throws IOException {
     JsonRpcResult rpcResult = mapper
-        .readValue(Util.getResource("json/categoryGeneralRead.json"), JsonRpcResult.class);
-    return mapper.convertValue(rpcResult.getResult().get(0), CategoryGeneral.class);
+        .readValue(Util.getResourceAsString("json/categoryGeneralRead.json"), JsonRpcResult.class);
+    return mapper.convertValue(((List<Object>) (rpcResult.getResult())).get(0), CategoryGeneral.class);
   }
 
   @Test

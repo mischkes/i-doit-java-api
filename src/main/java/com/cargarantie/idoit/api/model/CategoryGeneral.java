@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class CategoryGeneral extends IdoitCategory {
 
   private String title;
@@ -26,13 +28,13 @@ public class CategoryGeneral extends IdoitCategory {
   @Setter(AccessLevel.PACKAGE)
   private LocalDateTime created;
   @JsonProperty(access = Access.WRITE_ONLY)
-  @Getter(AccessLevel.PACKAGE)
+  @Setter(AccessLevel.PACKAGE)
   private String createdBy;
   @JsonProperty(access = Access.WRITE_ONLY)
-  @Getter(AccessLevel.PACKAGE)
+  @Setter(AccessLevel.PACKAGE)
   private LocalDateTime changed;
   @JsonProperty(access = Access.WRITE_ONLY)
-  @Getter(AccessLevel.PACKAGE)
+  @Setter(AccessLevel.PACKAGE)
   private String changedBy;
   private Dialog purpose;
   private Dialog category;

@@ -1,10 +1,13 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-import java.lang.reflect.Array;
+import com.cargarantie.idoit.api.model.AllModels;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 
 /*
 filter	Array	No	Filter list of objects; see below for a full list of options
@@ -61,11 +64,26 @@ Primary e-mail address of an object of type Persons, Person groups or Organizati
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class CmdbObjectsRead extends IdoitRequest<ObjectsReadResponse> {
+public class CmdbObjectsRead<T> extends IdoitRequest<ObjectsReadResponse> {
 
   private Filter filter;
   private Ordering orderBy;
+  @JsonIgnore
+  private Class<T> filterType;
+
+  @Builder
+  public CmdbObjectsRead(String filterFirstName, String filterLastName, @Singular List<Integer> filterIds,
+      String filterTitle, Class<T> filterType, String filterTypeName, String filterEmail,
+      String filterSysid, Ordering orderBy) {
+
+    if (filterType != null) {
+      filterTypeName = AllModels.getName(filterType);
+    }
+    this.filter = new Filter(filterFirstName, filterLastName, filterIds, filterTitle, filterTypeName,
+        filterEmail, filterSysid, null);
+    this.orderBy = orderBy;
+    this.filterType = filterType;
+  }
 
   @Override
   public Class<ObjectsReadResponse> getResponseClass() {
@@ -86,12 +104,11 @@ public class CmdbObjectsRead extends IdoitRequest<ObjectsReadResponse> {
   @Data
   @AllArgsConstructor
   @NoArgsConstructor
-  @Builder
   public static class Filter {
 
     private String firstName;
     private String lastName;
-    private Array ids;
+    private List<Integer> ids;
     private String title;
 
     /**

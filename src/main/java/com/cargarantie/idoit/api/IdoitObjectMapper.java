@@ -40,6 +40,7 @@ public class IdoitObjectMapper {
         .toFormatter();
     javaTimeModule.addDeserializer(LocalDateTime.class, new IdoitLocalDateTimeDeserializer(formatter));
     javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
+    javaTimeModule.addDeserializer(String.class, new IdoitStringDeserializer());
 
     return javaTimeModule;
   }

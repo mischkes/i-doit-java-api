@@ -2,17 +2,18 @@ package com.cargarantie.idoit.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
+import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
+import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectCreate;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Filter;
 import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Ordering;
-import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
+import com.cargarantie.idoit.api.jsonrpc.IdoitLogin;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
 import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse.Login;
+import com.cargarantie.idoit.api.jsonrpc.LoginResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
@@ -30,9 +31,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * This test tests directly against demo.i-doit.de
- * It might turn out to fragile, but it can provide the most confidence that
- * everything is correct.
+ * This test tests directly against demo.i-doit.de It might turn out to fragile, but it can provide
+ * the most confidence that everything is correct.
  */
 @ExtendWith(MockitoExtension.class)
 class JsonRpcClient_demoIdoitDe_IT {
@@ -42,9 +42,9 @@ class JsonRpcClient_demoIdoitDe_IT {
 
   @BeforeEach
   void setUp() {
-    RestClientWrapper restClient = new RestClientWrapper("https://demo.i-doit.com/src/jsonrpc.php",
-        "admin", "admin");
-    client = new JsonRpcClient(restClient);
+    RestClientWrapper restClient = new RestClientWrapper("https://demo.i-doit.com/src/jsonrpc.php");
+    client = new JsonRpcClient(restClient, "c1ia5q");
+    client.login("admin", "admin");
   }
 
   @Test
@@ -62,6 +62,19 @@ class JsonRpcClient_demoIdoitDe_IT {
   }
 
   @Test
+  void test_sendLogin() {
+    IdoitLogin request = new IdoitLogin();
+
+    LoginResponse actualResponse = client.send(request);
+
+    /*
+    {"result":true,"userid":"9","name":"i-doit Systemadministrator ","mail":"i-doit@acme-it.example","username":"admin","session-id":"3ro0o7ceh24rm1ci241992i7f3","client-id":1,"client-name":"ACME IT Solutions"}
+     */
+    //TODO
+    assertThat(actualResponse).isEqualTo(null);
+  }
+
+  @Test
   void test_sendObjectCreateRequest() {
     CmdbObjectCreate request = new CmdbObjectCreate("C__OBJTYPE__SERVER", "My little server");
 
@@ -73,10 +86,8 @@ class JsonRpcClient_demoIdoitDe_IT {
 
   @Test
   void test_sendObjectsReadRequest() {
-    CmdbObjectsRead request = CmdbObjectsRead.builder()
-        .filter(Filter.builder().type("C__OBJTYPE__CLIENT").build())
-        .orderBy(Ordering.title)
-        .build();
+    CmdbObjectsRead<?> request = CmdbObjectsRead.builder().filterTypeName("C__OBJTYPE__CLIENT")
+        .orderBy(Ordering.title).build();
 
     ObjectsReadResponse response = client.send(request);
 

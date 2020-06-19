@@ -1,20 +1,22 @@
 package com.cargarantie.idoit.api;
 
+import com.cargarantie.idoit.api.jsonrpc.Batch;
+import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectCreate;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectDelete;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectDelete.DeleteAction;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
-import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.model.IdoitObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.Data;
 import lombok.SneakyThrows;
 
 public class ObjectsUpserter {
 
-  private final ObjectMapper mapper = IdoitObjectMapper.mapper;
   private final IdoitSession session;
 
   public ObjectsUpserter(IdoitSession session) {
@@ -24,93 +26,56 @@ public class ObjectsUpserter {
   @SneakyThrows
   public <T extends IdoitObject> void upsert(Collection<GeneralObjectData> currentObjects,
       Collection<T> updateObjects) {
-    Map<String, GeneralObjectData> currentObjectsMapped = currentObjects.stream()
+    Collection<GeneralObjectData> toDelete = mapUpdatedAndReturnUnused(
+        currentObjects, updateObjects);
+
+    createObjects(updateObjects.stream().filter(o -> o.getId() == 0).collect(Collectors.toList()));
+
+    List<CmdbObjectDelete> archiveRequests = toDelete.stream().map(this::newArchiveRequest)
+        .collect(Collectors.toList());
+
+    List<CmdbCategorySave> updateRequests = updateObjects.stream().flatMap(object ->
+        object.getCategories().peek(category -> category.setObjId(object.getId()))
+            .map(CmdbCategorySave::new)).collect(Collectors.toList());
+
+    session.send(new Batch<Object>("archive", archiveRequests)
+        .addAll("update", updateRequests));
+  }
+
+  private <T extends IdoitObject> void createObjects(List<T> createObjects) {
+
+    List<CmdbObjectCreate> createRequests = createObjects.stream()
+        .map(CmdbObjectCreate::new).collect(Collectors.toList());
+
+    Batch<ObjectCreateResponse> createBatch = new Batch<>();
+    for (int i = 0; i < createObjects.size(); ++i) {
+      createBatch.add(Integer.toString(i), createRequests.get(i));
+    }
+    Map<String, ObjectCreateResponse> createResponses = session.send(createBatch);
+    for (int i = 0; i < createObjects.size(); ++i) {
+      ObjectCreateResponse response = createResponses.get(Integer.toString(i));
+      createObjects.get(i).setId(response.getId());
+    }
+  }
+
+  private <T extends IdoitObject> Collection<GeneralObjectData> mapUpdatedAndReturnUnused(
+      Collection<GeneralObjectData> currentObjects, Collection<T> updateObjects) {
+
+    Map<String, GeneralObjectData> currentBySysid = currentObjects.stream()
         .collect(Collectors.toMap(o -> o.getSysid(), Function.identity()));
 
-    LabeledObjects labeledObjects = new LabeledObjects();
-    labeledObjects.toCreate = updateObjects.stream()
-        .filter(o -> currentObjects.remove(o.getGeneral().getSysid()))
-        .collect(Collectors.toList());
-    labeledObjects.toDelete = currentObjectsMapped.values();
-    labeledObjects.toUpsert = updateObjects;
-
-    labeledObjects.toCreate.forEach(o -> {
-      //gather create Requests
+    updateObjects.forEach(up -> {
+      GeneralObjectData current = currentBySysid.remove(up.getGeneral().getSysid());
+      if (current != null) {
+        up.setId(current.getId());
+        up.getCategories().forEach(cat -> cat.setObjId(current.getId()));
+      }
     });
 
-    //? how is
-
-    //launch all create requests
-    //set id to object
-
-    //gather update requests, for each category
-    //gather delete requests
-    //launch requests
-    //set category ids to object
-
+    return currentBySysid.values();
   }
 
-  @SneakyThrows
-  private <T extends IdoitObject> void upsert(T currentObject,
-      T updateObject) {
-
-    if (currentObject == null) {
-      currentObject = createObject(updateObject);
-    }
-  }
-
-  @SneakyThrows
-  private <T extends IdoitObject> T createObject(T referenceObject) {
- /*   CMDBObject newObject = session.object()
-        .create(ObjectTypeConstants.TYPE_CLIENT, referenceObject.getTitle());
-
-    T typedObject = (T) referenceObject.getClass().newInstance();
-    typedObject.setId(newObject.getID());
-    return typedObject;*/
-    return null;
-  }
-
-  private <T extends IdoitObject> void update(T dataObject, T idObject) {
- /*   ReflectionUtils.doWithFields(dataObject.getClass(), field -> {
-      if (field.getType().isAnnotationPresent(IdoitCategoryName.class)) {
-        field.setAccessible(true);
-        updateCategory(session, idObject.getId(), (IdoitCategory) field.get(dataObject),
-            (IdoitCategory) field.get(idObject));
-      }
-    });*/
-  }
-/*
-  @SneakyThrows
-  private void updateCategory(IdoitSession session, int objectId, IdoitCategory category,
-      IdoitCategory categoryId) {
-    if (category == null) {
-      return;
-    }
-
-    String categoryName = AnnotationUtils
-        .findAnnotation(category.getClass(), IdoitCategoryName.class).value();
-    Map<String, Object> values = mapper.convertValue(category, Map.class);
-    values.remove("id");
-
-    CMDBCategory updateDto = new CMDBCategory();
-    values.entrySet().forEach(e -> updateDto.createValue(e.getKey()).setValue(e.getValue()));
-
-    if (categoryId != null && categoryId.getId() > 0) {
-      updateDto.createValue("id").setValue(categoryId.getId());
-      session.category().update(objectId, categoryName, updateDto);
-    } else {
-      session.category().create(objectId, categoryName, updateDto);
-      //it would be great to store the new category ID into the category object, so that it is
-      //configured for future updates, but create() currently returns null. This means future
-      //updates with the same category will crash
-    }
-  }*/
-
-  @Data
-  private static class LabeledObjects {
-
-    Collection<GeneralObjectData> toDelete;
-    Collection<? extends IdoitObject> toCreate;
-    Collection<? extends IdoitObject> toUpsert;
+  private CmdbObjectDelete newArchiveRequest(GeneralObjectData generalObjectData) {
+    return new CmdbObjectDelete(generalObjectData.getId(), DeleteAction.ARCHIVE);
   }
 }

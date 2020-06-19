@@ -1,48 +1,51 @@
 package com.cargarantie.idoit.api;
 
-import com.cargarantie.idoit.api.model.IdoitObject;
 import com.cargarantie.idoit.api.jsonrpc.Batch;
+import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
+import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
+import com.cargarantie.idoit.api.model.IdoitCategory;
+import com.cargarantie.idoit.api.model.IdoitObject;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-public interface IdoitSession {
-  public <T extends IdoitObject> void upsertObjects(Collection<T> currentObjects,
-      Collection<T> updateObjects);
+public class IdoitSession implements AutoCloseable {
 
-  public <T extends IdoitObject> List<T> readObjects(Class<T> objectClass);
-  public <T extends IdoitObject> List<T> readObjects(Class<T> objectClass, Object filterSettings);
-  <T> T send(IdoitRequest<T> request);
-  <T> Map<String, T> send(Batch<T> requests);
+  private final JsonRpcClient rpcClient;
 
-  /*
-  Info: idoit.addons
-  idoit.constants
-idoit.license
-idoit.version
+  public IdoitSession(String url, String apiKey, String username, String password) {
+    rpcClient = new JsonRpcClient(new RestClientWrapper(url + "/src/jsonrpc.php"), apiKey);
+    rpcClient.login(username, password);
+  }
 
-cmdb.category_info
-object_type_categories
-   */
+  public <T extends IdoitObject> Collection<T> read(Class<T> objectClass) {
+    return new ObjectsReader(this).read(objectClass);
+  }
 
-  /*
-  allgemeiner search: idoit.search
-  cmdb.impact - relations zu einem Objekt. Verwendung unklar
-   */
+  public <T extends IdoitObject> Collection<T> read(CmdbObjectsRead<T> request) {
+    return new ObjectsReader(this).read(request);
+  }
 
-  /*
-  console.commands.listCommands	Documentation follows
-console.auth.cleanup	Documentation follows
-console.document.compile	Documentation follows
-console.dynamicgroups.sync	Documentation follows
-console.import.csv	Documentation follows
-console.ldap.sync	Documentation follows
-console,logbook.archive	Documentation follows
-console.notifications,send	Documentation follows
-console.report.export	Documentation follows
-console.search.query	Documentation follows
-console.settings.all	Documentation follows
-console.system.autoincrement
-   */
+  public <T extends IdoitObject> void upsert(Collection<GeneralObjectData> currentObjects,
+      Collection<T> updateObjects) {
+    new ObjectsUpserter(this).upsert(currentObjects, updateObjects);
+  }
+
+  public <T> Map<String, T> send(Batch<T> batch) {
+    return rpcClient.send(batch);
+  }
+
+  public <T extends IdoitCategory> T send(CmdbCategoryRead<T> request) {
+    return rpcClient.send(request);
+  }
+
+  public <T> T send(IdoitRequest<T> request) {
+    return rpcClient.send(request);
+  }
+
+  @Override
+  public void close() {
+    //TODO
+  }
 }

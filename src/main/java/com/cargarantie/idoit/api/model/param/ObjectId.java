@@ -2,10 +2,13 @@ package com.cargarantie.idoit.api.model.param;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Value;
 
 @Value
 public class ObjectId {
+  @Getter(AccessLevel.NONE)
   private int id;
 
   @JsonCreator
@@ -22,7 +25,7 @@ public class ObjectId {
   }
 
   @JsonValue
-  public int getId() {
+  public int toInt() {
     return id;
   }
 }
