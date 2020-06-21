@@ -16,7 +16,7 @@ class CmdbCategoryReadTest {
   @Order(0)
   @Test
   void getCategory_shouldThrowException_ifCategoryClassNotRegisterd() {
-    CmdbCategoryRead<MyCat> read = new CmdbCategoryRead<>(0, MyCat.class);
+    CmdbCategoryRead<MyCat> read = new CmdbCategoryRead<>(null, MyCat.class);
 
     assertThatThrownBy(() -> read.getCategory()).isInstanceOf(IllegalStateException.class)
         .hasMessage("Class class com.cargarantie.idoit.api.jsonrpc.CmdbCategoryReadTest$MyCat is not"
@@ -27,7 +27,7 @@ class CmdbCategoryReadTest {
   @Test
   void getCategory_shouldReturnRegisteredName() {
     AllModels.register("CAT_MYCAT", MyCat.class);
-    CmdbCategoryRead<MyCat> read = new CmdbCategoryRead<>(0, MyCat.class);
+    CmdbCategoryRead<MyCat> read = new CmdbCategoryRead<>(null, MyCat.class);
 
     assertThat(read.getCategory()).isEqualTo("CAT_MYCAT");
   }

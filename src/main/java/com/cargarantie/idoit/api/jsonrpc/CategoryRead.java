@@ -2,6 +2,7 @@ package com.cargarantie.idoit.api.jsonrpc;
 
 import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.IdoitCategory;
+import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Optional;
@@ -12,12 +13,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class CmdbCategoryRead<T extends IdoitCategory> extends IdoitRequest<T> {
   @JsonProperty("objID")
-  int objId;
-  Class<T> category;
-
-  public void setCategory(String category) {
-    this.category = (Class<T>) AllModels.getClass(category);
-  }
+  private ObjectId objId;
+  private Class<T> category;
 
   public String getCategory() {
     return Optional.ofNullable(AllModels.getName(category))

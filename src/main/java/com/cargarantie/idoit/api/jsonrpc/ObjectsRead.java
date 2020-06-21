@@ -79,6 +79,11 @@ public class CmdbObjectsRead<T> extends IdoitRequest<ObjectsReadResponse> {
     if (filterType != null) {
       filterTypeName = AllModels.getName(filterType);
     }
+
+    if (filterIds.size() == 0) {
+      filterIds = null;
+    }
+
     this.filter = new Filter(filterFirstName, filterLastName, filterIds, filterTitle, filterTypeName,
         filterEmail, filterSysid, null);
     this.orderBy = orderBy;

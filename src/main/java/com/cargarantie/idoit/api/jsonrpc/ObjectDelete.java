@@ -1,5 +1,6 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
+import com.cargarantie.idoit.api.model.param.ObjectId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,7 +18,7 @@ public class CmdbObjectDelete extends IdoitRequest<SimpleSuccessResponse>{
     }
   }
 
-  private final int id;
+  private final ObjectId id;
   private final DeleteAction status;
 
   @Override

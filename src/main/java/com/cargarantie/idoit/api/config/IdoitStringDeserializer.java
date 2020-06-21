@@ -14,7 +14,6 @@ public class IdoitStringDeserializer extends JsonDeserializer<String> {
       throws IOException {
     if (parser.hasTokenId(JsonTokenId.ID_START_OBJECT)) {
       ObjectNode object = parser.readValueAsTree();
-      //internalMapper.treeToValue(
       return object.get("title").asText(); //do the same for obbjects-references and IDs
       //maybe check sensibble error messages
     } else {

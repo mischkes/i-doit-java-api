@@ -1,10 +1,10 @@
 package com.cargarantie.idoit.api;
 
-import static com.cargarantie.idoit.api.TestUtil.parseJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
@@ -24,13 +24,10 @@ import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectId;
-import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.stream.Collectors;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,15 +35,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class JsonRpcClientIT {
-
-  private static final String testDataFolder = "json/JsonRpcClientTest/";
+class IdoitRequestIT extends TestRessourceAccess {
 
   @Mock
   private RestClientWrapper restClient;
   private Object actualRequest;
 
-  private ObjectMapper mapper = IdoitObjectMapper.mapper;
   private JsonRpcClient client;
 
   void mockRestResponse(String resultFile) {
@@ -69,7 +63,7 @@ class JsonRpcClientIT {
     IdoitVersion request = new IdoitVersion();
     IdoitVersionResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testDataAsMap("IdoitVersion");
+    Object expectedRequest = testData("IdoitVersion", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     IdoitVersionResponse expectedResponse = IdoitVersionResponse.builder().version("1.14.2")
         .step("").type("PRO").login(Login.builder().userid(9).name("i-doit Systemadministrator ")
@@ -86,7 +80,7 @@ class JsonRpcClientIT {
     CmdbObjectCreate request = new CmdbObjectCreate("C__OBJTYPE__SERVER", "My little server");
     ObjectCreateResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testDataAsMap("CmdbObjectCreate");
+    Object expectedRequest = testData("CmdbObjectCreate", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     ObjectCreateResponse expectedResponse = new ObjectCreateResponse(5243,
         "Object was successfully created");
@@ -101,9 +95,10 @@ class JsonRpcClientIT {
         .orderBy(Ordering.title).build();
     ObjectsReadResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testDataAsMap("CmdbObjectsRead");
+    Object expectedRequest = testData("CmdbObjectsRead", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    GeneralObjectData expextedResult = GeneralObjectData.builder().id(5189).title("Laptop")
+    GeneralObjectData expextedResult = GeneralObjectData.builder().id(ObjectId.of(5189))
+        .title("Laptop")
         .sysid("CLIENT_005189").type(10)
         .created(LocalDateTime.parse("2020-03-18T15:05:42"))
         .updated(LocalDateTime.parse("2020-03-18T15:05:43"))
@@ -120,10 +115,11 @@ class JsonRpcClientIT {
 
     mockRestResponse("ReadResponse");
 
-    CmdbCategoryRead<CategoryGeneral> request = new CmdbCategoryRead(1412, CategoryGeneral.class);
+    CmdbCategoryRead<CategoryGeneral> request = new CmdbCategoryRead(ObjectId.of(1412),
+        CategoryGeneral.class);
     CategoryGeneral actualResponse = client.send(request);
 
-    Object expectedRequest = testDataAsMap("CmdbCategoryRead");
+    Object expectedRequest = testData("CmdbCategoryRead", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     CategoryGeneral expectedResult = CategoryGeneral.builder().id(CategoryId.of(1412))
         .objId((ObjectId.of(1412))).title("Laptop 001")
@@ -151,7 +147,7 @@ class JsonRpcClientIT {
     CmdbCategorySave request = new CmdbCategorySave(contactAssignment, 871);
     CategorySaveResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testDataAsMap("CmdbCategorySave_update");
+    Object expectedRequest = testData("CmdbCategorySave_update", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     CategorySaveResponse expectedResponse = new CategorySaveResponse(871,
         "Category entry successfully saved");
@@ -167,7 +163,7 @@ class JsonRpcClientIT {
     CmdbCategorySave request = new CmdbCategorySave(contactAssignment);
     CategorySaveResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testDataAsMap("CmdbCategorySave_create");
+    Object expectedRequest = testData("CmdbCategorySave_create", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     CategorySaveResponse expectedResponse = new CategorySaveResponse(871,
         "Category entry successfully saved");
@@ -176,18 +172,9 @@ class JsonRpcClientIT {
 
   @Test
   void testExpandCustomCategory() {
-    Object json = testDataAsMap("categoryClientResult");
+    Object json = testData("categoryClientResult", Object.class);
 
     System.out.println(JsonRpcClient.expandCustomFields(json));
 
-  }
-
-  private Object testDataAsMap(String fileName) {
-    return parseJson(testData(fileName));
-  }
-
-  @SneakyThrows
-  private String testData(String fileName) {
-    return Util.getResourceAsString(testDataFolder + fileName + ".json");
   }
 }
