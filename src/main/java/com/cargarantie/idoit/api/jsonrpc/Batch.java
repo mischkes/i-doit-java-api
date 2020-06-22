@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"idCounter"})
 public class Batch<T> {
 
   private Map<String, NamedRequest<T>> requests = new LinkedHashMap<>();

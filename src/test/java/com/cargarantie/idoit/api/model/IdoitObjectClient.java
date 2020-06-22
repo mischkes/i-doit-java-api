@@ -11,5 +11,6 @@ public class IdoitObjectClient extends IdoitObject {
 
   private CategoryGeneral general;
   private IdoitCategoryClientDescription description;
+  private CategoryModel model;
 
 }

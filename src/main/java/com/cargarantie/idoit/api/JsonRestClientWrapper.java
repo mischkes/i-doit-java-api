@@ -27,7 +27,7 @@ public class JsonRestClientWrapper {
 
     String response = restClient.post(requestJson);
     System.out.println("Result: " + response);
-
+//TODO: check for null result
     return mapper.readValue(response, rpcResponseClass);
   }
 }

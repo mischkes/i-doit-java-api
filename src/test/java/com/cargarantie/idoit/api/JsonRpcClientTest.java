@@ -46,7 +46,7 @@ class JsonRpcClientTest extends TestRessourceAccess {
       return null;
     }).when(restClient).setAuthHeaders(any());
 
-    String expectedLoginRequest = "{\"params\":{\"apikey\":\"apiKey\"},\"id\":\"0\",\"method\":\"cmdb.idoit.login\",\"jsonrpc\":\"2.0\"}";
+    String expectedLoginRequest = "{\"params\":{\"apikey\":\"apiKey\"},\"id\":\"0\",\"method\":\"idoit.login\",\"jsonrpc\":\"2.0\"}";
     String loginResponse = "{\"id\":\"0\",\"jsonrpc\":\"2.0\",\"result\":{\"session-id\":\"theNewAndSecretSessionId\"}}";
     AtomicReference<MultivaluedMap<String, Object>> postHeaders = new AtomicReference<>();
     when(restClient.post(expectedLoginRequest)).thenAnswer(a -> {

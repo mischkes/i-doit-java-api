@@ -19,7 +19,7 @@ class CategoryReadTest {
     CategoryRead<MyCat> read = new CategoryRead<>(null, MyCat.class);
 
     assertThatThrownBy(() -> read.getCategory()).isInstanceOf(IllegalStateException.class)
-        .hasMessage("Class class com.cargarantie.idoit.api.jsonrpc.CmdbCategoryReadTest$MyCat is not"
+        .hasMessage("Class class com.cargarantie.idoit.api.jsonrpc.CategoryReadTest$MyCat is not"
             + " registered as a category in class com.cargarantie.idoit.api.model.AllModels");
   }
 

@@ -5,6 +5,7 @@ import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,7 @@ public abstract class IdoitObject {
   public Stream<IdoitCategory> getCategories() {
     return getCategoryFields()
         .map(f -> Util.getField(this, f))
+        .filter(IdoitCategory.class::isInstance)
         .map(IdoitCategory.class::cast);
   }
 

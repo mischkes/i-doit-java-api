@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public enum AllModels {
   Instance;
@@ -26,7 +27,10 @@ public enum AllModels {
   public static String getName(Object o) {
     return getName(o.getClass());
   }
+
   public static String getName(Class<?> clazz) {
-    return Instance.classToName.get(clazz);
+    return Optional.ofNullable(Instance.classToName.get(clazz)).orElseThrow(
+        () -> new IllegalArgumentException("No model registered for " + clazz)
+    );
   }
 }

@@ -4,7 +4,8 @@ import java.util.Arrays;
 
 public enum StandardCategories implements IdoitModelReference {
   General("C__CATG__GLOBAL", CategoryGeneral.class),
-  ContactAssignment("C__CATG__CONTACT", CategoryContactAssignment.class);
+  ContactAssignment("C__CATG__CONTACT", CategoryContactAssignment.class),
+  Model("C__CATG__MODEL", CategoryModel.class);
 
   private final String modelName;
   private final Class<?> modelClass;

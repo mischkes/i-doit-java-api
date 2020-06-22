@@ -3,18 +3,23 @@ package com.cargarantie.idoit.api;
 import static com.cargarantie.idoit.api.model.param.ObjectId.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.cargarantie.idoit.api.jsonrpc.Batch;
 import com.cargarantie.idoit.api.jsonrpc.CategorySave;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectDelete;
 import com.cargarantie.idoit.api.jsonrpc.ObjectDelete.DeleteAction;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.IdoitObject;
+import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,14 +60,23 @@ class ObjectsUpserterTest {
   @Test
   void testUpsert_shouldSendCreateAndUpdate_forObjectOnlyInUpdateList() {
     ObjectsUpserter upserter = new ObjectsUpserter(session);
+    when(session.send(new Batch<>()
+        .add("0", new ObjectCreate("MY_OBJECT", "title42"))))
+        .thenReturn(mapOf("0", new ObjectCreateResponse(999, "")));
     MyObject update = new MyObject("sys42", "title42");
 
     upserter.upsert(Collections.emptyList(), Arrays.asList(update));
 
     verify(session).send(new Batch<>()
-        .add("create0", new ObjectCreate("MY_OBJECT", "title42")));
-    verify(session).send(new Batch<>()
         .add("update0", new CategorySave(update.general)));
+    assertThat(update.getId()).isEqualTo(ObjectId.of(999));
+  }
+
+  private Map<String, Object> mapOf(String key, Object value) {
+    Map<String, Object> map = new HashMap<>();
+    map.put(key, value);
+
+    return map;
   }
 
   @Data

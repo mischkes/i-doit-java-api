@@ -6,6 +6,7 @@ import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
+import com.cargarantie.idoit.api.model.CategoryModel;
 import com.cargarantie.idoit.api.model.IdoitCategoryClientDescription;
 import com.cargarantie.idoit.api.model.IdoitCategoryClientDescriptionSimple;
 import com.cargarantie.idoit.api.model.IdoitObjectClient;
@@ -25,9 +26,9 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(OrderAnnotation.class)
 class ObjectsUpserterIT {
 
-  public static final String INSERTED_OBJECT_TITLE =
-      "NB-IdoitInsertObjectsServiceIT" + System.currentTimeMillis();
-  private final IdoitClient client = new IdoitClient(TestConfig.cgidoitdev());
+  public static final String INSERTED_OBJECT_TITLE = "i-doit-java-api test";
+  public static final String INSERTED_OBJECT_SYSID = "i-doit-java-api test sysid";
+  private final IdoitClient client = new IdoitClient(TestConfig.demoIdoitCom());
 
   @BeforeAll
   static void beforeAll() {
@@ -39,16 +40,16 @@ class ObjectsUpserterIT {
   void testInsert() {
     IdoitObjectClient client = new IdoitObjectClient(
         CategoryGeneral.builder()
-            .sysid("SYSID-IdoitInsertObjectsServiceIT" + System.currentTimeMillis())
+            .sysid(INSERTED_OBJECT_SYSID)
             .title(INSERTED_OBJECT_TITLE).description("Created by " + this.getClass()).build(),
-        IdoitCategoryClientDescription.builder().cpu(Dialog.fromTitle("FAAST")).build());
+        null,
+        CategoryModel.builder().manufacturer("Stark Industries").build());
 
     try (IdoitSession session = this.client.login()) {
       session.upsert(Collections.emptyList(), Arrays.asList(client));
 
       IdoitObjectClient expected = client;
-      expected.getDescription()
-          .setCpu(Dialog.builder().id(51).title("FAAST").titleLang("FAAST").build());
+      expected.getModel().setManufacturer("Stark Industries");
       expected.getGeneral().setStatus(
           Dialog.builder().id(2).title("Normal").titleLang("LC__CMDB__RECORD_STATUS__NORMAL")
               .constant("").build());
