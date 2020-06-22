@@ -2,13 +2,11 @@ package com.cargarantie.idoit.api.demo;
 
 import com.cargarantie.idoit.api.IdoitSession;
 import com.cargarantie.idoit.api.jsonrpc.Batch;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
+import com.cargarantie.idoit.api.jsonrpc.CategorySave;
 import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Filter;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
-import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
-import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
+import com.cargarantie.idoit.api.jsonrpc.Version;
+import com.cargarantie.idoit.api.jsonrpc.VersionResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.param.CategoryId;
@@ -28,7 +26,7 @@ public class Demo {
   void directRpcRequest() {
     // Simple request with no dynamic parameters.
     // Response is typed, as the request specifies the response objects class
-    IdoitVersionResponse version = session.send(new IdoitVersion());
+    VersionResponse version = session.send(new Version());
     System.out.println("Verion " + version.getVersion() + " Login: " + version.getLogin());
 
     // More complex request with several parameters
@@ -36,7 +34,7 @@ public class Demo {
     // it with an object id inside a CmdbCategoryCreate
     CategoryContactAssignment category = CategoryContactAssignment.builder().id(CategoryId.of(123))
         .objId(ObjectId.of(234)).role("Admin").primary("yes").build();
-    CategorySaveResponse created = session.send(new CmdbCategorySave(category));
+    CategorySaveResponse created = session.send(new CategorySave(category));
     System.out.println(
         "Created category with id:" + created.getEntry() + " Message:" + created.getMessage());
   }
@@ -45,9 +43,9 @@ public class Demo {
     // A batch is constructed from multiple independent Rpc requests. Every request has a name,
     // which becomes the key for accessing the response
     Batch<CategorySaveResponse> batch = new Batch<>();
-    batch.add("contact", new CmdbCategorySave(new CategoryContactAssignment()))
-        .add("general", new CmdbCategorySave(new CategoryGeneral()))
-        .add("contact2", new CmdbCategorySave(new CategoryContactAssignment()));
+    batch.add("contact", new CategorySave(new CategoryContactAssignment()))
+        .add("general", new CategorySave(new CategoryGeneral()))
+        .add("contact2", new CategorySave(new CategoryContactAssignment()));
 
     Map<String, CategorySaveResponse> result = session.send(batch);
 

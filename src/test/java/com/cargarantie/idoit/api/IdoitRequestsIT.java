@@ -4,17 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectCreate;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Ordering;
+import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
+import com.cargarantie.idoit.api.jsonrpc.CategorySave;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead.Ordering;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
-import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
-import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
-import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse.Login;
+import com.cargarantie.idoit.api.jsonrpc.Version;
+import com.cargarantie.idoit.api.jsonrpc.VersionResponse;
+import com.cargarantie.idoit.api.jsonrpc.VersionResponse.Login;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
@@ -24,7 +23,6 @@ import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectId;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -35,7 +33,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class IdoitRequestIT extends TestRessourceAccess {
+class IdoitRequestsIT extends TestRessourceAccess {
 
   @Mock
   private RestClientWrapper restClient;
@@ -46,7 +44,7 @@ class IdoitRequestIT extends TestRessourceAccess {
   void mockRestResponse(String resultFile) {
     when(restClient.post(anyString())).thenAnswer(a -> {
       actualRequest = parseJson(a.getArgument(0, String.class));
-      return testData(resultFile);
+      return getJson(resultFile);
     });
 
   }
@@ -60,12 +58,12 @@ class IdoitRequestIT extends TestRessourceAccess {
   void test_sendVersionRequest() {
     mockRestResponse("VersionResponse");
 
-    IdoitVersion request = new IdoitVersion();
-    IdoitVersionResponse actualResponse = client.send(request);
+    Version request = new Version();
+    VersionResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testData("IdoitVersion", Object.class);
+    Object expectedRequest = getJson("IdoitVersion", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    IdoitVersionResponse expectedResponse = IdoitVersionResponse.builder().version("1.14.2")
+    VersionResponse expectedResponse = VersionResponse.builder().version("1.14.2")
         .step("").type("PRO").login(Login.builder().userid(9).name("i-doit Systemadministrator ")
             .mail("i-doit@acme-it.example").username("admin").tenant("ACME IT Solutions")
             .language("en").build())
@@ -77,10 +75,10 @@ class IdoitRequestIT extends TestRessourceAccess {
   void test_sendObjectCreateRequest() {
     mockRestResponse("ObjectCreateResponse");
 
-    CmdbObjectCreate request = new CmdbObjectCreate("C__OBJTYPE__SERVER", "My little server");
+    ObjectCreate request = new ObjectCreate("C__OBJTYPE__SERVER", "My little server");
     ObjectCreateResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testData("CmdbObjectCreate", Object.class);
+    Object expectedRequest = getJson("CmdbObjectCreate", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     ObjectCreateResponse expectedResponse = new ObjectCreateResponse(5243,
         "Object was successfully created");
@@ -91,11 +89,11 @@ class IdoitRequestIT extends TestRessourceAccess {
   void test_sendObjectsReadRequest() {
     mockRestResponse("ObjectsReadResponse");
 
-    CmdbObjectsRead<?> request = CmdbObjectsRead.builder().filterTypeName("C__OBJTYPE__CLIENT")
+    ObjectsRead<?> request = ObjectsRead.builder().filterTypeName("C__OBJTYPE__CLIENT")
         .orderBy(Ordering.title).build();
     ObjectsReadResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testData("CmdbObjectsRead", Object.class);
+    Object expectedRequest = getJson("CmdbObjectsRead", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     GeneralObjectData expextedResult = GeneralObjectData.builder().id(ObjectId.of(5189))
         .title("Laptop")
@@ -115,11 +113,11 @@ class IdoitRequestIT extends TestRessourceAccess {
 
     mockRestResponse("ReadResponse");
 
-    CmdbCategoryRead<CategoryGeneral> request = new CmdbCategoryRead(ObjectId.of(1412),
+    CategoryRead<CategoryGeneral> request = new CategoryRead(ObjectId.of(1412),
         CategoryGeneral.class);
     CategoryGeneral actualResponse = client.send(request);
 
-    Object expectedRequest = testData("CmdbCategoryRead", Object.class);
+    Object expectedRequest = getJson("CmdbCategoryRead", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     CategoryGeneral expectedResult = CategoryGeneral.builder().id(CategoryId.of(1412))
         .objId((ObjectId.of(1412))).title("Laptop 001")
@@ -144,10 +142,10 @@ class IdoitRequestIT extends TestRessourceAccess {
 
     IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
         .contact(158).role("User").primary("no").build();
-    CmdbCategorySave request = new CmdbCategorySave(contactAssignment, 871);
+    CategorySave request = new CategorySave(contactAssignment, 871);
     CategorySaveResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testData("CmdbCategorySave_update", Object.class);
+    Object expectedRequest = getJson("CmdbCategorySave_update", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     CategorySaveResponse expectedResponse = new CategorySaveResponse(871,
         "Category entry successfully saved");
@@ -160,21 +158,13 @@ class IdoitRequestIT extends TestRessourceAccess {
 
     IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
         .contact(158).role("User").primary("no").build();
-    CmdbCategorySave request = new CmdbCategorySave(contactAssignment);
+    CategorySave request = new CategorySave(contactAssignment);
     CategorySaveResponse actualResponse = client.send(request);
 
-    Object expectedRequest = testData("CmdbCategorySave_create", Object.class);
+    Object expectedRequest = getJson("CmdbCategorySave_create", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     CategorySaveResponse expectedResponse = new CategorySaveResponse(871,
         "Category entry successfully saved");
     assertThat(actualResponse).isEqualTo(expectedResponse);
-  }
-
-  @Test
-  void testExpandCustomCategory() {
-    Object json = testData("categoryClientResult", Object.class);
-
-    System.out.println(JsonRpcClient.expandCustomFields(json));
-
   }
 }

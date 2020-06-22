@@ -1,18 +1,19 @@
 package com.cargarantie.idoit.api;
 
+import static com.cargarantie.idoit.api.model.param.ObjectId.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectCreate;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead.Ordering;
+import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
+import com.cargarantie.idoit.api.jsonrpc.CategorySave;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead.Ordering;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
-import com.cargarantie.idoit.api.jsonrpc.IdoitLogin;
-import com.cargarantie.idoit.api.jsonrpc.IdoitVersion;
-import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse;
-import com.cargarantie.idoit.api.jsonrpc.IdoitVersionResponse.Login;
+import com.cargarantie.idoit.api.jsonrpc.Login;
+import com.cargarantie.idoit.api.jsonrpc.Version;
+import com.cargarantie.idoit.api.jsonrpc.VersionResponse;
 import com.cargarantie.idoit.api.jsonrpc.LoginResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
@@ -22,7 +23,6 @@ import com.cargarantie.idoit.api.model.CategoryGeneralTest;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
-import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,12 +49,12 @@ class JsonRpcClient_demoIdoitDe_IT {
 
   @Test
   void test_sendVersionRequest() {
-    IdoitVersion request = new IdoitVersion();
+    Version request = new Version();
 
-    IdoitVersionResponse actualResponse = client.send(request);
+    VersionResponse actualResponse = client.send(request);
 
-    IdoitVersionResponse expectedResponse = IdoitVersionResponse.builder().version("1.14.2")
-        .step("").type("PRO").login(Login.builder().userid(9).name("i-doit Systemadministrator ")
+    VersionResponse expectedResponse = VersionResponse.builder().version("1.14.2")
+        .step("").type("PRO").login(VersionResponse.Login.builder().userid(9).name("i-doit Systemadministrator ")
             .mail("i-doit@acme-it.example").username("admin").tenant("ACME IT Solutions")
             .language("en").build())
         .build();
@@ -63,7 +63,7 @@ class JsonRpcClient_demoIdoitDe_IT {
 
   @Test
   void test_sendLogin() {
-    IdoitLogin request = new IdoitLogin();
+    Login request = new Login();
 
     LoginResponse actualResponse = client.send(request);
 
@@ -76,7 +76,7 @@ class JsonRpcClient_demoIdoitDe_IT {
 
   @Test
   void test_sendObjectCreateRequest() {
-    CmdbObjectCreate request = new CmdbObjectCreate("C__OBJTYPE__SERVER", "My little server");
+    ObjectCreate request = new ObjectCreate("C__OBJTYPE__SERVER", "My little server");
 
     ObjectCreateResponse response = client.send(request);
 
@@ -86,12 +86,12 @@ class JsonRpcClient_demoIdoitDe_IT {
 
   @Test
   void test_sendObjectsReadRequest() {
-    CmdbObjectsRead<?> request = CmdbObjectsRead.builder().filterTypeName("C__OBJTYPE__CLIENT")
+    ObjectsRead<?> request = ObjectsRead.builder().filterTypeName("C__OBJTYPE__CLIENT")
         .orderBy(Ordering.title).build();
 
     ObjectsReadResponse response = client.send(request);
 
-    GeneralObjectData expextedResult = GeneralObjectData.builder().id(5189).title("Laptop")
+    GeneralObjectData expextedResult = GeneralObjectData.builder().id(of(5189)).title("Laptop")
         .sysid("CLIENT_005189").type(10)
         .created(LocalDateTime.parse("2020-03-18T15:05:42"))
         .updated(LocalDateTime.parse("2020-03-18T15:05:43"))
@@ -105,12 +105,12 @@ class JsonRpcClient_demoIdoitDe_IT {
 
   @Test
   void test_sendCategoryReadRequest() {
-    CmdbCategoryRead<CategoryGeneral> request = new CmdbCategoryRead(1412, CategoryGeneral.class);
+    CategoryRead<CategoryGeneral> request = new CategoryRead(of(1412), CategoryGeneral.class);
 
     CategoryGeneral actualResponse = client.send(request);
 
     CategoryGeneral expectedResult = CategoryGeneral.builder().id(CategoryId.of(1412))
-        .objId((ObjectId.of(1412))).title("Laptop 001")
+        .objId((of(1412))).title("Laptop 001")
         .status(new Dialog(2, "Normal", "LC__CMDB__RECORD_STATUS__NORMAL", ""))
         .purpose(new Dialog(1, "Production", "LC__CMDB__CATG__PURPOSE_PRODUCTION", null))
         .category(new Dialog(2, "Demo", "Demo", null))
@@ -128,9 +128,9 @@ class JsonRpcClient_demoIdoitDe_IT {
 
   @Test
   void test_sendCategorySaveRequest_forUpdate() {
-    IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
+    IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(of(1412))
         .contact(158).role("User").primary("no").build();
-    CmdbCategorySave request = new CmdbCategorySave(contactAssignment, 868);
+    CategorySave request = new CategorySave(contactAssignment, 868);
 
     CategorySaveResponse response = client.send(request);
 
@@ -140,9 +140,9 @@ class JsonRpcClient_demoIdoitDe_IT {
 
   @Test
   void test_sendCategorySaveRequest_forCreate() {
-    IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
+    IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(of(1412))
         .contact(158).role("User").primary("no").build();
-    CmdbCategorySave request = new CmdbCategorySave(contactAssignment);
+    CategorySave request = new CategorySave(contactAssignment);
 
     CategorySaveResponse response = client.send(request);
 

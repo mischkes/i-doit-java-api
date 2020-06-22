@@ -1,6 +1,6 @@
 package com.cargarantie.idoit.api;
 
-import static com.cargarantie.idoit.api.IdoitObjectMapper.mapper;
+import static com.cargarantie.idoit.api.config.IdoitObjectMapper.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;

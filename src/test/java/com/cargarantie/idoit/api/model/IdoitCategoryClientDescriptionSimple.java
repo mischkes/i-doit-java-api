@@ -25,13 +25,11 @@ public class IdoitCategoryClientDescriptionSimple extends IdoitCategory {
   @JsonProperty("f_popup_c_1581421518089")
   private Dialog manufacturer;
 
-  @JsonProperty("f_popup_c_1581421518780")
-  private Dialog modelName;
+  private String modelName;
 
   @JsonProperty("f_text_c_1581421862822")
   private String serialNumber;
 
-  @JsonProperty("f_popup_c_1581421868467")
   private String cpu;
 
   @JsonProperty("f_popup_c_1581421880679")

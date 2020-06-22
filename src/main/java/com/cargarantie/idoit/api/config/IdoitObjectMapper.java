@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api;
+package com.cargarantie.idoit.api.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -8,13 +8,14 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class IdoitObjectMapper {
 
   public static final ObjectMapper mapper = idoitMapper();
 
-  private static ObjectMapper idoitMapper() {
+  public static ObjectMapper idoitMapper() {
     ObjectMapper mapper = new ObjectMapper();
 
     mapper.setSerializationInclusion(Include.NON_NULL);
@@ -38,6 +39,7 @@ public class IdoitObjectMapper {
     JavaTimeModule javaTimeModule = new JavaTimeModule();
 
     javaTimeModule.addDeserializer(LocalDateTime.class, new IdoitLocalDateTimeDeserializer());
+    javaTimeModule.addDeserializer(LocalDate.class, new IdoitLocalDateDeserializer());
     javaTimeModule.addSerializer(LocalDateTime.class,
         new LocalDateTimeSerializer(IdoitLocalDateTimeDeserializer.IDOIT_DATE_FORMAT));
 

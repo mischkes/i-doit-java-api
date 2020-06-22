@@ -64,15 +64,17 @@ Primary e-mail address of an object of type Persons, Person groups or Organizati
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CmdbObjectsRead<T> extends IdoitRequest<ObjectsReadResponse> {
+public class ObjectsRead<T> extends IdoitRequest<ObjectsReadResponse> {
 
+  public static final String METHOD = "cmdb.objects.read";
   private Filter filter;
   private Ordering orderBy;
   @JsonIgnore
   private Class<T> filterType;
 
   @Builder
-  public CmdbObjectsRead(String filterFirstName, String filterLastName, @Singular List<Integer> filterIds,
+  public ObjectsRead(String filterFirstName, String filterLastName,
+      @Singular List<Integer> filterIds,
       String filterTitle, Class<T> filterType, String filterTypeName, String filterEmail,
       String filterSysid, Ordering orderBy) {
 
@@ -84,7 +86,8 @@ public class CmdbObjectsRead<T> extends IdoitRequest<ObjectsReadResponse> {
       filterIds = null;
     }
 
-    this.filter = new Filter(filterFirstName, filterLastName, filterIds, filterTitle, filterTypeName,
+    this.filter = new Filter(filterFirstName, filterLastName, filterIds, filterTitle,
+        filterTypeName,
         filterEmail, filterSysid, null);
     this.orderBy = orderBy;
     this.filterType = filterType;
@@ -93,6 +96,11 @@ public class CmdbObjectsRead<T> extends IdoitRequest<ObjectsReadResponse> {
   @Override
   public Class<ObjectsReadResponse> getResponseClass() {
     return ObjectsReadResponse.class;
+  }
+
+  @Override
+  public String getMethod() {
+    return METHOD;
   }
 
   public static enum Ordering {

@@ -2,7 +2,7 @@ package com.cargarantie.idoit.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
@@ -15,7 +15,6 @@ import com.cargarantie.idoit.api.model.param.Dialog;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -35,7 +34,7 @@ class ObjectsUpserterIT {
     TestModels.register();
   }
 
- /* @Test
+  @Test
   @Order(0)
   void testInsert() {
     IdoitObjectClient client = new IdoitObjectClient(
@@ -62,7 +61,7 @@ class ObjectsUpserterIT {
           .isEqualToIgnoringGivenFields(client.getGeneral(), "id", "created", "changed",
               "createdBy", "changedBy", "type");
     }
-  }*/
+  }
 
   @Test
   void testInsertSimple() {
@@ -70,7 +69,8 @@ class ObjectsUpserterIT {
         CategoryGeneral.builder()
             .sysid("SYSID-IdoitInsertObjectsServiceIT" + System.currentTimeMillis())
             .title(INSERTED_OBJECT_TITLE).description("Created by " + this.getClass()).build(),
-        IdoitCategoryClientDescriptionSimple.builder().cpu("FAAST").build());
+        IdoitCategoryClientDescriptionSimple.builder().cpu("FAAST").modelName("SuperModel").build());//works on read, but not on create
+        //There was an validation error","data":{"model_name":"(unknown)
 
     try (IdoitSession session = this.client.login()) {
       session.upsert(Collections.emptyList(), Arrays.asList(client));
@@ -82,7 +82,7 @@ class ObjectsUpserterIT {
       expected.getGeneral().setCmdbStatus(
           Dialog.builder().id(6).title("in operation").titleLang("LC__CMDB_STATUS__IN_OPERATION")
               .constant("C__CMDB_STATUS__IN_OPERATION").build());
-      IdoitObjectClientSimple actual = getClient(session, INSERTED_OBJECT_TITLE);
+      IdoitObjectClientSimple actual = getClientSimple(session, INSERTED_OBJECT_TITLE);
       assertThat(actual.getDescription()).isEqualTo(client.getDescription());
       assertThat(actual.getGeneral())
           .isEqualToIgnoringGivenFields(client.getGeneral(), "id", "created", "changed",
@@ -90,8 +90,16 @@ class ObjectsUpserterIT {
     }
   }
 
-  private IdoitObjectClientSimple getClient(IdoitSession session, String title) {
-    CmdbObjectsRead<IdoitObjectClientSimple> readRequest = CmdbObjectsRead.<IdoitObjectClientSimple>builder()
+  private IdoitObjectClient getClient(IdoitSession session, String title) {
+    ObjectsRead<IdoitObjectClient> readRequest = ObjectsRead.<IdoitObjectClient>builder()
+        .filterType(IdoitObjectClient.class).filterTitle(title).build();
+    Collection<IdoitObjectClient> objects = session.read(readRequest);
+
+    return objects.iterator().next();
+  }
+
+  private IdoitObjectClientSimple getClientSimple(IdoitSession session, String title) {
+    ObjectsRead<IdoitObjectClientSimple> readRequest = ObjectsRead.<IdoitObjectClientSimple>builder()
         .filterType(IdoitObjectClientSimple.class).filterTitle(title).build();
     Collection<IdoitObjectClientSimple> objects = session.read(readRequest);
 
@@ -103,13 +111,13 @@ class ObjectsUpserterIT {
   void testDeleteWhatWasPreviouslyInserted() {
     try (IdoitSession session = this.client.login()) {
       ObjectsReadResponse readResponse = session
-          .send(CmdbObjectsRead.builder().filterTitle(INSERTED_OBJECT_TITLE).build());
+          .send(ObjectsRead.builder().filterTitle(INSERTED_OBJECT_TITLE).build());
       GeneralObjectData clientObject = readResponse.getObjects().get(0);
 
       session.upsert(Collections.singletonList(clientObject), Collections.emptyList());
 
       ObjectsReadResponse remainingObjects = session
-          .send(CmdbObjectsRead.builder().filterTitle(INSERTED_OBJECT_TITLE).build());
+          .send(ObjectsRead.builder().filterTitle(INSERTED_OBJECT_TITLE).build());
       assertThat(remainingObjects.getObjects()).isEmpty();
     }
   }

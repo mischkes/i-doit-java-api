@@ -1,6 +1,6 @@
 package com.cargarantie.idoit.api;
 
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.model.IdoitObjectClient;
 import com.cargarantie.idoit.api.model.TestModels;
 import java.util.Collection;
@@ -19,7 +19,7 @@ class ObjectsReaderIT {
   @Test
   void testReadOneClient() {
     try (IdoitSession session = client.login()) {
-      CmdbObjectsRead<IdoitObjectClient> read = CmdbObjectsRead.<IdoitObjectClient>builder()
+      ObjectsRead<IdoitObjectClient> read = ObjectsRead.<IdoitObjectClient>builder()
           .filterType(IdoitObjectClient.class).filterId(10898).build();
 
       Collection<IdoitObjectClient> objects = new ObjectsReader(session).read(read);

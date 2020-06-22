@@ -1,12 +1,12 @@
 package com.cargarantie.idoit.api;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class ClientConfig {
 
-  private final String url;
-  private final String apiKey;
-  private final String username;
-  private final String password;
+  String url;
+  String apiKey;
+  String username;
+  String password;
 }

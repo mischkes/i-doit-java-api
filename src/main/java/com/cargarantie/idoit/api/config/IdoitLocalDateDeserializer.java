@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api;
+package com.cargarantie.idoit.api.config;
 
 import com.cargarantie.idoit.api.model.param.IdoitDate;
 import com.fasterxml.jackson.core.JsonParser;
@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import lombok.Data;
 
 //TODO: Convert this to LocalDate
-public class IdoitLocalDateDeserializer extends JsonDeserializer<LocalDate> {
+class IdoitLocalDateDeserializer extends JsonDeserializer<LocalDate> {
 
   LocalDateDeserializer delegate = new LocalDateDeserializer(DateTimeFormatter.ISO_LOCAL_DATE);
 

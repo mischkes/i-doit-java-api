@@ -2,6 +2,7 @@ package com.cargarantie.idoit.api.util;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Scanner;
 import lombok.SneakyThrows;
@@ -21,14 +22,9 @@ public class Util {
 
   @SneakyThrows
   public static <T> T newInstance(Class<T> objectClass) {
-    return objectClass.newInstance();
+    Constructor<T> constructor = objectClass.getDeclaredConstructor();
+    constructor.setAccessible(true);
+    return constructor.newInstance();
   }
 
-  public static String getResourceAsString(String name) {
-    InputStream stream = Util.class.getClassLoader().getResourceAsStream(name);
-
-    // use the Stupid Scanner trick from
-    // https://community.oracle.com/blogs/pat/2004/10/23/stupid-scanner-tricks
-    return new Scanner(stream, "UTF-8").useDelimiter("\\A").next();
-  }
 }

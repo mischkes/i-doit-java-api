@@ -21,9 +21,7 @@ public class RestClientWrapper {
 
   public String post(String json) {
     Entity<String> entity = Entity.json(json);
-    Response response = target.request()
-        .headers(authHeaders)
-     .post(entity);
+    Response response = target.request().headers(authHeaders).post(entity);
 
     if (response.getStatus() != 200) {
       //throw some exception

@@ -2,22 +2,11 @@ package com.cargarantie.idoit.api.jsonrpc;
 
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-public class CmdbObjectDelete extends IdoitRequest<SimpleSuccessResponse>{
-  public enum DeleteAction {
-    ARCHIVE("ARCHIVED"),
-    DELETE("DELETED"),
-    PURGE("PURGE");
+public class ObjectDelete extends IdoitRequest<SimpleSuccessResponse> {
 
-    private final String deletionStatus;
-
-    DeleteAction(String statusSuffix) {
-      this.deletionStatus = "C__RECORD_STATUS__" + statusSuffix;
-    }
-  }
-
+  public static final String METHOD = "cmdb.object.delete";
   private final ObjectId id;
   private final DeleteAction status;
 
@@ -28,5 +17,22 @@ public class CmdbObjectDelete extends IdoitRequest<SimpleSuccessResponse>{
 
   public String getStatus() {
     return status.deletionStatus;
+  }
+
+  @Override
+  public String getMethod() {
+    return METHOD;
+  }
+
+  public enum DeleteAction {
+    ARCHIVE("ARCHIVED"),
+    DELETE("DELETED"),
+    PURGE("PURGE");
+
+    private final String deletionStatus;
+
+    DeleteAction(String statusSuffix) {
+      this.deletionStatus = "C__RECORD_STATUS__" + statusSuffix;
+    }
   }
 }

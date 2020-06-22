@@ -1,10 +1,10 @@
 package com.cargarantie.idoit.api.model.param;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
-public class WrappedDatetime {
+@Value
+public class IdoitDate {
 
-  String title;
-  String prop_type;
+  String title; //Date string
+  String prop_type; //Static string "calendar"
 }

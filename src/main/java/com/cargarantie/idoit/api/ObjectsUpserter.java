@@ -1,10 +1,10 @@
 package com.cargarantie.idoit.api;
 
 import com.cargarantie.idoit.api.jsonrpc.Batch;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectCreate;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectDelete;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectDelete.DeleteAction;
+import com.cargarantie.idoit.api.jsonrpc.CategorySave;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
+import com.cargarantie.idoit.api.jsonrpc.ObjectDelete;
+import com.cargarantie.idoit.api.jsonrpc.ObjectDelete.DeleteAction;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.model.IdoitObject;
@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 
-public class ObjectsUpserter {
+class ObjectsUpserter {
 
   private final IdoitSession session;
 
@@ -29,14 +29,14 @@ public class ObjectsUpserter {
     Collection<GeneralObjectData> toDelete = mapUpdatedAndReturnUnused(
         currentObjects, updateObjects);
 
-    createObjects(updateObjects.stream().filter(o -> o.getId() == 0).collect(Collectors.toList()));
+    createObjects(updateObjects.stream().filter(o -> o.getId() == null).collect(Collectors.toList()));
 
-    List<CmdbObjectDelete> archiveRequests = toDelete.stream().map(this::newArchiveRequest)
+    List<ObjectDelete> archiveRequests = toDelete.stream().map(this::newArchiveRequest)
         .collect(Collectors.toList());
 
-    List<CmdbCategorySave> updateRequests = updateObjects.stream().flatMap(object ->
+    List<CategorySave> updateRequests = updateObjects.stream().flatMap(object ->
         object.getCategories().peek(category -> category.setObjId(object.getId()))
-            .map(CmdbCategorySave::new)).collect(Collectors.toList());
+            .map(CategorySave::new)).collect(Collectors.toList());
 
     session.send(new Batch<Object>("archive", archiveRequests)
         .addAll("update", updateRequests));
@@ -44,8 +44,8 @@ public class ObjectsUpserter {
 
   private <T extends IdoitObject> void createObjects(List<T> createObjects) {
 
-    List<CmdbObjectCreate> createRequests = createObjects.stream()
-        .map(CmdbObjectCreate::new).collect(Collectors.toList());
+    List<ObjectCreate> createRequests = createObjects.stream()
+        .map(ObjectCreate::new).collect(Collectors.toList());
 
     Batch<ObjectCreateResponse> createBatch = new Batch<>();
     for (int i = 0; i < createObjects.size(); ++i) {
@@ -75,7 +75,7 @@ public class ObjectsUpserter {
     return currentBySysid.values();
   }
 
-  private CmdbObjectDelete newArchiveRequest(GeneralObjectData generalObjectData) {
-    return new CmdbObjectDelete(generalObjectData.getId(), DeleteAction.ARCHIVE);
+  private ObjectDelete newArchiveRequest(GeneralObjectData generalObjectData) {
+    return new ObjectDelete(generalObjectData.getId(), DeleteAction.ARCHIVE);
   }
 }

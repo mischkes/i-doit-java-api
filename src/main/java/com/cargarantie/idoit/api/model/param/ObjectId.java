@@ -16,6 +16,7 @@ public class ObjectId {
     this.id = Integer.parseInt(id);
   }
 
+  @JsonCreator
   public ObjectId(int id) {
     this.id = id;
   }

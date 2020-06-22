@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api;
+package com.cargarantie.idoit.api.config;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonTokenId;
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 
-public class IdoitStringDeserializer extends JsonDeserializer<String> {
+class IdoitStringDeserializer extends JsonDeserializer<String> {
 
   @Override
   public String deserialize(JsonParser parser, DeserializationContext ctxt)

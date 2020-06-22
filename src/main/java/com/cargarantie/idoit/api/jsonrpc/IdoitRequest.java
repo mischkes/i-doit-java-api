@@ -17,11 +17,5 @@ public abstract class IdoitRequest<T> {
   @JsonIgnore
   public abstract Class<T> getResponseClass();
   @JsonIgnore
-  public String getMethod() {
-    return camelToDnsCase(getClass().getSimpleName());
-  }
-
-  private static String camelToDnsCase(String str) {
-    return str.replaceAll("([a-z0-9])([A-Z])", "$1.$2").toLowerCase();
-  }
+  public abstract String getMethod();
 }

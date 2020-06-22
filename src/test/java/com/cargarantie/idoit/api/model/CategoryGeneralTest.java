@@ -1,31 +1,20 @@
 package com.cargarantie.idoit.api.model;
 
-import static com.cargarantie.idoit.api.TestUtil.parseJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cargarantie.idoit.api.IdoitObjectMapper;
+import com.cargarantie.idoit.api.TestRessourceAccess;
+import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
-import com.cargarantie.idoit.api.jsonrpc.JsonRpcResult;
+import com.cargarantie.idoit.api.jsonrpc.JsonRpcResponse;
 import com.cargarantie.idoit.api.model.param.ObjectId;
-import com.cargarantie.idoit.api.util.Util;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
-public class CategoryGeneralTest {
+public class CategoryGeneralTest extends TestRessourceAccess {
   ObjectMapper mapper = IdoitObjectMapper.mapper;
 
   @Test
@@ -39,8 +28,7 @@ public class CategoryGeneralTest {
   }
 
   private CategoryGeneral loadCategory() throws IOException {
-    JsonRpcResult rpcResult = mapper
-        .readValue(Util.getResourceAsString("json/categoryGeneralRead.json"), JsonRpcResult.class);
+    JsonRpcResponse rpcResult = getJson("categoryGeneralRead", JsonRpcResponse.class);
     return mapper.convertValue(((List<Object>) (rpcResult.getResult())).get(0), CategoryGeneral.class);
   }
 

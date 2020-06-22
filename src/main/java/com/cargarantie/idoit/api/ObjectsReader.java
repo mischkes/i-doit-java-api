@@ -1,8 +1,8 @@
 package com.cargarantie.idoit.api;
 
 import com.cargarantie.idoit.api.jsonrpc.Batch;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.IdoitObject;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ObjectsReader {
+class ObjectsReader {
 
   private final IdoitSession session;
 
@@ -22,37 +22,38 @@ public class ObjectsReader {
   }
 
   public <T extends IdoitObject> Collection<T> read(Class<T> objectClass) {
-    CmdbObjectsRead<T> request = CmdbObjectsRead.<T>builder().filterType(objectClass).build();
+    ObjectsRead<T> request = ObjectsRead.<T>builder().filterType(objectClass).build();
     return read(request);
   }
 
-  public <T extends IdoitObject> Collection<T> read(CmdbObjectsRead<T> request) {
+  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> request) {
+    if (request.getFilterType() == null) {
+      throw new IllegalArgumentException("Request needs to specify filterType");
+    }
+
     Map<ObjectId, T> objectsById = readObjects(request);
-    Map<String, IdoitCategory> categories = readCategories(objectsById);
+    Map<String, IdoitCategory> categories = readCategories(objectsById.values());
     return addCategoriesToObjects(objectsById, categories);
   }
 
-  private <T extends IdoitObject> Map<ObjectId, T> readObjects(CmdbObjectsRead<T> request) {
-    ObjectsReadResponse objectsReadResponse = session.send(request);
-    Map<ObjectId, T> objectsById = new HashMap<>();
+  private <T extends IdoitObject> Map<ObjectId, T> readObjects(ObjectsRead<T> request) {
+    ObjectsReadResponse response = session.send(request);
 
-    objectsReadResponse.getObjects().forEach(o -> {
+    Map<ObjectId, T> objectsById = new HashMap<>();
+    response.getObjects().forEach(o -> {
       T newObject = Util.newInstance(request.getFilterType());
       newObject.setId(o.getId());
-      objectsById.put(ObjectId.of(o.getId()), newObject);
-
+      objectsById.put(newObject.getId(), newObject);
     });
 
     return objectsById;
   }
 
-  private <T extends IdoitObject> Map<String, IdoitCategory> readCategories(
-      Map<ObjectId, T> objectsById) {
-
+  private <T extends IdoitObject> Map<String, IdoitCategory> readCategories(Collection<T> objects) {
     Batch<IdoitCategory> requests = new Batch<>();
 
-    objectsById.forEach((id, object) ->
-        object.getCategoryClasses().map(category -> new CmdbCategoryRead(id.toInt(), category))
+    objects.forEach(object ->
+        object.getCategoryClasses().map(category -> new CategoryRead(object.getId(), category))
             .forEach(read -> requests.addWithPrefix("category", read))
     );
 

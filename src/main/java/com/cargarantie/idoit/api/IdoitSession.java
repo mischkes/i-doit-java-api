@@ -1,8 +1,8 @@
 package com.cargarantie.idoit.api;
 
 import com.cargarantie.idoit.api.jsonrpc.Batch;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategoryRead;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
 import com.cargarantie.idoit.api.model.IdoitCategory;
@@ -14,16 +14,18 @@ public class IdoitSession implements AutoCloseable {
 
   private final JsonRpcClient rpcClient;
 
-  public IdoitSession(String url, String apiKey, String username, String password) {
-    rpcClient = new JsonRpcClient(new RestClientWrapper(url + "/src/jsonrpc.php"), apiKey);
-    rpcClient.login(username, password);
+
+  public IdoitSession(ClientConfig cfg) {
+    rpcClient = new JsonRpcClient(new RestClientWrapper(cfg.getUrl() + "/src/jsonrpc.php"),
+        cfg.getApiKey());
+    rpcClient.login(cfg.getUsername(), cfg.getPassword());
   }
 
   public <T extends IdoitObject> Collection<T> read(Class<T> objectClass) {
     return new ObjectsReader(this).read(objectClass);
   }
 
-  public <T extends IdoitObject> Collection<T> read(CmdbObjectsRead<T> request) {
+  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> request) {
     return new ObjectsReader(this).read(request);
   }
 
@@ -36,7 +38,7 @@ public class IdoitSession implements AutoCloseable {
     return rpcClient.send(batch);
   }
 
-  public <T extends IdoitCategory> T send(CmdbCategoryRead<T> request) {
+  public <T extends IdoitCategory> T send(CategoryRead<T> request) {
     return rpcClient.send(request);
   }
 

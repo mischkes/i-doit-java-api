@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CmdbCategorySave extends IdoitRequest<CategorySaveResponse> {
+public class CategorySave extends IdoitRequest<CategorySaveResponse> {
 
   public static final String METHOD = "cmdb.category.save";
   private IdoitCategory data;
   private Integer entry; //for multi-value categories, not supplying this will always create a new entry
 
-  public CmdbCategorySave(IdoitCategory data) {
+  public CategorySave(IdoitCategory data) {
     this.data = data;
   }
 

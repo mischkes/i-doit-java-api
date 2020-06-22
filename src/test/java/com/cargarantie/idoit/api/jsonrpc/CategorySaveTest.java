@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-public class CmdbCategorySaveTest {
+public class CategorySaveTest {
   @Test
   void testMethodString() {
-    CmdbCategorySave obj = new CmdbCategorySave(null, null);
+    CategorySave obj = new CategorySave(null, null);
     assertThat(obj.getMethod()).isEqualTo("cmdb.category.create");
   }
 }

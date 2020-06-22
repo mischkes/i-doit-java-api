@@ -2,6 +2,7 @@ package com.cargarantie.idoit.api.jsonrpc;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.EqualsAndHashCode;
@@ -11,7 +12,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Batch<T> {
 
-  private Map<String, NamedRequest<T>> requests = new HashMap<>();
+  private Map<String, NamedRequest<T>> requests = new LinkedHashMap<>();
   private final AtomicInteger idCounter = new AtomicInteger();
 
   public Batch(String prefix, Collection<? extends IdoitRequest<? extends T>> initialRequest) {

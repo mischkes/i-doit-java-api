@@ -11,14 +11,18 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CmdbCategoryRead<T extends IdoitCategory> extends IdoitRequest<T> {
+public class CategoryRead<T extends IdoitCategory> extends IdoitRequest<T> {
+
+  public static final String METHOD = "cmdb.category.read";
+
   @JsonProperty("objID")
   private ObjectId objId;
   private Class<T> category;
 
   public String getCategory() {
     return Optional.ofNullable(AllModels.getName(category))
-        .orElseThrow(() -> new IllegalStateException("Class " + category + " is not registered as a category in " + AllModels.class));
+        .orElseThrow(() -> new IllegalStateException(
+            "Class " + category + " is not registered as a category in " + AllModels.class));
   }
 
   @JsonIgnore
@@ -29,5 +33,10 @@ public class CmdbCategoryRead<T extends IdoitCategory> extends IdoitRequest<T> {
   @Override
   public Class<T> getResponseClass() {
     return category;
+  }
+
+  @Override
+  public String getMethod() {
+    return METHOD;
   }
 }

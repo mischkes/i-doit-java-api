@@ -1,23 +1,19 @@
 package com.cargarantie.idoit.api;
 
+import static com.cargarantie.idoit.api.model.param.ObjectId.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 import com.cargarantie.idoit.api.jsonrpc.Batch;
-import com.cargarantie.idoit.api.jsonrpc.CmdbCategorySave;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectCreate;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectDelete;
-import com.cargarantie.idoit.api.jsonrpc.CmdbObjectDelete.DeleteAction;
+import com.cargarantie.idoit.api.jsonrpc.CategorySave;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
+import com.cargarantie.idoit.api.jsonrpc.ObjectDelete;
+import com.cargarantie.idoit.api.jsonrpc.ObjectDelete.DeleteAction;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.IdoitObject;
-import com.cargarantie.idoit.api.model.param.CategoryId;
-import com.cargarantie.idoit.api.model.param.ObjectId;
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
@@ -34,25 +30,25 @@ class ObjectsUpserterTest {
   @Test
   void testUpsert_shouldSendArchiveRequest_forObjectOnlyInCurrentList() {
     ObjectsUpserter upserter = new ObjectsUpserter(session);
-    GeneralObjectData current = GeneralObjectData.builder().id(42).build();
+    GeneralObjectData current = GeneralObjectData.builder().id(of(42)).build();
 
     upserter.upsert(Arrays.asList(current), Collections.emptyList());
 
     Batch<Object> expected = new Batch<>()
-        .add("archive0", new CmdbObjectDelete(42, DeleteAction.ARCHIVE));
+        .add("archive0", new ObjectDelete(of(42), DeleteAction.ARCHIVE));
     verify(session).send(expected);
   }
 
   @Test
   void testUpsert_shouldSendUpdate_forObjectInCurrentAndUpdateList() {
     ObjectsUpserter upserter = new ObjectsUpserter(session);
-    GeneralObjectData current = GeneralObjectData.builder().id(42).sysid("sys42").build();
+    GeneralObjectData current = GeneralObjectData.builder().id(of(42)).sysid("sys42").build();
     MyObject update = new MyObject("sys42", "title42");
 
     upserter.upsert(Arrays.asList(current), Arrays.asList(update));
 
-    Batch<Object> expected = new Batch<>().add("update0", new CmdbCategorySave(
-        CategoryGeneral.builder().objId(ObjectId.of(42)).sysid("sys42").title("title42").build()));
+    Batch<Object> expected = new Batch<>().add("update0", new CategorySave(
+        CategoryGeneral.builder().objId(of(42)).sysid("sys42").title("title42").build()));
     verify(session).send(expected);
   }
 
@@ -64,9 +60,9 @@ class ObjectsUpserterTest {
     upserter.upsert(Collections.emptyList(), Arrays.asList(update));
 
     verify(session).send(new Batch<>()
-        .add("create0", new CmdbObjectCreate("MY_OBJECT", "title42")));
+        .add("create0", new ObjectCreate("MY_OBJECT", "title42")));
     verify(session).send(new Batch<>()
-        .add("update0", new CmdbCategorySave(update.general)));
+        .add("update0", new CategorySave(update.general)));
   }
 
   @Data

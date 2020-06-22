@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api;
+package com.cargarantie.idoit.api.config;
 
 import com.cargarantie.idoit.api.model.param.IdoitDate;
 import com.fasterxml.jackson.core.JsonParser;

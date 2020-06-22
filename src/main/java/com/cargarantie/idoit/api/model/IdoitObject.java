@@ -1,16 +1,23 @@
 package com.cargarantie.idoit.api.model;
 
+import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.stream.Stream;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public abstract class IdoitObject {
 
-  protected int id;
+  protected ObjectId id;
 
   public abstract CategoryGeneral getGeneral();
 
@@ -47,5 +54,13 @@ public abstract class IdoitObject {
   private IllegalStateException getUnassignableCategoryException(IdoitCategory category) {
     return new IllegalStateException("Object " + this.getClass().getSimpleName()
         + " does not have category " + category.getClass().getSimpleName());
+  }
+
+  public void setId(int id) {
+    setId(ObjectId.of(id));
+  }
+
+  public void setId(ObjectId id) {
+    this.id = id;
   }
 }

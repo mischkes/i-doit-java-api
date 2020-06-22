@@ -19,8 +19,4 @@ public abstract class IdoitCategory {
   @JsonProperty(value = "objID", access = Access.WRITE_ONLY)
   private ObjectId objId;
   private String description;
-
-  public void setObjId(int objId) {
-    this.objId = new ObjectId(objId);
-  }
 }

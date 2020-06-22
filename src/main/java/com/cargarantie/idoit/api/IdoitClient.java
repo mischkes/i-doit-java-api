@@ -4,24 +4,14 @@ import lombok.SneakyThrows;
 
 public class IdoitClient {
 
-  private final String url;
-  private final String apiKey;
-  private final String username;
-  private final String password;
-
-  public IdoitClient(String url, String apiKey, String username, String password) {
-    this.url = url;
-    this.apiKey = apiKey;
-    this.username = username;
-    this.password = password;
-  }
+  private final ClientConfig cfg;
 
   public IdoitClient(ClientConfig cfg) {
-    this(cfg.getUrl(), cfg.getApiKey(), cfg.getUsername(), cfg.getPassword());
+    this.cfg = cfg;
   }
 
   @SneakyThrows
   public IdoitSession login() {
-    return new IdoitSession(url, apiKey, username, password);
+    return new IdoitSession(cfg);
   }
 }
