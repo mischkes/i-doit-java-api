@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ObjectTypeName("C__OBJTYPE__CLIENT")
 public class IdoitObjectClient extends IdoitObject {
 
   private CategoryGeneral general;
-  private IdoitCategoryClientDescription description;
   private CategoryModel model;
 
 }

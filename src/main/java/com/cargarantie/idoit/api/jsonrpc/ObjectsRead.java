@@ -1,6 +1,7 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-import com.cargarantie.idoit.api.model.AllModels;
+import com.cargarantie.idoit.api.model.IdoitObject;
+import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -64,7 +65,7 @@ Primary e-mail address of an object of type Persons, Person groups or Organizati
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ObjectsRead<T> extends IdoitRequest<ObjectsReadResponse> {
+public class ObjectsRead<T extends IdoitObject> extends IdoitRequest<ObjectsReadResponse> {
 
   public static final String METHOD = "cmdb.objects.read";
   private Filter filter;
@@ -79,7 +80,7 @@ public class ObjectsRead<T> extends IdoitRequest<ObjectsReadResponse> {
       String filterSysid, Ordering orderBy) {
 
     if (filterType != null) {
-      filterTypeName = AllModels.getName(filterType);
+      filterTypeName = Util.getObjectTypeName(filterType);
     }
 
     if (filterIds.size() == 0) {

@@ -1,20 +1,20 @@
 package com.cargarantie.idoit.api;
 
-import static com.cargarantie.idoit.api.model.param.ObjectId.*;
+import static com.cargarantie.idoit.api.model.param.ObjectId.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.cargarantie.idoit.api.jsonrpc.Batch;
 import com.cargarantie.idoit.api.jsonrpc.CategorySave;
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectDelete;
 import com.cargarantie.idoit.api.jsonrpc.ObjectDelete.DeleteAction;
-import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
-import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.IdoitObject;
+import com.cargarantie.idoit.api.model.ObjectTypeName;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.util.Arrays;
 import java.util.Collections;
@@ -80,15 +80,13 @@ class ObjectsUpserterTest {
   }
 
   @Data
+  @ObjectTypeName("MY_OBJECT")
   private static class MyObject extends IdoitObject {
+
     private CategoryGeneral general;
 
     public MyObject(String sysId, String title) {
       general = CategoryGeneral.builder().sysid(sysId).title(title).build();
     }
-  }
-
-  static {
-    AllModels.register("MY_OBJECT", MyObject.class);
   }
 }

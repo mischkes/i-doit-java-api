@@ -1,8 +1,8 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.ObjectId;
+import com.cargarantie.idoit.api.util.Util;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class CategorySave extends IdoitRequest<CategorySaveResponse> {
   }
 
   public String getCategory() {
-    return AllModels.getName(data);
+    return Util.getCategoryName(data);
   }
 
   public ObjectId getObject() {

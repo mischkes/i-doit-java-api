@@ -1,11 +1,10 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.ObjectId;
+import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -20,9 +19,7 @@ public class CategoryRead<T extends IdoitCategory> extends IdoitRequest<T> {
   private Class<T> category;
 
   public String getCategory() {
-    return Optional.ofNullable(AllModels.getName(category))
-        .orElseThrow(() -> new IllegalStateException(
-            "Class " + category + " is not registered as a category in " + AllModels.class));
+    return Util.getCategoryName(category);
   }
 
   @JsonIgnore

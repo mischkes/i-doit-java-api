@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@CategoryName("C__CATG__CONTACT")
 public class CategoryContactAssignment extends IdoitCategory {
 
   private int contact;

@@ -13,10 +13,11 @@ import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
-import com.cargarantie.idoit.api.model.AllModels;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
+import com.cargarantie.idoit.api.model.CategoryName;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.IdoitObject;
+import com.cargarantie.idoit.api.model.ObjectTypeName;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +28,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -39,12 +39,6 @@ class ObjectsReaderTest {
 
   @Mock
   private IdoitSession session;
-
-  @BeforeAll
-  static void beforeAll() {
-    AllModels.register("myObj", TestObject.class);
-    AllModels.register("myCat", TestCategory.class);
-  }
 
   @Test
   void readWithClassArg_shouldDelegateWithObjectsReadRequest() {
@@ -77,7 +71,7 @@ class ObjectsReaderTest {
     Collection<TestObject> objects = reader.read(TestObject.class);
 
     verify(session).send(ObjectsRead.<TestObject>builder().filterType(TestObject.class).build());
-    assertThat(objects).containsExactlyInAnyOrder(expectedTestObject(42),expectedTestObject(43),
+    assertThat(objects).containsExactlyInAnyOrder(expectedTestObject(42), expectedTestObject(43),
         expectedTestObject(99));
   }
 
@@ -85,7 +79,7 @@ class ObjectsReaderTest {
     return new TestObject(
         TestCategory.builder().intField(i).objId(ObjectId.of(i)).build(),
         CategoryGeneral.builder().description("Description").objId(ObjectId.of(i)).build()
-        );
+    );
   }
 
   private GeneralObjectData newGeneralObjectData(int id) {
@@ -114,6 +108,7 @@ class ObjectsReaderTest {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
+  @ObjectTypeName("myObj")
   static class TestObject extends IdoitObject {
 
     TestCategory category;
@@ -127,6 +122,7 @@ class ObjectsReaderTest {
 
   @Data
   @SuperBuilder
+  @CategoryName("myCat")
   private static class TestCategory extends IdoitCategory {
 
     int intField;

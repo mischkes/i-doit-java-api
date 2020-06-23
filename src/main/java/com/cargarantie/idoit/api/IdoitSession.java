@@ -8,6 +8,8 @@ import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.IdoitObject;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class IdoitSession implements AutoCloseable {
@@ -25,8 +27,8 @@ public class IdoitSession implements AutoCloseable {
     return new ObjectsReader(this).read(objectClass);
   }
 
-  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> request) {
-    return new ObjectsReader(this).read(request);
+  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> delegateRequest) {
+    return new ObjectsReader(this).read(delegateRequest);
   }
 
   public <T extends IdoitObject> void upsert(Collection<GeneralObjectData> currentObjects,
@@ -38,10 +40,6 @@ public class IdoitSession implements AutoCloseable {
     return rpcClient.send(batch);
   }
 
-  public <T extends IdoitCategory> T send(CategoryRead<T> request) {
-    return rpcClient.send(request);
-  }
-
   public <T> T send(IdoitRequest<T> request) {
     return rpcClient.send(request);
   }
@@ -49,5 +47,9 @@ public class IdoitSession implements AutoCloseable {
   @Override
   public void close() {
     //TODO
+  }
+
+  public void archive(List<GeneralObjectData> clientObjects) {
+    upsert(clientObjects, Collections.emptyList());
   }
 }

@@ -26,12 +26,12 @@ class ObjectsReader {
     return read(request);
   }
 
-  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> request) {
-    if (request.getFilterType() == null) {
+  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> delegateRequest) {
+    if (delegateRequest.getFilterType() == null) {
       throw new IllegalArgumentException("Request needs to specify filterType");
     }
 
-    Map<ObjectId, T> objectsById = readObjects(request);
+    Map<ObjectId, T> objectsById = readObjects(delegateRequest);
     Map<String, IdoitCategory> categories = readCategories(objectsById.values());
     return addCategoriesToObjects(objectsById, categories);
   }
