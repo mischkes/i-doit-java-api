@@ -1,8 +1,8 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-public class Login extends IdoitRequest<LoginResponse> {
+public class Login implements IdoitRequest<LoginResponse> {
 
-  public static final String METHOD = "idoit.login";
+  private static final String METHOD = "idoit.login";
 
   @Override
   public Class<LoginResponse> getResponseClass() {

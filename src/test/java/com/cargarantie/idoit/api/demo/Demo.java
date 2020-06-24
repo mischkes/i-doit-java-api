@@ -27,7 +27,7 @@ public class Demo {
     // Simple request with no dynamic parameters.
     // Response is typed, as the request specifies the response objects class
     VersionResponse version = session.send(new Version());
-    System.out.println("Verion " + version.getVersion() + " Login: " + version.getLogin());
+    System.out.println("Verion " + version.getVersion() + " Login.json: " + version.getLogin());
 
     // More complex request with several parameters
     // Create a category for an existing object: Define the category DTO, and combine

@@ -1,11 +1,9 @@
 package com.cargarantie.idoit.api;
 
 import com.cargarantie.idoit.api.jsonrpc.Batch;
-import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
-import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
-import com.cargarantie.idoit.api.model.IdoitCategory;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.model.IdoitObject;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +16,7 @@ public class IdoitSession implements AutoCloseable {
 
 
   public IdoitSession(ClientConfig cfg) {
-    rpcClient = new JsonRpcClient(new RestClientWrapper(cfg.getUrl() + "/src/jsonrpc.php"),
+    rpcClient = new JsonRpcClient(new RestClientWrapper(cfg.getApiEndpoint()), //TODO
         cfg.getApiKey());
     rpcClient.login(cfg.getUsername(), cfg.getPassword());
   }
@@ -46,7 +44,7 @@ public class IdoitSession implements AutoCloseable {
 
   @Override
   public void close() {
-    //TODO
+    rpcClient.logout();
   }
 
   public void archive(List<GeneralObjectData> clientObjects) {

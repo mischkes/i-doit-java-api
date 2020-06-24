@@ -2,11 +2,11 @@ package com.cargarantie.idoit.api;
 
 import com.cargarantie.idoit.api.jsonrpc.Batch;
 import com.cargarantie.idoit.api.jsonrpc.CategorySave;
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.jsonrpc.ObjectDelete;
 import com.cargarantie.idoit.api.jsonrpc.ObjectDelete.DeleteAction;
-import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
-import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
 import com.cargarantie.idoit.api.model.IdoitObject;
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +29,8 @@ class ObjectsUpserter {
     Collection<GeneralObjectData> toDelete = mapUpdatedAndReturnUnused(
         currentObjects, updateObjects);
 
-    createObjects(updateObjects.stream().filter(o -> o.getId() == null).collect(Collectors.toList()));
+    createObjects(
+        updateObjects.stream().filter(o -> o.getId() == null).collect(Collectors.toList()));
 
     List<ObjectDelete> archiveRequests = toDelete.stream().map(this::newArchiveRequest)
         .collect(Collectors.toList());

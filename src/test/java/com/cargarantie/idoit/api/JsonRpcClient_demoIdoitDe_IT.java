@@ -4,19 +4,19 @@ import static com.cargarantie.idoit.api.model.param.ObjectId.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cargarantie.idoit.api.config.IdoitObjectMapper;
-import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.CategorySave;
-import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
-import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
-import com.cargarantie.idoit.api.jsonrpc.ObjectsRead.Ordering;
+import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.Login;
+import com.cargarantie.idoit.api.jsonrpc.LoginResponse;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead.Ordering;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.jsonrpc.Version;
 import com.cargarantie.idoit.api.jsonrpc.VersionResponse;
-import com.cargarantie.idoit.api.jsonrpc.LoginResponse;
-import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
-import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.CategoryGeneralTest;
@@ -26,6 +26,7 @@ import com.cargarantie.idoit.api.model.param.Dialog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,6 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * This test tests directly against demo.i-doit.de It might turn out to fragile, but it can provide
  * the most confidence that everything is correct.
  */
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class JsonRpcClient_demoIdoitDe_IT {
 
@@ -54,7 +56,8 @@ class JsonRpcClient_demoIdoitDe_IT {
     VersionResponse actualResponse = client.send(request);
 
     VersionResponse expectedResponse = VersionResponse.builder().version("1.14.2")
-        .step("").type("PRO").login(VersionResponse.Login.builder().userid(9).name("i-doit Systemadministrator ")
+        .step("").type("PRO")
+        .login(VersionResponse.Login.builder().userid(9).name("i-doit Systemadministrator ")
             .mail("i-doit@acme-it.example").username("admin").tenant("ACME IT Solutions")
             .language("en").build())
         .build();

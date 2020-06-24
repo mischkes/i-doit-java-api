@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "method": "cmdb.object.delete",
+  "params": {
+    "id": 1,
+    "status": "C__RECORD_STATUS__DELETED",
+    "apikey": "c1ia5q"
+  },
+  "id": "0"
+}

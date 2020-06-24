@@ -1,11 +1,12 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class NamedRequest<T> {
-  private final String name;
-  private final IdoitRequest<T> request;
+
+  String name;
+  IdoitRequest<T> request;
 
   public NamedRequest(String name, IdoitRequest<T> request) {
     this.name = name;

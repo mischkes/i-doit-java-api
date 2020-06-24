@@ -5,6 +5,7 @@ import lombok.Value;
 
 @Value
 public class CategoryReadResponse<T extends IdoitCategory> {
+
   int id;
   T result;
 }

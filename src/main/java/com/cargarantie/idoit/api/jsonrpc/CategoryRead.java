@@ -3,28 +3,20 @@ package com.cargarantie.idoit.api.jsonrpc;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.cargarantie.idoit.api.util.Util;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
-public class CategoryRead<T extends IdoitCategory> extends IdoitRequest<T> {
+@Value
+public class CategoryRead<T extends IdoitCategory> implements IdoitRequest<T> {
 
-  public static final String METHOD = "cmdb.category.read";
+  private static final String METHOD = "cmdb.category.read";
 
   @JsonProperty("objID")
-  private ObjectId objId;
-  private Class<T> category;
+  ObjectId objId;
+  Class<T> category;
 
   public String getCategory() {
     return Util.getCategoryName(category);
-  }
-
-  @JsonIgnore
-  public Class<T> getCategoryClass() {
-    return category;
   }
 
   @Override

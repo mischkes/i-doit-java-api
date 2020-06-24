@@ -7,8 +7,10 @@ import com.cargarantie.idoit.api.jsonrpc.JsonRpcRequest;
 import com.cargarantie.idoit.api.jsonrpc.JsonRpcResponse;
 import com.cargarantie.idoit.api.jsonrpc.Login;
 import com.cargarantie.idoit.api.jsonrpc.LoginResponse;
+import com.cargarantie.idoit.api.jsonrpc.Logout;
 import com.cargarantie.idoit.api.jsonrpc.NamedRequest;
 import com.cargarantie.idoit.api.model.IdoitException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,15 +55,20 @@ class JsonRpcClient {
     restClient.setAuthHeaders(newHeaders);
   }
 
+  public void logout() {
+    send(new Logout());
+    restClient.setAuthHeaders(new MultivaluedHashMap<>());
+  }
+
   public <T> T send(IdoitRequest<T> request) {
-    JsonRpcRequest<?> jsonRpcRequest = newJsonRpcRequest(request, "0");
+    JsonRpcRequest jsonRpcRequest = newJsonRpcRequest(request, "0");
     JsonRpcResponse result = jsonRestClient.send(jsonRpcRequest, JsonRpcResponse.class);
     return parseResult(result, request);
   }
 
   public <T> Map<String, T> send(Batch<T> batch) {
     Map<String, NamedRequest<T>> requests = batch.getRequests();
-    List<JsonRpcRequest<IdoitRequest<T>>> jsonRpcRequests = requests.values().stream()
+    List<JsonRpcRequest> jsonRpcRequests = requests.values().stream()
         .map(request -> newJsonRpcRequest(request.getRequest(), request.getName()))
         .collect(Collectors.toList());
 
@@ -82,10 +89,13 @@ class JsonRpcClient {
     return results;
   }
 
-  private <T> JsonRpcRequest<IdoitRequest<T>> newJsonRpcRequest(IdoitRequest<T> request,
-      String id) {
-    request.setApiKey(apiKey);
-    return new JsonRpcRequest<>(request, id);
+  private JsonRpcRequest newJsonRpcRequest(IdoitRequest<?> request, String id) {
+    TypeReference<Map<String, Object>> ref = new TypeReference<Map<String, Object>>() {
+    };
+    Map<String, Object> map = (Map<String, Object>) IdoitObjectMapper.mapper
+        .convertValue(request, Object.class);
+    map.put("apikey", apiKey);
+    return new JsonRpcRequest(id, request.getMethod(), map);
   }
 
   @SneakyThrows

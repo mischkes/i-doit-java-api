@@ -13,7 +13,6 @@ import com.cargarantie.idoit.api.jsonrpc.JsonRpcRequest;
 import com.cargarantie.idoit.api.jsonrpc.JsonRpcResponse;
 import com.cargarantie.idoit.api.model.IdoitException;
 import com.fasterxml.jackson.annotation.JsonValue;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -46,7 +45,7 @@ class JsonRpcClientTest extends TestRessourceAccess {
       return null;
     }).when(restClient).setAuthHeaders(any());
 
-    String expectedLoginRequest = "{\"params\":{\"apikey\":\"apiKey\"},\"id\":\"0\",\"method\":\"idoit.login\",\"jsonrpc\":\"2.0\"}";
+    String expectedLoginRequest = "{\"id\":\"0\",\"method\":\"idoit.login\",\"params\":{\"apikey\":\"apiKey\"},\"jsonrpc\":\"2.0\"}"; //TODO: make this robbust
     String loginResponse = "{\"id\":\"0\",\"jsonrpc\":\"2.0\",\"result\":{\"session-id\":\"theNewAndSecretSessionId\"}}";
     AtomicReference<MultivaluedMap<String, Object>> postHeaders = new AtomicReference<>();
     when(restClient.post(expectedLoginRequest)).thenAnswer(a -> {
@@ -135,17 +134,17 @@ class JsonRpcClientTest extends TestRessourceAccess {
   }
 
   private JsonRpcResponse getTestResponse(InvocationOnMock invocationOnMock) {
-    JsonRpcRequest<TestRequest> request = invocationOnMock.getArgument(0);
+    JsonRpcRequest request = invocationOnMock.getArgument(0);
     return getResponse(request);
   }
 
-  private JsonRpcResponse getResponse(JsonRpcRequest<TestRequest> request) {
+  private JsonRpcResponse getResponse(JsonRpcRequest request) {
     return new JsonRpcResponse(request.getId(),
-        new TestResponse(Integer.toString(request.getParams().intValue)), null);
+        new TestResponse(request.getParams().get("int_value").toString()), null);
   }
 
   private JsonRpcResponse[] getTestResponseBatched(InvocationOnMock invocationOnMock) {
-    List<JsonRpcRequest<TestRequest>> requests = invocationOnMock.getArgument(0);
+    List<JsonRpcRequest> requests = invocationOnMock.getArgument(0);
     return requests.stream().map(this::getResponse).toArray(JsonRpcResponse[]::new);
   }
 
@@ -171,13 +170,12 @@ class JsonRpcClientTest extends TestRessourceAccess {
   }
 
   @Value
-  private static class TestRequest extends IdoitRequest<TestResponse> {
+  private static class TestRequest implements IdoitRequest<TestResponse> {
 
-    @JsonValue
     int intValue;
 
     @Override
-    public Class getResponseClass() {
+    public Class<TestResponse> getResponseClass() {
       return TestResponse.class;
     }
 

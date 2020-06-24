@@ -1,9 +1,9 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class SimpleSuccessResponse {
-  private String message;
-  private boolean success;
+
+  String message;
 }

@@ -1,21 +1,16 @@
 package com.cargarantie.idoit.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class JsonRestClientWrapper {
 
   private final RestClientWrapper restClient;
   private final ObjectMapper mapper;
 
-  public JsonRestClientWrapper(RestClientWrapper restClient,
-      ObjectMapper mapper) {
+  public JsonRestClientWrapper(RestClientWrapper restClient, ObjectMapper mapper) {
     this.restClient = restClient;
     this.mapper = mapper;
   }
@@ -23,11 +18,11 @@ public class JsonRestClientWrapper {
   @SneakyThrows
   public <T> T send(Object jsonRpc, Class<T> rpcResponseClass) {
     String requestJson = mapper.writeValueAsString(jsonRpc);
-    System.out.println("Request: " + requestJson);
+    log.debug("Request: {}", requestJson);
 
     String response = restClient.post(requestJson);
-    System.out.println("Result: " + response);
-//TODO: check for null result
+    log.debug("Result: {}", response);
+
     return mapper.readValue(response, rpcResponseClass);
   }
 }

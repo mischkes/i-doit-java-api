@@ -15,7 +15,7 @@ class IdoitStringDeserializer extends JsonDeserializer<String> {
     if (parser.hasTokenId(JsonTokenId.ID_START_OBJECT)) {
       ObjectNode object = parser.readValueAsTree();
       return object.get("title").asText(); //do the same for obbjects-references and IDs
-      //maybe check sensibble error messages
+      //maybe check sensible error messages
     } else {
       return parser.getText();
     }

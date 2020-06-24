@@ -1,13 +1,10 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
 public class ObjectCreateResponse {
-  private int id;
-  private String message;
+
+  int id;
+  String message;
 }

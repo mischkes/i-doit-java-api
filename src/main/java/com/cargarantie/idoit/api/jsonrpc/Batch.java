@@ -1,7 +1,6 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,8 +11,8 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = {"idCounter"})
 public class Batch<T> {
 
-  private Map<String, NamedRequest<T>> requests = new LinkedHashMap<>();
   private final AtomicInteger idCounter = new AtomicInteger();
+  private final Map<String, NamedRequest<T>> requests = new LinkedHashMap<>();
 
   public Batch(String prefix, Collection<? extends IdoitRequest<? extends T>> initialRequest) {
     addAll(prefix, initialRequest);
@@ -25,6 +24,10 @@ public class Batch<T> {
   public Batch<T> add(String name, IdoitRequest<? extends T> request) {
     requests.put(name, new NamedRequest<>(name, (IdoitRequest<T>) request));
     return this;
+  }
+
+  public Batch<T> addWithPrefix(String prefix, IdoitRequest<? extends T> request) {
+    return add(getId(prefix), request);
   }
 
   public Batch<T> addAll(String prefix, Collection<? extends IdoitRequest<? extends T>> requests) {
@@ -39,9 +42,6 @@ public class Batch<T> {
     return prefix + idCounter.getAndIncrement();
   }
 
-  public Batch<T> addWithPrefix(String prefix, IdoitRequest<? extends T> request) {
-    return add(getId(prefix), request);
-  }
   public Map<String, NamedRequest<T>> getRequests() {
     return requests;
   }

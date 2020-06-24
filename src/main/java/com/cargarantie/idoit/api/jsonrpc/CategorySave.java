@@ -4,20 +4,19 @@ import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.cargarantie.idoit.api.util.Util;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 
-@Data
+@Value
 @AllArgsConstructor
-@NoArgsConstructor
-public class CategorySave extends IdoitRequest<CategorySaveResponse> {
+public class CategorySave implements IdoitRequest<CategorySaveResponse> {
 
-  public static final String METHOD = "cmdb.category.save";
-  private IdoitCategory data;
-  private Integer entry; //for multi-value categories, not supplying this will always create a new entry
+  private static final String METHOD = "cmdb.category.save";
+  IdoitCategory data;
+  Integer entry; //for multi-value categories, not supplying this will always create a new entry
 
   public CategorySave(IdoitCategory data) {
     this.data = data;
+    this.entry = null;
   }
 
   public String getCategory() {

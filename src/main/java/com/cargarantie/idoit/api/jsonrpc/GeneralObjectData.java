@@ -2,10 +2,7 @@ package com.cargarantie.idoit.api.jsonrpc;
 
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.Value;
 
 /*
@@ -39,6 +36,7 @@ image	String	URL to object picture
 @Value
 @Builder
 public class GeneralObjectData {
+
   ObjectId id;
   String title;
   String sysid;

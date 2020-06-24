@@ -9,4 +9,8 @@ public class ClientConfig {
   String apiKey;
   String username;
   String password;
+
+  public String getApiEndpoint() {
+    return url + "/src/jsonrpc.php";
+  }
 }

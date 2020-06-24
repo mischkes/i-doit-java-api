@@ -8,6 +8,7 @@ import lombok.Value;
 
 @Value
 public class ObjectId {
+
   @Getter(AccessLevel.NONE)
   private int id;
 

@@ -1,7 +1,6 @@
 package com.cargarantie.idoit.api;
 
-import lombok.SneakyThrows;
-
+//TODO test via big integration test
 public class IdoitClient {
 
   private final ClientConfig cfg;
@@ -10,7 +9,6 @@ public class IdoitClient {
     this.cfg = cfg;
   }
 
-  @SneakyThrows
   public IdoitSession login() {
     return new IdoitSession(cfg);
   }

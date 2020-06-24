@@ -2,24 +2,34 @@ package com.cargarantie.idoit.api.jsonrpc;
 
 import com.cargarantie.idoit.api.model.IdoitObject;
 import com.cargarantie.idoit.api.util.Util;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
-@Data
-@RequiredArgsConstructor
-public class ObjectCreate extends IdoitRequest<ObjectCreateResponse> {
+@Value
+@Builder
+@AllArgsConstructor
+public class ObjectCreate implements IdoitRequest<ObjectCreateResponse> {
 
-  public static final String METHOD = "cmdb.object.create";
-  private final String type;
-  private final String title;
-  private String category;
-  private String purpose;
-  private String cmdb_status;
-  private String description;
+  private static final String METHOD = "cmdb.object.create";
+  String type;
+  String title;
+  String category;
+  String purpose;
+  String cmdb_status;
+  String description;
 
   public ObjectCreate(IdoitObject object) {
-    this.type = Util.getObjectTypeName(object);
-    this.title = object.getTitle();
+    this(Util.getObjectTypeName(object), object.getTitle());
+  }
+
+  public ObjectCreate(String type, String title) {
+    this.type = type;
+    this.title = title;
+    this.category = null;
+    this.purpose = null;
+    this.cmdb_status = null;
+    this.description = null;
   }
 
   @Override

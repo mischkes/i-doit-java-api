@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
+import lombok.Value;
 
 /*
 filter	Array	No	Filter list of objects; see below for a full list of options
@@ -62,16 +63,16 @@ email	String	No
 
 Primary e-mail address of an object of type Persons, Person groups or Organization (see attribute E-mail address in categories Persons/Person groups/Organization → Master Data), for example: "john.doe@example.com"
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ObjectsRead<T extends IdoitObject> extends IdoitRequest<ObjectsReadResponse> {
 
-  public static final String METHOD = "cmdb.objects.read";
-  private Filter filter;
-  private Ordering orderBy;
+@Value
+public class ObjectsRead<T extends IdoitObject> implements IdoitRequest<ObjectsReadResponse> {
+
+  private static final String METHOD = "cmdb.objects.read";
+  Filter filter;
+  Ordering orderBy;
+
   @JsonIgnore
-  private Class<T> filterType;
+  Class<T> filterType;
 
   @Builder
   public ObjectsRead(String filterFirstName, String filterLastName,
@@ -104,7 +105,7 @@ public class ObjectsRead<T extends IdoitObject> extends IdoitRequest<ObjectsRead
     return METHOD;
   }
 
-  public static enum Ordering {
+  public enum Ordering {
     email,
     first_name,
     id,

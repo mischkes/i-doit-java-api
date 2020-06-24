@@ -1,14 +1,14 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
 import com.cargarantie.idoit.api.model.param.ObjectId;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-public class ObjectDelete extends IdoitRequest<SimpleSuccessResponse> {
+@Value
+public class ObjectDelete implements IdoitRequest<SimpleSuccessResponse> {
 
-  public static final String METHOD = "cmdb.object.delete";
-  private final ObjectId id;
-  private final DeleteAction status;
+  private static final String METHOD = "cmdb.object.delete";
+  ObjectId id;
+  DeleteAction status;
 
   @Override
   public Class<SimpleSuccessResponse> getResponseClass() {

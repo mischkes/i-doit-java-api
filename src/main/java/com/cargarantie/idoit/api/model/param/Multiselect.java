@@ -1,27 +1,13 @@
 package com.cargarantie.idoit.api.model.param;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
 import java.util.List;
-/*
-[
-  {
-    "id": "4",
-    "title": "tag1"
-  },
-  {
-    "id": "5",
-    "title": "tag2"
-  }
-]
- */
-@Data
-@Setter(AccessLevel.PACKAGE)
+import lombok.Value;
+
+@Value
 public class Multiselect {
+
   List<Element> options;
 
   @JsonCreator
@@ -29,13 +15,17 @@ public class Multiselect {
     this.options = options;
   }
 
-  @JsonValue //not yet writeable
-  Object outputForm() {
+  @JsonValue
+  /**
+   * Not yet writeable
+   */
+  public Object jsonValue() {
     return null;
   }
 
-  @Data
+  @Value
   public static class Element {
+
     int id;
     String title;
   }

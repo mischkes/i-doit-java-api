@@ -5,13 +5,10 @@ import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,7 +43,8 @@ public abstract class IdoitObject {
   }
 
   public void setCategory(IdoitCategory category) {
-    Field categoryField = getCategoryFields().filter(field -> field.getType() == category.getClass())
+    Field categoryField = getCategoryFields()
+        .filter(field -> field.getType() == category.getClass())
         .findAny()
         .orElseThrow(() -> getUnassignableCategoryException(category));
 

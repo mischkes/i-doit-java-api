@@ -1,11 +1,13 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Builder;
 import lombok.Value;
 
 @Value
+@Builder
 public class LoginResponse {
+
   String userid;
   String name;
   String mail;
@@ -14,7 +16,7 @@ public class LoginResponse {
   @JsonProperty("session-id")
   String sessionId; //The seesion-Id that can used for login
   @JsonProperty("client-id")
-  String clientId;	//Tenant identifier
+  Integer clientId;  //Tenant identifier
   @JsonProperty("client-name")
   String clientName; //Tenant name
 }

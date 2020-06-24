@@ -4,18 +4,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
 import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.CategorySave;
+import com.cargarantie.idoit.api.jsonrpc.CategorySaveResponse;
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
+import com.cargarantie.idoit.api.jsonrpc.Login;
+import com.cargarantie.idoit.api.jsonrpc.LoginResponse;
+import com.cargarantie.idoit.api.jsonrpc.Logout;
 import com.cargarantie.idoit.api.jsonrpc.ObjectCreate;
+import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
+import com.cargarantie.idoit.api.jsonrpc.ObjectDelete;
+import com.cargarantie.idoit.api.jsonrpc.ObjectDelete.DeleteAction;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsRead.Ordering;
-import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
+import com.cargarantie.idoit.api.jsonrpc.SimpleSuccessResponse;
 import com.cargarantie.idoit.api.jsonrpc.Version;
 import com.cargarantie.idoit.api.jsonrpc.VersionResponse;
-import com.cargarantie.idoit.api.jsonrpc.VersionResponse.Login;
-import com.cargarantie.idoit.api.jsonrpc.ObjectCreateResponse;
-import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
 import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.CategoryGeneralTest;
@@ -55,6 +60,35 @@ class IdoitRequestsIT extends TestRessourceAccess {
   }
 
   @Test
+  void test_sendLoginRequest() {
+    mockRestResponse("LoginResponse");
+
+    Login request = new Login();
+    LoginResponse actualResponse = client.send(request);
+
+    Object expectedRequest = getJson("Login", Object.class);
+    assertThat(actualRequest).isEqualTo(expectedRequest);
+    LoginResponse expectedResponse = LoginResponse.builder().userid("9")
+        .name("i-doit Systemadministrator ").mail("i-doit@acme-it.example").username("admin")
+        .sessionId("37afuc8qfh6r6lgo5sc47gtgj7").clientId(1).clientName("ACME IT Solutions")
+        .build();
+    assertThat(actualResponse).isEqualTo(expectedResponse);
+  }
+
+  @Test
+  void test_sendLogoutRequest() {
+    mockRestResponse("LogoutResponse");
+
+    Logout request = new Logout();
+    SimpleSuccessResponse actualResponse = client.send(request);
+
+    Object expectedRequest = getJson("Logout", Object.class);
+    assertThat(actualRequest).isEqualTo(expectedRequest);
+    SimpleSuccessResponse expectedResponse = new SimpleSuccessResponse("Logout successfull");
+    assertThat(actualResponse).isEqualTo(expectedResponse);
+  }
+
+  @Test
   void test_sendVersionRequest() {
     mockRestResponse("VersionResponse");
 
@@ -64,9 +98,9 @@ class IdoitRequestsIT extends TestRessourceAccess {
     Object expectedRequest = getJson("IdoitVersion", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
     VersionResponse expectedResponse = VersionResponse.builder().version("1.14.2")
-        .step("").type("PRO").login(Login.builder().userid(9).name("i-doit Systemadministrator ")
-            .mail("i-doit@acme-it.example").username("admin").tenant("ACME IT Solutions")
-            .language("en").build())
+        .step("").type("PRO").login(VersionResponse.Login.builder().userid(9)
+            .name("i-doit Systemadministrator ").mail("i-doit@acme-it.example").username("admin")
+            .tenant("ACME IT Solutions").language("en").build())
         .build();
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
@@ -165,6 +199,20 @@ class IdoitRequestsIT extends TestRessourceAccess {
     assertThat(actualRequest).isEqualTo(expectedRequest);
     CategorySaveResponse expectedResponse = new CategorySaveResponse(871,
         "Category entry successfully saved");
+    assertThat(actualResponse).isEqualTo(expectedResponse);
+  }
+
+  @Test
+  void test_sendObjectDelete() {
+    mockRestResponse("ObjectDeleteResponse");
+
+    ObjectDelete request = new ObjectDelete(ObjectId.of(1), DeleteAction.DELETE);
+    SimpleSuccessResponse actualResponse = client.send(request);
+
+    Object expectedRequest = getJson("ObjectDelete", Object.class);
+    assertThat(actualRequest).isEqualTo(expectedRequest);
+    SimpleSuccessResponse expectedResponse = new SimpleSuccessResponse(
+        "Object 1 has been deleted.");
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
 }

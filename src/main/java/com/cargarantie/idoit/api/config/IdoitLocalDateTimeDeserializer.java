@@ -1,6 +1,5 @@
 package com.cargarantie.idoit.api.config;
 
-import com.cargarantie.idoit.api.model.param.IdoitDate;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonTokenId;
 import com.fasterxml.jackson.databind.DeserializationContext;
