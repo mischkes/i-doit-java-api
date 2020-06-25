@@ -197,7 +197,7 @@ public class IdoitJavaApiIT {
   }
 
   @Test
-  @Order(700)
+  @Order(800)
   void testUpdateFullObject() {
     Client update = new Client(CategoryGeneral.builder().sysid(SYSID)
         .description("Some Description").build());
@@ -211,11 +211,6 @@ public class IdoitJavaApiIT {
 
     assertThat(actual).isEqualToComparingOnlyGivenFields(expected,
         "general.sysid", "general.title", "general.description");
-  }
-
-  @Order(800)
-  void testUpsertFullObjects() {
-
   }
 
   @Test
