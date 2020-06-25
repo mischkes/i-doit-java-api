@@ -7,15 +7,12 @@ Java Library for i-doit JSON-RPC. The REST API is described at https://kb.i-doit
 * Supports batch operations
 * Supports easy modification of full objects / list of objects
 
-##Guidelines
-Libraries
-* Jersey (REST)
-* Lombok
-* No CDI
 ##Missing features
 * Multi-Categories
 * Dialog management
 * Report management
+* Deserializing to int and ObjectId fields, analog to IdoitStringDeserializer
+* Language support
 
 ####Parameter type "DialogList"
 Unsupported.

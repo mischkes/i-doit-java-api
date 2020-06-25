@@ -31,7 +31,7 @@ public class Util {
     return constructor.newInstance();
   }
 
-  static <T extends Annotation> Optional<T> findAnnotation(Class<?> clazz,
+  private static <T extends Annotation> Optional<T> findAnnotation(Class<?> clazz,
       Class<T> annotationType) {
     return Optional.ofNullable(clazz.getDeclaredAnnotation(annotationType));
   }

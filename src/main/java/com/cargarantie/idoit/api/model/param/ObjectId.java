@@ -10,7 +10,7 @@ import lombok.Value;
 public class ObjectId {
 
   @Getter(AccessLevel.NONE)
-  private int id;
+  int id;
 
   @JsonCreator
   public ObjectId(String id) {

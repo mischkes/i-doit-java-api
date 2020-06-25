@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Value;
 
 /**
- * Example data for parameter
+ * Example:
  * <pre>
  * {
  *   "id": "1",

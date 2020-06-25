@@ -14,7 +14,7 @@ public class LoginResponse {
   String username;
 
   @JsonProperty("session-id")
-  String sessionId; //The seesion-Id that can used for login
+  String sessionId; //The session-Id that can used for login
   @JsonProperty("client-id")
   Integer clientId;  //Tenant identifier
   @JsonProperty("client-name")

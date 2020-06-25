@@ -5,8 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@NoArgsConstructor
 @ToString
 @EqualsAndHashCode(exclude = {"idCounter"})
 public class Batch<T> {
@@ -16,9 +18,6 @@ public class Batch<T> {
 
   public Batch(String prefix, Collection<? extends IdoitRequest<? extends T>> initialRequest) {
     addAll(prefix, initialRequest);
-  }
-
-  public Batch() {
   }
 
   public Batch<T> add(IdoitRequest<? extends T> request) {

@@ -38,7 +38,15 @@ class JsonRpcResponseCleaner {
   }
 
   /**
-   * Custom categories have a special format:
+   * Custom category fields have a special format:
+   * <pre>
+   *       "f_popup_c_1581595935188": {
+   *         "identifier": "Form"
+   *       }
+   * </pre>
+   * which will still be present even when there is no data other than the identifier. This would
+   * causes the creation of empty parameter objects, instead of null values. We want null values, so
+   * we clean identifier-only parameters
    */
   private Object removeIdentifierFields(Object json) {
     Map<String, Object> categoryJson = (Map<String, Object>) json;
@@ -52,8 +60,6 @@ class JsonRpcResponseCleaner {
           return;
         } else if (valueJson.isEmpty()) {
           categoryJson.remove(key);
-        } else {
-          categoryJson.put(identifier, valueJson);
         }
       }
     });

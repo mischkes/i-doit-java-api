@@ -32,8 +32,8 @@ public class IdoitObjectMapper {
 
   private static SimpleModule idoitFieldsModule() {
     SimpleModule idoitFieldsModule = new SimpleModule();
-
     idoitFieldsModule.addDeserializer(String.class, new IdoitStringDeserializer());
+
     return idoitFieldsModule;
   }
 
