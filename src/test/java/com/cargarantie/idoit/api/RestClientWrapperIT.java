@@ -14,8 +14,8 @@ class RestClientWrapperIT {
     assertThatThrownBy(() -> wrapper.post("some request"))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Request <some request> to target <https://demo.i-doit.com/src/jsonrpc2.php>"
-            + " returned status <403>. Full response is <InboundJaxrsResponse{ClientResponse"
-            + "{method=POST, uri=https://demo.i-doit.com/src/jsonrpc2.php,"
+            + " returned status <403>. Full response is <context=InboundJaxrsResponse{"
+            + "ClientResponse{method=POST, uri=https://demo.i-doit.com/src/jsonrpc2.php,"
             + " status=403, reason=Forbidden}}>");
   }
 }

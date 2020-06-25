@@ -38,7 +38,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class IdoitRequestsIT extends TestRessourceAccess {
+class IdoitRequestsIT extends TestResourceAccess {
 
   @Mock
   private RestClientWrapper restClient;
@@ -147,9 +147,9 @@ class IdoitRequestsIT extends TestRessourceAccess {
 
     mockRestResponse("ReadResponse");
 
-    CategoryRead<CategoryGeneral> request = new CategoryRead(ObjectId.of(1412),
+    final CategoryRead<CategoryGeneral> request = new CategoryRead(ObjectId.of(1412),
         CategoryGeneral.class);
-    CategoryGeneral actualResponse = client.send(request);
+    final CategoryGeneral actualResponse = client.send(request);
 
     Object expectedRequest = getJson("CmdbCategoryRead", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);

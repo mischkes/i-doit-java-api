@@ -27,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 @ExtendWith(MockitoExtension.class)
-class JsonRpcClientTest extends TestRessourceAccess {
+class JsonRpcClientTest extends TestResourceAccess {
 
   @Mock
   private RestClientWrapper restClient;
@@ -76,13 +76,13 @@ class JsonRpcClientTest extends TestRessourceAccess {
 
   @Test
   void send_shouldSendBatchInOneJsonRpc_andReturnResponsesInRequestOrder() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", identityCleaner(),
-        requestMapper);
     when(requestMapper.send(any(), any())).thenAnswer(this::getTestResponseBatched);
     Batch<TestResponse> batch = new Batch<>();
     batch.add("42", new TestRequest(42));
     batch.add("41", new TestRequest(41));
     batch.add("99", new TestRequest(99));
+    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", identityCleaner(),
+        requestMapper);
 
     Map<String, TestResponse> response = client.send(batch);
 
@@ -109,8 +109,9 @@ class JsonRpcClientTest extends TestRessourceAccess {
         "error"));
 
     assertThatThrownBy(() -> client.send(new TestRequest(0)))
-        .isInstanceOf(IdoitException.class).hasMessage(
-        "Received error <error> for request <JsonRpcClientTest.TestRequest(intValue=0)>");
+        .isInstanceOf(IdoitException.class)
+        .hasMessage("Received error <error> for request"
+            + " <JsonRpcClientTest.TestRequest(intValue=0)>");
   }
 
   @Test
@@ -121,13 +122,14 @@ class JsonRpcClientTest extends TestRessourceAccess {
         .thenAnswer(a -> getJson("constraintViolationErrorMessage", JsonRpcResponse.class));
 
     assertThatThrownBy(() -> client.send(new TestRequest(0)))
-        .isInstanceOf(IdoitException.class).hasMessage(
-        "Received error <{code=-32603, message=Internal error: There was a validation error:"
+        .isInstanceOf(IdoitException.class)
+        .hasMessage("Received error <{code=-32603, message=Internal error:"
+            + " There was a validation error:"
             + " sysid(text): The given value is not unique and is already being used in other"
-            + " objects: <ul class=\"m0 mt10 list-style-none\"><li><span>Virtual server » My little"
-            + " server</span></li></ul>, data={sysid=The given value is not unique and is already"
-            + " being used in other objects: <ul class=\"m0 mt10 list-style-none\"><li><span>"
-            + "Virtual server » My little server</span></li></ul>}}>"
+            + " objects: <ul class=\"m0 mt10 list-style-none\"><li><span>Virtual server » My"
+            + " little server</span></li></ul>, data={sysid=The given value is not unique and"
+            + " is already being used in other objects: <ul class=\"m0 mt10 list-style-none\">"
+            + "<li><span>Virtual server » My little server</span></li></ul>}}>"
             + " for request <JsonRpcClientTest.TestRequest(intValue=0)>");
   }
 
@@ -139,8 +141,8 @@ class JsonRpcClientTest extends TestRessourceAccess {
         null));
 
     assertThatThrownBy(() -> client.send(new TestRequest(0)))
-        .isInstanceOf(IdoitException.class).hasMessage(
-        "Result is null for request <JsonRpcClientTest.TestRequest(intValue=0)>");
+        .isInstanceOf(IdoitException.class)
+        .hasMessage("Result is null for request <JsonRpcClientTest.TestRequest(intValue=0)>");
   }
 
   private JsonRpcResponse getTestResponse(InvocationOnMock invocationOnMock) {

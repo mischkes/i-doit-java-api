@@ -4,18 +4,18 @@ import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Scanner;
 import lombok.SneakyThrows;
 
-public class TestRessourceAccess {
+public class TestResourceAccess {
 
   private final ObjectMapper mapper;
 
-  public TestRessourceAccess() {
+  public TestResourceAccess() {
     mapper = IdoitObjectMapper.idoitMapper();
     mapper.enable(Feature.ALLOW_SINGLE_QUOTES);
   }
+
   @SneakyThrows
   public Object parseJson(String json) {
     return mapper.readValue(json, Object.class);
@@ -27,7 +27,6 @@ public class TestRessourceAccess {
   }
 
   public String getResourceAsString(String path) {
-    URL resource = getClass().getResource(getClass().getSimpleName() + ".class");
     InputStream stream = getClass().getResourceAsStream(path);
 
     // use the "Stupid Scanner" trick from
@@ -42,6 +41,6 @@ public class TestRessourceAccess {
 
   @SneakyThrows
   public String getJson(String fileName) {
-    return getResourceAsString( getClass().getSimpleName() + "/"  + fileName + ".json");
+    return getResourceAsString(getClass().getSimpleName() + "/" + fileName + ".json");
   }
 }

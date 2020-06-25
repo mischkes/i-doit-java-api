@@ -8,9 +8,14 @@ import lombok.Value;
 
 /**
  * Example data for parameter
- *
- * { "id": "1", "title": "In Betrieb", "const": "C__DIALOG_CONSTANT__IN_OPERATION", "title_lang":
- * "LC__DIALOG_ENTRY__IN_OPERATION" }
+ * <pre>
+ * {
+ *   "id": "1",
+ *   "title": "In Betrieb",
+ *   "const": "C__DIALOG_CONSTANT__IN_OPERATION",
+ *   "title_lang": "LC__DIALOG_ENTRY__IN_OPERATION"
+ * }
+ * </pre>
  */
 @Value
 @Builder

@@ -4,12 +4,17 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Builder;
 import lombok.Value;
 
-
 /**
  * Example:
- *
- * { "id": "100", "title": "CMDB Object #100", "sysid": "SYSID_1280838789", "type":
- * "C__OBJTYPE__SERVER", "type_title": "LC__CMDB__OBJTYPE__SERVER" }
+ * <pre>
+ * {
+ *   "id": "100",
+ *   "title": "CMDB Object #100",
+ *   "sysid": "SYSID_1280838789",
+ *   "type": "C__OBJTYPE__SERVER",
+ *   "type_title": "LC__CMDB__OBJTYPE__SERVER"
+ * }
+ * </pre>
  */
 @Value
 @Builder

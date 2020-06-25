@@ -12,9 +12,10 @@ import java.time.format.DateTimeFormatter;
 
 class IdoitLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 
-  public final static DateTimeFormatter IDOIT_DATE_FORMAT = DateTimeFormatter
+  public static final DateTimeFormatter IDOIT_DATE_FORMAT = DateTimeFormatter
       .ofPattern("yyyy-MM-dd HH:mm:ss");
-  LocalDateTimeDeserializer delegate = new LocalDateTimeDeserializer(IDOIT_DATE_FORMAT);
+  private final LocalDateTimeDeserializer delegate = new LocalDateTimeDeserializer(
+      IDOIT_DATE_FORMAT);
 
   @Override
   public LocalDateTime deserialize(JsonParser parser, DeserializationContext ctxt)

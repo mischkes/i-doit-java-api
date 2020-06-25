@@ -6,19 +6,19 @@ import java.util.List;
 import lombok.Value;
 
 @Value
-public class Multiselect {
+public class MultiSelect {
 
   List<Element> options;
 
   @JsonCreator
-  public Multiselect(List<Element> options) {
+  public MultiSelect(List<Element> options) {
     this.options = options;
   }
 
-  @JsonValue
   /**
-   * Not yet writeable
+   * MultiSelects are not yet writeable
    */
+  @JsonValue
   public Object jsonValue() {
     return null;
   }

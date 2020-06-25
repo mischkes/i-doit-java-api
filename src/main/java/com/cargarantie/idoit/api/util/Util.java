@@ -41,12 +41,6 @@ public class Util {
         .orElseThrow(() -> missingAnnotationException(category, CategoryName.class));
   }
 
-  private static IllegalArgumentException missingAnnotationException(Class<?> clazz,
-      Class<?> annotationType) {
-    return new IllegalArgumentException("Class " + clazz.getCanonicalName() + " has missing "
-        + annotationType.getSimpleName() + " annotation value");
-  }
-
   public static String getCategoryName(IdoitCategory category) {
     return getCategoryName(category.getClass());
   }
@@ -58,5 +52,11 @@ public class Util {
 
   public static String getObjectTypeName(IdoitObject object) {
     return getObjectTypeName(object.getClass());
+  }
+
+  private static IllegalArgumentException missingAnnotationException(Class<?> clazz,
+      Class<?> annotationType) {
+    return new IllegalArgumentException("Class " + clazz.getCanonicalName() + " has missing "
+        + annotationType.getSimpleName() + " annotation value");
   }
 }

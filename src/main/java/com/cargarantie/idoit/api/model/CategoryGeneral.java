@@ -2,7 +2,7 @@ package com.cargarantie.idoit.api.model;
 
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
-import com.cargarantie.idoit.api.model.param.Multiselect;
+import com.cargarantie.idoit.api.model.param.MultiSelect;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -41,12 +41,12 @@ public class CategoryGeneral extends IdoitCategory {
   private String sysid;
   private Dialog cmdbStatus;
   private Dialog type;
-  private Multiselect tag;
+  private MultiSelect tag;
 
   @Builder
   public CategoryGeneral(CategoryId id, ObjectId objId, String description, String title,
       Dialog status, Dialog purpose, Dialog category, String sysid, Dialog cmdbStatus, Dialog type,
-      Multiselect tag) {
+      MultiSelect tag) {
     super(id, objId, description);
     this.title = title;
     this.status = status;

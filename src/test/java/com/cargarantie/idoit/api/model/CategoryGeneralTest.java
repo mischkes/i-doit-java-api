@@ -2,11 +2,11 @@ package com.cargarantie.idoit.api.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.cargarantie.idoit.api.TestRessourceAccess;
+import com.cargarantie.idoit.api.TestResourceAccess;
 import com.cargarantie.idoit.api.config.IdoitObjectMapper;
+import com.cargarantie.idoit.api.jsonrpc.JsonRpcResponse;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
-import com.cargarantie.idoit.api.jsonrpc.JsonRpcResponse;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -14,14 +14,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-public class CategoryGeneralTest extends TestRessourceAccess {
-  ObjectMapper mapper = IdoitObjectMapper.mapper;
+public class CategoryGeneralTest extends TestResourceAccess {
+
+  private ObjectMapper mapper = IdoitObjectMapper.mapper;
+
+  public static void setCreatedData(CategoryGeneral category, LocalDateTime createdAt,
+      String createdBy) {
+    category.setCreated(createdAt);
+    category.setCreatedBy(createdBy);
+  }
+
+  public static void setChangedData(CategoryGeneral category, LocalDateTime changedAt,
+      String changedBy) {
+    category.setChanged(changedAt);
+    category.setChangedBy(changedBy);
+  }
 
   @Test
   void testReadJson() throws IOException {
     CategoryGeneral g = loadCategory();
 
-    assertThat(g.getStatus()).isEqualTo(new Dialog(2, "Normal","LC__CMDB__RECORD_STATUS__NORMAL", ""));
+    assertThat(g.getStatus())
+        .isEqualTo(new Dialog(2, "Normal", "LC__CMDB__RECORD_STATUS__NORMAL", ""));
     assertThat(g.getCreated()).isEqualTo("2015-05-04T18:02:10");
     assertThat(g.getId()).isEqualTo(CategoryId.of(1412));
     assertThat(g.getObjId()).isEqualTo(ObjectId.of(1412));
@@ -29,12 +43,13 @@ public class CategoryGeneralTest extends TestRessourceAccess {
 
   private CategoryGeneral loadCategory() throws IOException {
     JsonRpcResponse rpcResult = getJson("categoryGeneralRead", JsonRpcResponse.class);
-    return mapper.convertValue(((List<Object>) (rpcResult.getResult())).get(0), CategoryGeneral.class);
+    return mapper
+        .convertValue(((List<Object>) (rpcResult.getResult())).get(0), CategoryGeneral.class);
   }
 
   @Test
   void writeJson_shouldWriteCorrectJsonString() throws IOException {
-    CategoryGeneral g =  loadCategory();
+    CategoryGeneral g = loadCategory();
 
     String actual = mapper.writeValueAsString(g);
 
@@ -42,15 +57,5 @@ public class CategoryGeneralTest extends TestRessourceAccess {
     assertThat(parseJson(actual)).isEqualTo(parseJson(expected));
     System.out.println(actual);
 
-  }
-
-  public static void setCreatedData(CategoryGeneral category, LocalDateTime createdAt, String createdBy) {
-    category.setCreated(createdAt);
-    category.setCreatedBy(createdBy);
-  }
-
-  public static void setChangedData(CategoryGeneral category, LocalDateTime changedAt, String changedBy) {
-    category.setChanged(changedAt);
-    category.setChangedBy(changedBy);
   }
 }

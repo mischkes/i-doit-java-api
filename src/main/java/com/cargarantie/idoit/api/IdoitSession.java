@@ -14,7 +14,6 @@ public class IdoitSession implements AutoCloseable {
 
   private final JsonRpcClient rpcClient;
 
-
   public IdoitSession(ClientConfig cfg) {
     rpcClient = new JsonRpcClient(new RestClientWrapper(cfg.getApiEndpoint()), cfg.getApiKey());
     rpcClient.login(cfg.getUsername(), cfg.getPassword());

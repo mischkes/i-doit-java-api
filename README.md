@@ -1,22 +1,21 @@
 # i-doit-java-api
-Java Library for i-doit JSON-RPC. See https://kb.i-doit.com/
-##Todo
-Was ist mit
-* Search (ReadObjects mit Filter)
-* Get von verschiedenen Typen --> geht nicht, mehrfaches Get nötig
+Java Library for i-doit JSON-RPC. The REST API is described at https://kb.i-doit.com/display/en/Methods
+
+
+## Features
+* All requests, responses, categories and objects are modelled as type-safe DTOs
+* Supports batch operations
+* Supports easy modification of full objects / list of objects
 
 ##Guidelines
 Libraries
 * Jersey (REST)
 * Lombok
 * No CDI
-
-API
-* DTO based
-* Batch Operations
-* Auto-Batch (Upsert)
-
 ##Missing features
+* Multi-Categories
+* Dialog management
+* Report management
 
 ####Parameter type "DialogList"
 Unsupported.

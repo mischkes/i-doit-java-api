@@ -16,7 +16,7 @@ public class ObjectCreate implements IdoitRequest<ObjectCreateResponse> {
   String title;
   String category;
   String purpose;
-  String cmdb_status;
+  String cmdbStatus;
   String description;
 
   public ObjectCreate(IdoitObject object) {
@@ -28,7 +28,7 @@ public class ObjectCreate implements IdoitRequest<ObjectCreateResponse> {
     this.title = title;
     this.category = null;
     this.purpose = null;
-    this.cmdb_status = null;
+    this.cmdbStatus = null;
     this.description = null;
   }
 
