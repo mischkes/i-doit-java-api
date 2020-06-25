@@ -23,16 +23,15 @@ class IdoitLocalDateTimeDeserializerTest {
   }
 
   @Test
-  void deserialize_shouldDeserializeIsoDatetime() throws IOException {
+  void testDeserializeIsoDatetime() throws IOException {
     LocalDateTime actual = objectMapper.readValue("'2020-06-24 12:13:14'", LocalDateTime.class);
 
     assertThat(actual).isEqualTo(LocalDateTime.of(2020, 6, 24, 12, 13, 14));
   }
 
   @Test
-  void deserialize_shouldDeserializeWrappedIsoDate() throws IOException {
-    LocalDateTime actual = objectMapper.readValue(
-        "{'title': '2020-06-24'}", LocalDateTime.class);
+  void testdDeserializeWrappedIsoDate() throws IOException {
+    LocalDateTime actual = objectMapper.readValue("{'title': '2020-06-24'}", LocalDateTime.class);
 
     assertThat(actual).isEqualTo(LocalDateTime.of(2020, 6, 24, 0, 0));
   }

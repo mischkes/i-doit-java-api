@@ -10,25 +10,12 @@ import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class CategoryGeneralTest extends TestResourceAccess {
 
   private ObjectMapper mapper = IdoitObjectMapper.mapper;
-
-  public static void setCreatedData(CategoryGeneral category, LocalDateTime createdAt,
-      String createdBy) {
-    category.setCreated(createdAt);
-    category.setCreatedBy(createdBy);
-  }
-
-  public static void setChangedData(CategoryGeneral category, LocalDateTime changedAt,
-      String changedBy) {
-    category.setChanged(changedAt);
-    category.setChangedBy(changedBy);
-  }
 
   @Test
   void testReadJson() throws IOException {
@@ -41,7 +28,7 @@ public class CategoryGeneralTest extends TestResourceAccess {
     assertThat(g.getObjId()).isEqualTo(ObjectId.of(1412));
   }
 
-  private CategoryGeneral loadCategory() throws IOException {
+  private CategoryGeneral loadCategory() {
     JsonRpcResponse rpcResult = getJson("categoryGeneralRead", JsonRpcResponse.class);
     return mapper
         .convertValue(((List<Object>) (rpcResult.getResult())).get(0), CategoryGeneral.class);
@@ -55,7 +42,5 @@ public class CategoryGeneralTest extends TestResourceAccess {
 
     String expected = "{'description':'<p>some description</p>','title':'Laptop 001','status':2,'purpose':1,'category':2,'sysid':'CLIENT_001412','cmdb_status':6,'type':10,'tag':null}";
     assertThat(parseJson(actual)).isEqualTo(parseJson(expected));
-    System.out.println(actual);
-
   }
 }
