@@ -32,7 +32,7 @@ class IdoitLocalDateDeserializerTest {
   @Test
   void deserialize_shouldDeserializeWrappedIsoDate() throws IOException {
     LocalDate actual = objectMapper.readValue(
-        "{'title': '2020-06-24', 'prop_type': 'calendar'}", LocalDate.class);
+        "{'title': '2020-06-24'}", LocalDate.class);
 
     assertThat(actual).isEqualTo(LocalDate.of(2020, 6, 24));
   }

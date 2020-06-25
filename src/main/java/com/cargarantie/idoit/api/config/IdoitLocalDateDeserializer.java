@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-//TODO: Convert this to LocalDate
 class IdoitLocalDateDeserializer extends JsonDeserializer<LocalDate> {
 
   LocalDateDeserializer delegate = new LocalDateDeserializer(DateTimeFormatter.ISO_LOCAL_DATE);

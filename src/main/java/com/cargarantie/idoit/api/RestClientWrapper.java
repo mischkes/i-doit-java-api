@@ -8,7 +8,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-public class RestClientWrapper {
+class RestClientWrapper {
 
   private final WebTarget target;
   private MultivaluedMap<String, Object> authHeaders = new MultivaluedHashMap<>();

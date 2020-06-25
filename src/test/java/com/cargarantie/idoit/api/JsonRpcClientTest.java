@@ -45,7 +45,7 @@ class JsonRpcClientTest extends TestRessourceAccess {
       return null;
     }).when(restClient).setAuthHeaders(any());
 
-    String expectedLoginRequest = "{\"id\":\"0\",\"method\":\"idoit.login\",\"params\":{\"apikey\":\"apiKey\"},\"jsonrpc\":\"2.0\"}"; //TODO: make this robbust
+    String expectedLoginRequest = "{\"id\":\"0\",\"method\":\"idoit.login\",\"params\":{\"apikey\":\"apiKey\"},\"jsonrpc\":\"2.0\"}";
     String loginResponse = "{\"id\":\"0\",\"jsonrpc\":\"2.0\",\"result\":{\"session-id\":\"theNewAndSecretSessionId\"}}";
     AtomicReference<MultivaluedMap<String, Object>> postHeaders = new AtomicReference<>();
     when(restClient.post(expectedLoginRequest)).thenAnswer(a -> {
@@ -89,6 +89,16 @@ class JsonRpcClientTest extends TestRessourceAccess {
     assertThat(response.keySet()).containsExactly("42", "41", "99");
     assertThat(response.values()).containsExactly(new TestResponse("42"),
         new TestResponse("41"), new TestResponse("99"));
+  }
+
+  @Test
+  void send_shouldReturnEmptyMap_forEmptyBatch() {
+    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", nullCleaner(),
+        requestMapper);
+
+    Map<String, TestResponse> response = client.send(new Batch<>());
+
+    assertThat(response).isEmpty();
   }
 
   @Test

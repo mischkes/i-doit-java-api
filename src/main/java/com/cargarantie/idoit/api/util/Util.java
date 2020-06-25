@@ -38,7 +38,13 @@ public class Util {
 
   public static String getCategoryName(Class<? extends IdoitCategory> category) {
     return findAnnotation(category, CategoryName.class).map(CategoryName::value)
-        .orElseThrow(() -> new IllegalArgumentException()); //TODO: complete and test
+        .orElseThrow(() -> missingAnnotationException(category, CategoryName.class));
+  }
+
+  private static IllegalArgumentException missingAnnotationException(Class<?> clazz,
+      Class<?> annotationType) {
+    return new IllegalArgumentException("Class " + clazz.getCanonicalName() + " has missing "
+        + annotationType.getSimpleName() + " annotation value");
   }
 
   public static String getCategoryName(IdoitCategory category) {
@@ -47,7 +53,7 @@ public class Util {
 
   public static String getObjectTypeName(Class<? extends IdoitObject> object) {
     return findAnnotation(object, ObjectTypeName.class).map(ObjectTypeName::value)
-        .orElseThrow(() -> new IllegalArgumentException()); //TODO: complete and test
+        .orElseThrow(() -> missingAnnotationException(object, ObjectTypeName.class));
   }
 
   public static String getObjectTypeName(IdoitObject object) {

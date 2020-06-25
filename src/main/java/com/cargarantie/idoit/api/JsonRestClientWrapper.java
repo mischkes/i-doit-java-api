@@ -5,7 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class JsonRestClientWrapper {
+class JsonRestClientWrapper {
 
   private final RestClientWrapper restClient;
   private final ObjectMapper mapper;

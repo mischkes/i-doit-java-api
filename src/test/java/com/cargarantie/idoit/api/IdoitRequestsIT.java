@@ -114,7 +114,7 @@ class IdoitRequestsIT extends TestRessourceAccess {
 
     Object expectedRequest = getJson("CmdbObjectCreate", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    ObjectCreateResponse expectedResponse = new ObjectCreateResponse(5243,
+    ObjectCreateResponse expectedResponse = new ObjectCreateResponse(ObjectId.of(5243),
         "Object was successfully created");
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
@@ -181,7 +181,7 @@ class IdoitRequestsIT extends TestRessourceAccess {
 
     Object expectedRequest = getJson("CmdbCategorySave_update", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,
+    CategorySaveResponse expectedResponse = new CategorySaveResponse(actualResponse.getEntry(),
         "Category entry successfully saved");
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
@@ -197,7 +197,7 @@ class IdoitRequestsIT extends TestRessourceAccess {
 
     Object expectedRequest = getJson("CmdbCategorySave_create", Object.class);
     assertThat(actualRequest).isEqualTo(expectedRequest);
-    CategorySaveResponse expectedResponse = new CategorySaveResponse(871,
+    CategorySaveResponse expectedResponse = new CategorySaveResponse(actualResponse.getEntry(),
         "Category entry successfully saved");
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }

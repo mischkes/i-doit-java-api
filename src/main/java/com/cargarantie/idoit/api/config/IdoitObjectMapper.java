@@ -19,11 +19,11 @@ public class IdoitObjectMapper {
   public static ObjectMapper idoitMapper() {
     ObjectMapper mapper = new ObjectMapper();
 
-    mapper.setSerializationInclusion(Include.NON_NULL);
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-    mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
     mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
+    mapper.setSerializationInclusion(Include.NON_NULL);
+    mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
     mapper.registerModule(idoitMapperJavaTimeModule());
     mapper.registerModule(idoitFieldsModule());
 

@@ -11,7 +11,9 @@ import com.cargarantie.idoit.api.util.Util;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 
 class ObjectsReader {
 
@@ -64,7 +66,10 @@ class ObjectsReader {
       Map<String, IdoitCategory> categories) {
 
     categories.values().stream().filter(Objects::nonNull).forEach(category -> {
-      T object = objects.get(category.getObjId()); //TODO: maybe null check?
+      T object = Optional.ofNullable(objects.get(category.getObjId())).orElseThrow(
+          () -> new NoSuchElementException("Category " + category
+              + " has no object (id=" + category.getObjId()));
+
       object.setCategory(category);
     });
 

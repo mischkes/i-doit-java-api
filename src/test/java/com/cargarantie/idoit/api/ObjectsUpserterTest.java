@@ -62,7 +62,7 @@ class ObjectsUpserterTest {
     ObjectsUpserter upserter = new ObjectsUpserter(session);
     when(session.send(new Batch<>()
         .add("0", new ObjectCreate("MY_OBJECT", "title42"))))
-        .thenReturn(mapOf("0", new ObjectCreateResponse(999, "")));
+        .thenReturn(mapOf("0", new ObjectCreateResponse(ObjectId.of(999), "")));
     MyObject update = new MyObject("sys42", "title42");
 
     upserter.upsert(Collections.emptyList(), Arrays.asList(update));

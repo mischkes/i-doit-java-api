@@ -21,6 +21,10 @@ public class Batch<T> {
   public Batch() {
   }
 
+  public Batch<T> add(IdoitRequest<? extends T> request) {
+    return addWithPrefix("", request);
+  }
+
   public Batch<T> add(String name, IdoitRequest<? extends T> request) {
     requests.put(name, new NamedRequest<>(name, (IdoitRequest<T>) request));
     return this;

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class IdoitLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
+class IdoitLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 
   public final static DateTimeFormatter IDOIT_DATE_FORMAT = DateTimeFormatter
       .ofPattern("yyyy-MM-dd HH:mm:ss");

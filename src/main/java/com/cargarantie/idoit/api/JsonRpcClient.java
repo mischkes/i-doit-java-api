@@ -72,7 +72,7 @@ class JsonRpcClient {
         .map(request -> newJsonRpcRequest(request.getRequest(), request.getName()))
         .collect(Collectors.toList());
 
-    if (jsonRpcRequests.isEmpty()) { //TODO: test this, log statement
+    if (jsonRpcRequests.isEmpty()) {
       return new HashMap<>();
     }
 

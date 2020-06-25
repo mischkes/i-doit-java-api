@@ -6,29 +6,30 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.cargarantie.idoit.api.model.CategoryName;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 @TestMethodOrder(OrderAnnotation.class)
 class CategoryReadTest {
 
-  @Order(0)
   @Test
-  void getCategory_shouldThrowException_ifCategoryClassNotRegisterd() {
-    CategoryRead<MyCat> read = new CategoryRead<>(null, MyCat.class);
+  void getCategory_shouldThrowException_ifCategoryClassHasNoName() {
+    CategoryRead<MyCatNoName> read = new CategoryRead<>(null, MyCatNoName.class);
 
     assertThatThrownBy(() -> read.getCategory()).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("No model registered for class"
-            + " com.cargarantie.idoit.api.jsonrpc.CategoryReadTest$MyCat");
+        .hasMessage("Class com.cargarantie.idoit.api.jsonrpc.CategoryReadTest.MyCatNoName"
+            + " has missing CategoryName annotation value");
   }
 
-  @Order(1)
   @Test
   void getCategory_shouldReturnRegisteredName() {
     CategoryRead<MyCat> read = new CategoryRead<>(null, MyCat.class);
 
     assertThat(read.getCategory()).isEqualTo("CAT_MYCAT");
+  }
+
+  public static class MyCatNoName extends IdoitCategory {
+
   }
 
   @CategoryName("CAT_MYCAT")
