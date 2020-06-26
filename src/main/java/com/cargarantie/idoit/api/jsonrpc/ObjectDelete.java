@@ -1,6 +1,7 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
 import com.cargarantie.idoit.api.model.param.ObjectId;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Value;
 
 @Value
@@ -15,10 +16,6 @@ public class ObjectDelete implements IdoitRequest<SimpleSuccessResponse> {
     return SimpleSuccessResponse.class;
   }
 
-  public String getStatus() {
-    return status.deletionStatus;
-  }
-
   @Override
   public String getMethod() {
     return METHOD;
@@ -29,6 +26,7 @@ public class ObjectDelete implements IdoitRequest<SimpleSuccessResponse> {
     DELETE("DELETED"),
     PURGE("PURGE");
 
+    @JsonValue
     private final String deletionStatus;
 
     DeleteAction(String statusSuffix) {

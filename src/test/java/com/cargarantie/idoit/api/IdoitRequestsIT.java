@@ -25,7 +25,6 @@ import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.CategoryGeneralTest;
 import com.cargarantie.idoit.api.model.IdoitCategory;
-import com.cargarantie.idoit.api.model.TitleAndSysid;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectBrowser;
@@ -126,7 +125,7 @@ class IdoitRequestsIT extends TestResourceAccess {
     mockRestResponse("ObjectsReadResponse");
 
     ObjectsRead<?> request = ObjectsRead.builder().filterTypeName("C__OBJTYPE__CLIENT")
-        .orderBy(Ordering.title).build();
+        .orderBy(Ordering.TITLE).build();
     ObjectsReadResponse actualResponse = client.send(request);
 
     Object expectedRequest = getJson("CmdbObjectsRead", Object.class);

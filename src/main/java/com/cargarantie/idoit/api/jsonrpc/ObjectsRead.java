@@ -3,6 +3,7 @@ package com.cargarantie.idoit.api.jsonrpc;
 import com.cargarantie.idoit.api.model.IdoitObject;
 import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +23,11 @@ public class ObjectsRead<T extends IdoitObject> implements IdoitRequest<ObjectsR
   Class<T> filterType;
 
   @Builder
-  public ObjectsRead(String filterFirstName, String filterLastName,
+  public ObjectsRead(Class<T> filterType, String filterTypeName, String filterTitle,
+      String filterSysid, String filterEmail, String filterFirstName,
+      String filterLastName,
       @Singular List<Integer> filterIds,
-      String filterTitle, Class<T> filterType, String filterTypeName, String filterEmail,
-      String filterSysid, Ordering orderBy) {
+      Ordering orderBy) {
 
     if (filterType != null) {
       filterTypeName = Util.getObjectTypeName(filterType);
@@ -53,14 +55,19 @@ public class ObjectsRead<T extends IdoitObject> implements IdoitRequest<ObjectsR
   }
 
   public enum Ordering {
-    email,
-    first_name,
-    id,
-    last_name,
-    sysid,
-    title,
-    type,
-    type_title
+    EMAIL,
+    FIRST_NAME,
+    ID,
+    LAST_NAME,
+    SYSID,
+    TITLE,
+    TYPE,
+    TYPE_TITLE;
+
+    @JsonValue
+    private String jsonValue() {
+      return name().toLowerCase();
+    }
   }
 
   @Data

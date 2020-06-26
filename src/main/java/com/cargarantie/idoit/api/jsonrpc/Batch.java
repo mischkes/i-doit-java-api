@@ -1,6 +1,7 @@
 package com.cargarantie.idoit.api.jsonrpc;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,11 +42,11 @@ public class Batch<T> {
     return this;
   }
 
-  public String getId(String prefix) {
+  private String getId(String prefix) {
     return prefix + idCounter.getAndIncrement();
   }
 
   public Map<String, NamedRequest<T>> getRequests() {
-    return requests;
+    return Collections.unmodifiableMap(requests);
   }
 }
