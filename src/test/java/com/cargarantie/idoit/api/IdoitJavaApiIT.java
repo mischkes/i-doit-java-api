@@ -22,6 +22,7 @@ import com.cargarantie.idoit.api.model.CategoryName;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.IdoitObject;
 import com.cargarantie.idoit.api.model.ObjectTypeName;
+import com.cargarantie.idoit.api.model.TitleAndSysid;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.time.LocalDateTime;
@@ -208,7 +209,6 @@ public class IdoitJavaApiIT {
     Client actual = readObjectClient(TITLE);
     Client expected = new Client(CategoryGeneral.builder().sysid(SYSID).title(TITLE)
         .description("Some Description").build());
-
     assertThat(actual).isEqualToComparingOnlyGivenFields(expected,
         "general.sysid", "general.title", "general.description");
   }
@@ -230,8 +230,7 @@ public class IdoitJavaApiIT {
   }
 
   private ObjectsRead<Client> getObjectsReadRequest(String title) {
-    return ObjectsRead.<Client>builder()
-        .filterType(Client.class).filterTitle(title).build();
+    return ObjectsRead.<Client>builder().filterType(Client.class).filterTitle(title).build();
   }
 
   private List<GeneralObjectData> getGeneralObject(String title) {

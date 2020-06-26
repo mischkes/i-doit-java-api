@@ -2,7 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>idoit-api-client</artifactId>
+  <artifactId>i-doit-java-api</artifactId>
 
   <build>
     <plugins>
@@ -121,7 +121,7 @@
       <version>3.1.0</version>
     </dependency>
   </dependencies>
-  <groupId>com.idoit.api</groupId>
+  <groupId>com.cargarantie.idoit</groupId>
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -222,6 +222,6 @@
     </repository>
   </repositories>
 
-  <version>0.6-SNAPSHOT</version>
+  <version>0.1-SNAPSHOT</version>
 
 </project>

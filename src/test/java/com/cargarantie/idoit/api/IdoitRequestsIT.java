@@ -25,8 +25,10 @@ import com.cargarantie.idoit.api.model.CategoryContactAssignment;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.CategoryGeneralTest;
 import com.cargarantie.idoit.api.model.IdoitCategory;
+import com.cargarantie.idoit.api.model.TitleAndSysid;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
+import com.cargarantie.idoit.api.model.param.ObjectBrowser;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -175,7 +177,7 @@ class IdoitRequestsIT extends TestResourceAccess {
     mockRestResponse("CategorySaveResponse");
 
     IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
-        .contact(158).role("User").primary("no").build();
+        .contact(ObjectBrowser.of(158)).role("User").primary("no").build();
     CategorySave request = new CategorySave(contactAssignment, 871);
     CategorySaveResponse actualResponse = client.send(request);
 
@@ -191,7 +193,7 @@ class IdoitRequestsIT extends TestResourceAccess {
     mockRestResponse("CategorySaveResponse");
 
     IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
-        .contact(158).role("User").primary("no").build();
+        .contact(ObjectBrowser.of(158)).role("User").primary("no").build();
     CategorySave request = new CategorySave(contactAssignment);
     CategorySaveResponse actualResponse = client.send(request);
 

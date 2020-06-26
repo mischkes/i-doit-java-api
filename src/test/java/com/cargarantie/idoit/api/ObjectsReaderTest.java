@@ -18,6 +18,7 @@ import com.cargarantie.idoit.api.model.CategoryName;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.IdoitObject;
 import com.cargarantie.idoit.api.model.ObjectTypeName;
+import com.cargarantie.idoit.api.model.TitleAndSysid;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.util.Arrays;
 import java.util.Collection;
@@ -115,7 +116,7 @@ class ObjectsReaderTest {
     CategoryGeneral general;
 
     @Override
-    public CategoryGeneral getGeneral() {
+    public TitleAndSysid getGeneral() {
       return general;
     }
   }

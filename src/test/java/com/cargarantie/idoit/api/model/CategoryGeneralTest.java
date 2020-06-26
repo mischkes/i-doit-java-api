@@ -49,7 +49,7 @@ public class CategoryGeneralTest extends TestResourceAccess {
 
   @Test
   void writeJson_shouldWriteCorrectJsonString() throws IOException {
-    CategoryGeneral g = loadCategory();
+    TitleAndSysid g = loadCategory();
 
     String actual = mapper.writeValueAsString(g);
 

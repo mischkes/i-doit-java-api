@@ -17,7 +17,7 @@ public abstract class IdoitObject {
 
   protected ObjectId id;
 
-  public abstract CategoryGeneral getGeneral();
+  public abstract TitleAndSysid getGeneral();
 
   @JsonIgnore
   public String getTitle() {

@@ -20,7 +20,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @CategoryName("C__CATG__GLOBAL")
-public class CategoryGeneral extends IdoitCategory {
+public class CategoryGeneral extends IdoitCategory implements TitleAndSysid {
 
   private String title;
   private Dialog status;
