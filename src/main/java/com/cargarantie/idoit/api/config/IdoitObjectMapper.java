@@ -14,9 +14,13 @@ import java.time.LocalDateTime;
 
 public class IdoitObjectMapper {
 
-  public static final ObjectMapper mapper = idoitMapper();
+  private static final ObjectMapper mapper = newObjectMapper();
 
-  public static ObjectMapper idoitMapper() {
+  public static ObjectMapper getObjectMapper() {
+    return mapper;
+  }
+
+  public static ObjectMapper newObjectMapper() {
     ObjectMapper mapper = new ObjectMapper();
 
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

@@ -11,6 +11,7 @@ import com.cargarantie.idoit.api.jsonrpc.Logout;
 import com.cargarantie.idoit.api.jsonrpc.NamedRequest;
 import com.cargarantie.idoit.api.model.IdoitException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,13 +25,14 @@ import lombok.SneakyThrows;
 class JsonRpcClient {
 
   private final RestClientWrapper restClient;
-  private final JsonRpcResponseCleaner responseCleaner;
   private final String apiKey;
+  private final JsonRpcResponseCleaner responseCleaner;
   private final JsonRestClientWrapper jsonRestClient;
+  private final ObjectMapper mapper = IdoitObjectMapper.getObjectMapper();
 
   public JsonRpcClient(RestClientWrapper restClient, String apiKey) {
-    this(restClient, apiKey, new JsonRpcResponseCleaner(IdoitObjectMapper.mapper),
-        new JsonRestClientWrapper(restClient, IdoitObjectMapper.mapper));
+    this(restClient, apiKey, new JsonRpcResponseCleaner(),
+        new JsonRestClientWrapper(restClient));
   }
 
   public JsonRpcClient(RestClientWrapper restClient, String apiKey,
@@ -92,8 +94,7 @@ class JsonRpcClient {
   private JsonRpcRequest newJsonRpcRequest(IdoitRequest<?> request, String id) {
     TypeReference<Map<String, Object>> ref = new TypeReference<Map<String, Object>>() {
     };
-    Map<String, Object> map = (Map<String, Object>) IdoitObjectMapper.mapper
-        .convertValue(request, Object.class);
+    Map<String, Object> map = (Map<String, Object>) mapper.convertValue(request, Object.class);
     map.put("apikey", apiKey);
     return new JsonRpcRequest(id, request.getMethod(), map);
   }

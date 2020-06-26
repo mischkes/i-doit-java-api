@@ -12,7 +12,7 @@ public class TestResourceAccess {
   private final ObjectMapper mapper;
 
   public TestResourceAccess() {
-    mapper = IdoitObjectMapper.idoitMapper();
+    mapper = IdoitObjectMapper.getObjectMapper();
     mapper.enable(Feature.ALLOW_SINGLE_QUOTES);
   }
 

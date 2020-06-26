@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 public class CategoryGeneralTest extends TestResourceAccess {
 
-  private ObjectMapper mapper = IdoitObjectMapper.mapper;
+  private ObjectMapper mapper = IdoitObjectMapper.getObjectMapper();
 
   public static void setCreatedData(CategoryGeneral category, LocalDateTime createdAt,
       String createdBy) {

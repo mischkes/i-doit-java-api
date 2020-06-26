@@ -1,5 +1,6 @@
 package com.cargarantie.idoit.api;
 
+import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -8,11 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 class JsonRestClientWrapper {
 
   private final RestClientWrapper restClient;
-  private final ObjectMapper mapper;
+  private final ObjectMapper mapper = IdoitObjectMapper.getObjectMapper();
 
-  public JsonRestClientWrapper(RestClientWrapper restClient, ObjectMapper mapper) {
+  public JsonRestClientWrapper(RestClientWrapper restClient) {
     this.restClient = restClient;
-    this.mapper = mapper;
   }
 
   @SneakyThrows

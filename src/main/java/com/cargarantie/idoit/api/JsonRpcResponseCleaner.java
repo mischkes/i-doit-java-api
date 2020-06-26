@@ -1,5 +1,6 @@
 package com.cargarantie.idoit.api;
 
+import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,11 +10,7 @@ import java.util.Map;
 
 class JsonRpcResponseCleaner {
 
-  private final ObjectMapper mapper;
-
-  public JsonRpcResponseCleaner(ObjectMapper mapper) {
-    this.mapper = mapper;
-  }
+  private final ObjectMapper mapper = IdoitObjectMapper.getObjectMapper();
 
   public <T> T cleanResult(IdoitRequest<T> request, Object result) {
 
