@@ -22,7 +22,6 @@ import com.cargarantie.idoit.api.model.CategoryName;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.IdoitObject;
 import com.cargarantie.idoit.api.model.ObjectTypeName;
-import com.cargarantie.idoit.api.model.TitleAndSysid;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.time.LocalDateTime;
