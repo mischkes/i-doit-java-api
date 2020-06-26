@@ -2,12 +2,12 @@ package com.cargarantie.idoit.api.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,7 +25,6 @@ public class IdoitObjectMapper {
 
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-    mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
     mapper.setSerializationInclusion(Include.NON_NULL);
     mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
     mapper.registerModule(idoitMapperJavaTimeModule());
@@ -47,7 +46,9 @@ public class IdoitObjectMapper {
     javaTimeModule.addDeserializer(LocalDateTime.class, new IdoitLocalDateTimeDeserializer());
     javaTimeModule.addDeserializer(LocalDate.class, new IdoitLocalDateDeserializer());
     javaTimeModule.addSerializer(LocalDateTime.class,
-        new LocalDateTimeSerializer(IdoitLocalDateTimeDeserializer.IDOIT_DATE_FORMAT));
+        new LocalDateTimeSerializer(IdoitLocalDateTimeDeserializer.IDOIT_DATE_TIME));
+    javaTimeModule.addSerializer(LocalDate.class,
+        new LocalDateSerializer(IdoitLocalDateDeserializer.IDOIT_DATE));
 
     return javaTimeModule;
   }

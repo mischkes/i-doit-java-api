@@ -37,11 +37,6 @@ public abstract class IdoitObject {
     return getCategoryFields().map(Field::getType);
   }
 
-  private Stream<Field> getCategoryFields() {
-    return Arrays.stream(getClass().getDeclaredFields())
-        .filter(f -> IdoitCategory.class.isAssignableFrom(f.getType()));
-  }
-
   public void setCategory(IdoitCategory category) {
     Field categoryField = getCategoryFields()
         .filter(field -> field.getType() == category.getClass())
@@ -51,16 +46,21 @@ public abstract class IdoitObject {
     Util.setField(this, categoryField, category);
   }
 
-  private IllegalStateException getUnassignableCategoryException(IdoitCategory category) {
-    return new IllegalStateException("Object " + this.getClass().getSimpleName()
-        + " does not have category " + category.getClass().getSimpleName());
-  }
-
   public void setId(int id) {
     setId(ObjectId.of(id));
   }
 
   public void setId(ObjectId id) {
     this.id = id;
+  }
+
+  private Stream<Field> getCategoryFields() {
+    return Arrays.stream(getClass().getDeclaredFields())
+        .filter(f -> IdoitCategory.class.isAssignableFrom(f.getType()));
+  }
+
+  private IllegalStateException getUnassignableCategoryException(IdoitCategory category) {
+    return new IllegalStateException("Object " + this.getClass().getSimpleName()
+        + " does not have category " + category.getClass().getSimpleName());
   }
 }

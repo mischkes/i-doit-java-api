@@ -24,24 +24,29 @@ public class CategoryGeneral extends IdoitCategory implements TitleAndSysid {
 
   private String title;
   private Dialog status;
-  @JsonProperty(access = Access.WRITE_ONLY)
-  @Setter(AccessLevel.PACKAGE)
-  private LocalDateTime created;
-  @JsonProperty(access = Access.WRITE_ONLY)
-  @Setter(AccessLevel.PACKAGE)
-  private String createdBy;
-  @JsonProperty(access = Access.WRITE_ONLY)
-  @Setter(AccessLevel.PACKAGE)
-  private LocalDateTime changed;
-  @JsonProperty(access = Access.WRITE_ONLY)
-  @Setter(AccessLevel.PACKAGE)
-  private String changedBy;
   private Dialog purpose;
   private Dialog category;
   private String sysid;
   private Dialog cmdbStatus;
   private Dialog type;
   private MultiSelect tag;
+
+  @JsonProperty(access = Access.WRITE_ONLY)
+  @Setter(AccessLevel.PACKAGE)
+  private LocalDateTime created;
+
+  @JsonProperty(access = Access.WRITE_ONLY)
+  @Setter(AccessLevel.PACKAGE)
+  private String createdBy;
+
+  @JsonProperty(access = Access.WRITE_ONLY)
+  @Setter(AccessLevel.PACKAGE)
+  private LocalDateTime changed;
+
+  @JsonProperty(access = Access.WRITE_ONLY)
+  @Setter(AccessLevel.PACKAGE)
+  private String changedBy;
+
 
   @Builder
   public CategoryGeneral(CategoryId id, ObjectId objId, String description, String title,

@@ -17,7 +17,9 @@ public abstract class IdoitCategory {
 
   @JsonProperty(access = Access.WRITE_ONLY)
   private CategoryId id;
+
   @JsonProperty(value = "objID", access = Access.WRITE_ONLY)
   private ObjectId objId;
+
   private String description;
 }
