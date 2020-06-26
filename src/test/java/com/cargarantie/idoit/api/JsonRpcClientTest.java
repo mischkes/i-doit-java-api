@@ -36,7 +36,7 @@ class JsonRpcClientTest extends TestResourceAccess {
   private JsonRestClientWrapper requestMapper;
 
   @Test
-  void login_shouldSendRequestWithBasicAuthCredentials_thenChangeHeadersToToken() {
+  void login_shouldSendRequestWithBasicAuthCredentials_then_ChangeHeadersToToken() {
     // given
     JsonRpcClient client = new JsonRpcClient(restClient, "apiKey");
     AtomicReference<MultivaluedMap<String, Object>> latestHeaders = new AtomicReference<>();
