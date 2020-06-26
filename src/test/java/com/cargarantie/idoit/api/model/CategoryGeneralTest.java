@@ -31,31 +31,30 @@ public class CategoryGeneralTest extends TestResourceAccess {
   }
 
   @Test
-  void testReadJson() throws IOException {
-    CategoryGeneral g = loadCategory();
+  void testReadJson() {
+    CategoryGeneral general = loadCategory();
 
-    assertThat(g.getStatus())
+    assertThat(general.getStatus())
         .isEqualTo(new Dialog(2, "Normal", "LC__CMDB__RECORD_STATUS__NORMAL", ""));
-    assertThat(g.getCreated()).isEqualTo("2015-05-04T18:02:10");
-    assertThat(g.getId()).isEqualTo(CategoryId.of(1412));
-    assertThat(g.getObjId()).isEqualTo(ObjectId.of(1412));
+    assertThat(general.getCreated()).isEqualTo("2015-05-04T18:02:10");
+    assertThat(general.getId()).isEqualTo(CategoryId.of(1412));
+    assertThat(general.getObjId()).isEqualTo(ObjectId.of(1412));
+  }
+
+  @Test
+  void writeJson_shouldWriteCorrectJsonString() throws IOException {
+    CategoryGeneral general = loadCategory();
+
+    String actual = mapper.writeValueAsString(general);
+
+    String expected = "{'description':'<p>some description</p>','title':'Laptop 001','status':2,'purpose':1,'category':2,'sysid':'CLIENT_001412','cmdb_status':6,'type':10,'tag':null}";
+    assertThat(parseJson(actual)).isEqualTo(parseJson(expected));
+    System.out.println(actual);
   }
 
   private CategoryGeneral loadCategory() {
     JsonRpcResponse rpcResult = getJson("categoryGeneralRead", JsonRpcResponse.class);
     return mapper
         .convertValue(((List<Object>) (rpcResult.getResult())).get(0), CategoryGeneral.class);
-  }
-
-  @Test
-  void writeJson_shouldWriteCorrectJsonString() throws IOException {
-    TitleAndSysid g = loadCategory();
-
-    String actual = mapper.writeValueAsString(g);
-
-    String expected = "{'description':'<p>some description</p>','title':'Laptop 001','status':2,'purpose':1,'category':2,'sysid':'CLIENT_001412','cmdb_status':6,'type':10,'tag':null}";
-    assertThat(parseJson(actual)).isEqualTo(parseJson(expected));
-    System.out.println(actual);
-
   }
 }

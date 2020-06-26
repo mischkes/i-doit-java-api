@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api;
+package com.cargarantie.idoit.api.config;
 
 import lombok.Value;
 

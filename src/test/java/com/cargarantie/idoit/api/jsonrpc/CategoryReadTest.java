@@ -5,11 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.cargarantie.idoit.api.model.CategoryName;
 import com.cargarantie.idoit.api.model.IdoitCategory;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
-@TestMethodOrder(OrderAnnotation.class)
 class CategoryReadTest {
 
   @Test

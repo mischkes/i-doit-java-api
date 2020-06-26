@@ -44,9 +44,10 @@ public class IdoitObjectMapper {
     JavaTimeModule javaTimeModule = new JavaTimeModule();
 
     javaTimeModule.addDeserializer(LocalDateTime.class, new IdoitLocalDateTimeDeserializer());
-    javaTimeModule.addDeserializer(LocalDate.class, new IdoitLocalDateDeserializer());
     javaTimeModule.addSerializer(LocalDateTime.class,
         new LocalDateTimeSerializer(IdoitLocalDateTimeDeserializer.IDOIT_DATE_TIME));
+
+    javaTimeModule.addDeserializer(LocalDate.class, new IdoitLocalDateDeserializer());
     javaTimeModule.addSerializer(LocalDate.class,
         new LocalDateSerializer(IdoitLocalDateDeserializer.IDOIT_DATE));
 

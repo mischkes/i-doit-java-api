@@ -1,5 +1,7 @@
 package com.cargarantie.idoit.api;
 
+import com.cargarantie.idoit.api.config.ClientConfig;
+
 public class IdoitClient {
 
   private final ClientConfig cfg;

@@ -25,7 +25,6 @@ import com.cargarantie.idoit.api.model.ObjectTypeName;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -186,11 +185,10 @@ public class IdoitJavaApiIT {
   @Test
   @Order(700)
   void testInsertFullObject() {
-    Client client = new Client(CategoryGeneral.builder().sysid(SYSID).title(TITLE).build());
+    Client expected = new Client(CategoryGeneral.builder().sysid(SYSID).title(TITLE).build());
 
-    session.upsert(Collections.emptyList(), Arrays.asList(client));
+    session.upsert(Collections.emptyList(), Collections.singletonList(expected));
 
-    Client expected = client;
     Client actual = readObjectClient(TITLE);
     assertThat(actual).isEqualToComparingOnlyGivenFields(expected,
         "general.sysid", "general.title");
@@ -203,7 +201,7 @@ public class IdoitJavaApiIT {
         .description("Some Description").build());
     List<GeneralObjectData> current = getGeneralObject(TITLE);
 
-    session.upsert(current, Arrays.asList(update));
+    session.upsert(current, Collections.singletonList(update));
 
     Client actual = readObjectClient(TITLE);
     Client expected = new Client(CategoryGeneral.builder().sysid(SYSID).title(TITLE)

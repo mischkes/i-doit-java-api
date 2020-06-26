@@ -16,22 +16,22 @@ class JsonRpcResponseCleaner {
 
     if (request instanceof CategoryRead) {
       // CmdbCategoryRead only parses non-multi list. Then, result is always a list of 1.
-      List<Object> categories = (List<Object>) result;
-      switch (categories.size()) {
-        case 0:
-          return null;
-        case 1:
-          Object expanded = removeIdentifierFields(categories.get(0));
-          System.out.println("Result expanded:" + expanded);
-          result = expanded;
-          break;
-        default:
-          throw new IllegalArgumentException("Cannot convert a multi-category response"
-              + " to a single category result");
-      }
+      result = mapToSingleCategory((List<Object>) result);
     }
 
     return mapper.convertValue(result, request.getResponseClass());
+  }
+
+  private Object mapToSingleCategory(List<Object> categories) {
+    switch (categories.size()) {
+      case 0:
+        return null;
+      case 1:
+        return removeIdentifierFields(categories.get(0));
+      default:
+        throw new IllegalArgumentException("Cannot convert a multi-category response"
+            + " to a single category result");
+    }
   }
 
   /**

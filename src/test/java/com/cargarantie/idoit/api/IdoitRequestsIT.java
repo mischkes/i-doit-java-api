@@ -63,8 +63,8 @@ class IdoitRequestsIT extends TestResourceAccess {
   @Test
   void test_sendLoginRequest() {
     mockRestResponse("LoginResponse");
-
     Login request = new Login();
+
     LoginResponse actualResponse = client.send(request);
 
     Object expectedRequest = getJson("Login", Object.class);

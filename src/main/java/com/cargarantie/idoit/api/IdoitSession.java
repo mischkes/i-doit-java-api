@@ -1,5 +1,6 @@
 package com.cargarantie.idoit.api;
 
+import com.cargarantie.idoit.api.config.ClientConfig;
 import com.cargarantie.idoit.api.jsonrpc.Batch;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
