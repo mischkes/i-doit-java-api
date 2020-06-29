@@ -38,6 +38,10 @@ public class IdoitSession implements AutoCloseable {
     new ObjectsUpserter(this).upsertObjects(currentObjects, updateObjects);
   }
 
+  public void archive(List<GeneralObjectData> clientObjects) {
+    upsert(clientObjects, Collections.emptyList());
+  }
+  
   public <T> Map<String, T> send(Batch<T> batch) {
     return rpcClient.send(batch);
   }
@@ -49,9 +53,5 @@ public class IdoitSession implements AutoCloseable {
   @Override
   public void close() {
     rpcClient.logout();
-  }
-
-  public void archive(List<GeneralObjectData> clientObjects) {
-    upsert(clientObjects, Collections.emptyList());
   }
 }

@@ -10,7 +10,6 @@ import com.cargarantie.idoit.api.jsonrpc.LoginResponse;
 import com.cargarantie.idoit.api.jsonrpc.Logout;
 import com.cargarantie.idoit.api.jsonrpc.NamedRequest;
 import com.cargarantie.idoit.api.model.IdoitException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -92,8 +91,6 @@ class JsonRpcClient {
   }
 
   private JsonRpcRequest newJsonRpcRequest(IdoitRequest<?> request, String id) {
-    TypeReference<Map<String, Object>> ref = new TypeReference<Map<String, Object>>() {
-    };
     Map<String, Object> map = (Map<String, Object>) mapper.convertValue(request, Object.class);
     map.put("apikey", apiKey);
     return new JsonRpcRequest(id, request.getMethod(), map);
