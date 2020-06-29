@@ -1,5 +1,6 @@
 package com.cargarantie.idoit.api.model;
 
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.cargarantie.idoit.api.util.Util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -52,6 +53,10 @@ public abstract class IdoitObject {
 
   public void setId(ObjectId id) {
     this.id = id;
+  }
+
+  public GeneralObjectData toGeneralObject() {
+    return GeneralObjectData.builder().id(id).sysid(getGeneral().getSysid()).build();
   }
 
   private Stream<Field> getCategoryFields() {

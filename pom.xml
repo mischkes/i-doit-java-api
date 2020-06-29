@@ -7,7 +7,6 @@
   <groupId>com.cargarantie.idoit</groupId>
   <artifactId>i-doit-java-api</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,7 +14,7 @@
     <java.version>1.8</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-
+    
     <!-- Plugin versions -->
     <build-tools.version>1.2.1</build-tools.version>
     <checkstyle.mavenplugin.version>3.1.1</checkstyle.mavenplugin.version>

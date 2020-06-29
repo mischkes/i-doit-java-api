@@ -30,8 +30,6 @@ import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectBrowser;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,8 +77,8 @@ class IdoitRequestsIT extends TestResourceAccess {
   @Test
   void test_sendLogoutRequest() {
     mockRestResponse("LogoutResponse");
-
     Logout request = new Logout();
+
     SimpleSuccessResponse actualResponse = client.send(request);
 
     Object expectedRequest = getJson("Logout", Object.class);
@@ -109,8 +107,8 @@ class IdoitRequestsIT extends TestResourceAccess {
   @Test
   void test_sendObjectCreateRequest() {
     mockRestResponse("ObjectCreateResponse");
-
     ObjectCreate request = new ObjectCreate("C__OBJTYPE__SERVER", "My little server");
+
     ObjectCreateResponse actualResponse = client.send(request);
 
     Object expectedRequest = getJson("CmdbObjectCreate", Object.class);
@@ -123,9 +121,9 @@ class IdoitRequestsIT extends TestResourceAccess {
   @Test
   void test_sendObjectsReadRequest() {
     mockRestResponse("ObjectsReadResponse");
-
     ObjectsRead<?> request = ObjectsRead.builder().filterTypeName("C__OBJTYPE__CLIENT")
         .orderBy(Ordering.TITLE).build();
+
     ObjectsReadResponse actualResponse = client.send(request);
 
     Object expectedRequest = getJson("CmdbObjectsRead", Object.class);
@@ -144,12 +142,10 @@ class IdoitRequestsIT extends TestResourceAccess {
 
   @Test
   void test_sendCategoryReadRequest() {
-    System.out.println(Arrays.stream("".split(",")).collect(Collectors.toSet()).size());
-
     mockRestResponse("ReadResponse");
-
     final CategoryRead<CategoryGeneral> request = new CategoryRead(ObjectId.of(1412),
         CategoryGeneral.class);
+
     final CategoryGeneral actualResponse = client.send(request);
 
     Object expectedRequest = getJson("CmdbCategoryRead", Object.class);
@@ -174,10 +170,10 @@ class IdoitRequestsIT extends TestResourceAccess {
   @Test
   void test_sendCategorySave_forUpdate() {
     mockRestResponse("CategorySaveResponse");
-
     IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
         .contact(ObjectBrowser.of(158)).role("User").primary("no").build();
     CategorySave request = new CategorySave(contactAssignment, 871);
+
     CategorySaveResponse actualResponse = client.send(request);
 
     Object expectedRequest = getJson("CmdbCategorySave_update", Object.class);
@@ -190,10 +186,10 @@ class IdoitRequestsIT extends TestResourceAccess {
   @Test
   void test_sendCategorySaveRequest_forCreate() {
     mockRestResponse("CategorySaveResponse");
-
     IdoitCategory contactAssignment = CategoryContactAssignment.builder().objId(ObjectId.of(1412))
         .contact(ObjectBrowser.of(158)).role("User").primary("no").build();
     CategorySave request = new CategorySave(contactAssignment);
+
     CategorySaveResponse actualResponse = client.send(request);
 
     Object expectedRequest = getJson("CmdbCategorySave_create", Object.class);
@@ -206,8 +202,8 @@ class IdoitRequestsIT extends TestResourceAccess {
   @Test
   void test_sendObjectDelete() {
     mockRestResponse("ObjectDeleteResponse");
-
     ObjectDelete request = new ObjectDelete(ObjectId.of(1), DeleteAction.DELETE);
+
     SimpleSuccessResponse actualResponse = client.send(request);
 
     Object expectedRequest = getJson("ObjectDelete", Object.class);

@@ -24,6 +24,16 @@ class ObjectsUpserter {
   }
 
   @SneakyThrows
+  public <T extends IdoitObject> void upsertObjects(Collection<T> currentObjects,
+      Collection<T> updateObjects) {
+    List<GeneralObjectData> currentGeneralObjects = currentObjects.stream()
+        .map(IdoitObject::toGeneralObject)
+        .collect(Collectors.toList());
+
+    upsert(currentGeneralObjects, updateObjects);
+  }
+
+  @SneakyThrows
   public <T extends IdoitObject> void upsert(Collection<GeneralObjectData> currentObjects,
       Collection<T> updateObjects) {
     Collection<GeneralObjectData> toDelete = mapUpdatedAndReturnUnused(

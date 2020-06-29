@@ -16,7 +16,6 @@ import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.IdoitObject;
 import com.cargarantie.idoit.api.model.ObjectTypeName;
 import com.cargarantie.idoit.api.model.param.ObjectId;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +36,7 @@ class ObjectsUpserterTest {
     ObjectsUpserter upserter = new ObjectsUpserter(session);
     GeneralObjectData current = GeneralObjectData.builder().id(of(42)).build();
 
-    upserter.upsert(Arrays.asList(current), Collections.emptyList());
+    upserter.upsert(Collections.singletonList(current), Collections.emptyList());
 
     Batch<Object> expected = new Batch<>()
         .add("archive0", new ObjectDelete(of(42), DeleteAction.ARCHIVE));
@@ -50,7 +49,7 @@ class ObjectsUpserterTest {
     GeneralObjectData current = GeneralObjectData.builder().id(of(42)).sysid("sys42").build();
     MyObject update = new MyObject("sys42", "title42");
 
-    upserter.upsert(Arrays.asList(current), Arrays.asList(update));
+    upserter.upsert(Collections.singletonList(current), Collections.singletonList(update));
 
     Batch<Object> expected = new Batch<>().add("update0", new CategorySave(
         CategoryGeneral.builder().objId(of(42)).sysid("sys42").title("title42").build()));
@@ -65,7 +64,7 @@ class ObjectsUpserterTest {
         .thenReturn(mapOf("0", new ObjectCreateResponse(ObjectId.of(999), "")));
     MyObject update = new MyObject("sys42", "title42");
 
-    upserter.upsert(Collections.emptyList(), Arrays.asList(update));
+    upserter.upsert(Collections.emptyList(), Collections.singletonList(update));
 
     verify(session).send(new Batch<>()
         .add("update0", new CategorySave(update.general)));

@@ -49,7 +49,6 @@ public class CategoryGeneralTest extends TestResourceAccess {
 
     String expected = "{'description':'<p>some description</p>','title':'Laptop 001','status':2,'purpose':1,'category':2,'sysid':'CLIENT_001412','cmdb_status':6,'type':10,'tag':null}";
     assertThat(parseJson(actual)).isEqualTo(parseJson(expected));
-    System.out.println(actual);
   }
 
   private CategoryGeneral loadCategory() {
