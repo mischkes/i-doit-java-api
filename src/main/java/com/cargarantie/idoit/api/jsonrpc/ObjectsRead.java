@@ -37,9 +37,8 @@ public class ObjectsRead<T extends IdoitObject> implements IdoitRequest<ObjectsR
       filterIds = null;
     }
 
-    this.filter = new Filter(filterFirstName, filterLastName, filterIds, filterTitle,
-        filterTypeName,
-        filterEmail, filterSysid, null);
+    this.filter = new Filter(filterTypeName, filterTitle, filterSysid, filterEmail, filterFirstName,
+        filterLastName, filterIds, null);
     this.orderBy = orderBy;
     this.filterType = filterType;
   }
@@ -75,18 +74,18 @@ public class ObjectsRead<T extends IdoitObject> implements IdoitRequest<ObjectsR
   @NoArgsConstructor
   public static class Filter {
 
-    private String firstName;
-    private String lastName;
-    private List<Integer> ids;
-    private String title;
-
     /**
      * Object type identifier (as integer), for example: 5. Alternatively, object type constant (as
      * string), for example: "C__OBJTYPE__SERVER"
      */
     private String type;
-    private String email;
+    private String title;
     private String sysid;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private List<Integer> ids;
+
 
     /**
      * Translated name of object type, for example: "Server". Note: Set a proper language in your
