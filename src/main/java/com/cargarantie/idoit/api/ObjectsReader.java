@@ -9,11 +9,11 @@ import com.cargarantie.idoit.api.model.IdoitObject;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.cargarantie.idoit.api.util.Util;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 class ObjectsReader {
 
@@ -28,12 +28,12 @@ class ObjectsReader {
     return read(request);
   }
 
-  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> delegateRequest) {
-    if (delegateRequest.getFilterType() == null) {
+  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> objectsReadRequest) {
+    if (objectsReadRequest.getFilterType() == null) {
       throw new IllegalArgumentException("Request needs to specify filterType");
     }
 
-    Map<ObjectId, T> objectsById = readObjects(delegateRequest);
+    Map<ObjectId, T> objectsById = readObjects(objectsReadRequest);
     Map<String, IdoitCategory> categories = readCategories(objectsById.values());
     return addCategoriesToObjects(objectsById, categories);
   }
@@ -41,14 +41,11 @@ class ObjectsReader {
   private <T extends IdoitObject> Map<ObjectId, T> readObjects(ObjectsRead<T> request) {
     ObjectsReadResponse response = rpcClient.send(request);
 
-    Map<ObjectId, T> objectsById = new HashMap<>();
-    response.getObjects().forEach(o -> {
+    return response.getObjects().stream().map(o -> {
       T newObject = Util.newInstance(request.getFilterType());
       IdoitObjectAccess.setId(newObject, o.getId());
-      objectsById.put(newObject.getId(), newObject);
-    });
-
-    return objectsById;
+      return newObject;
+    }).collect(Collectors.toMap(t -> t.getId(), Function.identity()));
   }
 
   private <T extends IdoitObject> Map<String, IdoitCategory> readCategories(Collection<T> objects) {
@@ -67,11 +64,8 @@ class ObjectsReader {
       Map<String, IdoitCategory> categories) {
 
     categories.values().stream().filter(Objects::nonNull).forEach(category -> {
-      T object = Optional.ofNullable(objects.get(category.getObjId())).orElseThrow(
-          () -> new NoSuchElementException("Category " + category
-              + " has no object (id=" + category.getObjId()));
-
-      IdoitObjectAccess.setCategory(object, category);
+      Optional.ofNullable(objects.get(category.getObjId())).ifPresent(
+          object -> IdoitObjectAccess.setCategory(object, category));
     });
 
     return objects.values();

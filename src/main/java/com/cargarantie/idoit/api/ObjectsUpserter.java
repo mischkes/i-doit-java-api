@@ -80,8 +80,6 @@ class ObjectsUpserter {
       GeneralObjectData current = currentBySysid.remove(up.getGeneral().getSysid());
       if (current != null) {
         IdoitObjectAccess.setId(up, current.getId());
-        IdoitObjectAccess.getCategories(up).forEach(
-            cat -> IdoitCategoryAccess.setObjId(cat, current.getId()));
       }
     });
 

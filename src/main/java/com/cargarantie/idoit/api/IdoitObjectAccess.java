@@ -14,6 +14,7 @@ class IdoitObjectAccess {
 
   public static void setId(IdoitObject object, ObjectId id) {
     Util.setField(object, ID_FIELD, id);
+    getCategories(object).forEach(cat -> IdoitCategoryAccess.setObjId(cat, id));
   }
 
   public static Stream<IdoitCategory> getCategories(IdoitObject object) {
