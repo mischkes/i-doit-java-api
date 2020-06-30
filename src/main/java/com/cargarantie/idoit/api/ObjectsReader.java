@@ -1,5 +1,7 @@
 package com.cargarantie.idoit.api;
 
+import static com.cargarantie.idoit.api.PrivilegedAccess.idoitObjectAccess;
+
 import com.cargarantie.idoit.api.jsonrpc.Batch;
 import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
@@ -44,7 +46,7 @@ class ObjectsReader {
     Map<ObjectId, T> objectsById = new HashMap<>();
     response.getObjects().forEach(o -> {
       T newObject = Util.newInstance(request.getFilterType());
-      newObject.setId(o.getId());
+      idoitObjectAccess.setId(newObject, o.getId());
       objectsById.put(newObject.getId(), newObject);
     });
 
@@ -55,7 +57,8 @@ class ObjectsReader {
     Batch<IdoitCategory> requests = new Batch<>();
 
     objects.forEach(object ->
-        object.getCategoryClasses().map(category -> new CategoryRead(object.getId(), category))
+        idoitObjectAccess.getCategoryClasses(object)
+            .map(category -> new CategoryRead(object.getId(), category))
             .forEach(read -> requests.addWithPrefix("category", read))
     );
 
@@ -70,7 +73,7 @@ class ObjectsReader {
           () -> new NoSuchElementException("Category " + category
               + " has no object (id=" + category.getObjId()));
 
-      object.setCategory(category);
+      idoitObjectAccess.setCategory(object, category);
     });
 
     return objects.values();

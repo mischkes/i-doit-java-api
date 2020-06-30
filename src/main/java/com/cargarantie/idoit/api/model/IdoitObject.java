@@ -1,5 +1,6 @@
 package com.cargarantie.idoit.api.model;
 
+import com.cargarantie.idoit.api.PrivilegedAccess.IdoitObjectAccess;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import com.cargarantie.idoit.api.util.Util;
@@ -16,6 +17,48 @@ import lombok.NoArgsConstructor;
 @Getter
 public abstract class IdoitObject {
 
+  private static IdoitObjectAccess privilegedAccess = new IdoitObjectAccess() {
+    @Override
+    public void setId(IdoitObject object, ObjectId id) {
+      object.id = id;
+    }
+
+    @Override
+    public Stream<IdoitCategory> getCategories(IdoitObject object) {
+      return getCategoryFields(object)
+          .map(f -> Util.getField(object, f))
+          .filter(IdoitCategory.class::isInstance)
+          .map(IdoitCategory.class::cast);
+    }
+
+    @Override
+    public Stream<Field> getCategoryFields(IdoitObject object) {
+      return Arrays.stream(object.getClass().getDeclaredFields())
+          .filter(f -> IdoitCategory.class.isAssignableFrom(f.getType()));
+    }
+
+    @Override
+    public Stream<Class<?>> getCategoryClasses(IdoitObject object) {
+      return getCategoryFields(object).map(Field::getType);
+    }
+
+    @Override
+    public void setCategory(IdoitObject object, IdoitCategory category) {
+      Field categoryField = getCategoryFields(object)
+          .filter(field -> field.getType() == category.getClass())
+          .findAny()
+          .orElseThrow(() -> getUnassignableCategoryException(object, category));
+
+      Util.setField(object, categoryField, category);
+    }
+
+    private IllegalStateException getUnassignableCategoryException(
+        IdoitObject object, IdoitCategory category) {
+      return new IllegalStateException("Object " + object.getClass().getSimpleName()
+          + " does not have category " + category.getClass().getSimpleName());
+    }
+  };
+
   protected ObjectId id;
 
   public abstract TitleAndSysid getGeneral();
@@ -25,47 +68,7 @@ public abstract class IdoitObject {
     return getGeneral().getTitle();
   }
 
-  @JsonIgnore
-  public Stream<IdoitCategory> getCategories() {
-    return getCategoryFields()
-        .map(f -> Util.getField(this, f))
-        .filter(IdoitCategory.class::isInstance)
-        .map(IdoitCategory.class::cast);
-  }
-
-  @JsonIgnore
-  public Stream<Class<?>> getCategoryClasses() {
-    return getCategoryFields().map(Field::getType);
-  }
-
-  public void setCategory(IdoitCategory category) {
-    Field categoryField = getCategoryFields()
-        .filter(field -> field.getType() == category.getClass())
-        .findAny()
-        .orElseThrow(() -> getUnassignableCategoryException(category));
-
-    Util.setField(this, categoryField, category);
-  }
-
-  public void setId(int id) {
-    setId(ObjectId.of(id));
-  }
-
-  public void setId(ObjectId id) {
-    this.id = id;
-  }
-
   public GeneralObjectData toGeneralObject() {
     return GeneralObjectData.builder().id(id).sysid(getGeneral().getSysid()).build();
-  }
-
-  private Stream<Field> getCategoryFields() {
-    return Arrays.stream(getClass().getDeclaredFields())
-        .filter(f -> IdoitCategory.class.isAssignableFrom(f.getType()));
-  }
-
-  private IllegalStateException getUnassignableCategoryException(IdoitCategory category) {
-    return new IllegalStateException("Object " + this.getClass().getSimpleName()
-        + " does not have category " + category.getClass().getSimpleName());
   }
 }
