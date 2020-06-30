@@ -14,7 +14,7 @@ import com.cargarantie.idoit.api.jsonrpc.ObjectDelete;
 import com.cargarantie.idoit.api.jsonrpc.ObjectDelete.DeleteAction;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.IdoitObject;
-import com.cargarantie.idoit.api.model.ObjectTypeName;
+import com.cargarantie.idoit.api.model.annotation.ObjectTypeName;
 import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.util.Collections;
 import java.util.HashMap;

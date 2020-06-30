@@ -3,8 +3,8 @@ package com.cargarantie.idoit.api.jsonrpc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.cargarantie.idoit.api.model.CategoryName;
 import com.cargarantie.idoit.api.model.IdoitCategory;
+import com.cargarantie.idoit.api.model.annotation.CategoryName;
 import org.junit.jupiter.api.Test;
 
 class CategoryReadTest {

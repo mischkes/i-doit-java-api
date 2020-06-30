@@ -1,9 +1,9 @@
 package com.cargarantie.idoit.api.util;
 
-import com.cargarantie.idoit.api.model.CategoryName;
 import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.IdoitObject;
-import com.cargarantie.idoit.api.model.ObjectTypeName;
+import com.cargarantie.idoit.api.model.annotation.CategoryName;
+import com.cargarantie.idoit.api.model.annotation.ObjectTypeName;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -11,6 +11,13 @@ import java.util.Optional;
 import lombok.SneakyThrows;
 
 public class Util {
+
+  @SneakyThrows
+  public static Object getStaticField(Class<?> containingClass, String fieldName) {
+    Field field = containingClass.getDeclaredField(fieldName);
+    field.setAccessible(true);
+    return field.get(null);
+  }
 
   @SneakyThrows
   public static Object getField(Object containingObject, Field field) {

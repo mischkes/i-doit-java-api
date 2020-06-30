@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api.model;
+package com.cargarantie.idoit.api.model.exception;
 
 public class IdoitException extends RuntimeException {
 

@@ -4,11 +4,11 @@ import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
 import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class JsonRpcResponseCleaner {
@@ -44,7 +44,7 @@ class JsonRpcResponseCleaner {
         entries.stream().filter(e -> e.getValue() instanceof Map)
             .peek(e -> ((Map<?, ?>) e.getValue()).remove("identifier"))
             .filter(e -> !((Map<?, ?>) e.getValue()).isEmpty())
-    ).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+    ).collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
   }
 
   private Object mapToSingleCategory(List<Object> categories) {
