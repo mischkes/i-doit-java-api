@@ -46,7 +46,8 @@ class ObjectsUpserter {
         .collect(Collectors.toList());
 
     List<CategorySave> updateRequests = updateObjects.stream().flatMap(object ->
-        IdoitObjectAccess.getCategories(object).peek(category -> category.setObjId(object.getId()))
+        IdoitObjectAccess.getCategories(object)
+            .peek(category -> IdoitCategoryAccess.setObjId(category, object.getId()))
             .map(CategorySave::new)).collect(Collectors.toList());
 
     session.send(new Batch<Object>("archive", archiveRequests)
@@ -79,7 +80,8 @@ class ObjectsUpserter {
       GeneralObjectData current = currentBySysid.remove(up.getGeneral().getSysid());
       if (current != null) {
         IdoitObjectAccess.setId(up, current.getId());
-        IdoitObjectAccess.getCategories(up).forEach(cat -> cat.setObjId(current.getId()));
+        IdoitObjectAccess.getCategories(up).forEach(
+            cat -> IdoitCategoryAccess.setObjId(cat, current.getId()));
       }
     });
 
