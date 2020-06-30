@@ -1,5 +1,6 @@
 package com.cargarantie.idoit.api.model;
 
+import com.cargarantie.idoit.api.model.annotation.CategoryName;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.MultiSelect;

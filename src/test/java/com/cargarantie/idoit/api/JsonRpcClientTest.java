@@ -11,7 +11,7 @@ import com.cargarantie.idoit.api.jsonrpc.Batch;
 import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
 import com.cargarantie.idoit.api.jsonrpc.JsonRpcRequest;
 import com.cargarantie.idoit.api.jsonrpc.JsonRpcResponse;
-import com.cargarantie.idoit.api.model.IdoitException;
+import com.cargarantie.idoit.api.model.exception.IdoitException;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 import java.util.Map;

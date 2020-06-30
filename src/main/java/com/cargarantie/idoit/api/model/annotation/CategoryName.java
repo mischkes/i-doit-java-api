@@ -1,4 +1,4 @@
-package com.cargarantie.idoit.api.model;
+package com.cargarantie.idoit.api.model.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
