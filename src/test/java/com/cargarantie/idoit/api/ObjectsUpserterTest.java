@@ -29,23 +29,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ObjectsUpserterTest {
 
   @Mock
-  IdoitSession session;
+  JsonRpcClient client;
 
   @Test
   void testUpsert_shouldSendArchiveRequest_forObjectOnlyInCurrentList() {
-    ObjectsUpserter upserter = new ObjectsUpserter(session);
+    ObjectsUpserter upserter = new ObjectsUpserter(client);
     GeneralObjectData current = GeneralObjectData.builder().id(of(42)).build();
 
     upserter.upsert(Collections.singletonList(current), Collections.emptyList());
 
     Batch<Object> expected = new Batch<>()
         .add("archive0", new ObjectDelete(of(42), DeleteAction.ARCHIVE));
-    verify(session).send(expected);
+    verify(client).send(expected);
   }
 
   @Test
   void testUpsert_shouldSendUpdate_forObjectInCurrentAndUpdateList() {
-    ObjectsUpserter upserter = new ObjectsUpserter(session);
+    ObjectsUpserter upserter = new ObjectsUpserter(client);
     GeneralObjectData current = GeneralObjectData.builder().id(of(42)).sysid("sys42").build();
     MyObject update = new MyObject("sys42", "title42");
 
@@ -53,20 +53,20 @@ class ObjectsUpserterTest {
 
     Batch<Object> expected = new Batch<>().add("update0", new CategorySave(
         CategoryGeneral.builder().objId(of(42)).sysid("sys42").title("title42").build()));
-    verify(session).send(expected);
+    verify(client).send(expected);
   }
 
   @Test
   void testUpsert_shouldSendCreateAndUpdate_forObjectOnlyInUpdateList() {
-    ObjectsUpserter upserter = new ObjectsUpserter(session);
-    when(session.send(new Batch<>()
+    ObjectsUpserter upserter = new ObjectsUpserter(client);
+    when(client.send(new Batch<>()
         .add("0", new ObjectCreate("MY_OBJECT", "title42"))))
         .thenReturn(mapOf("0", new ObjectCreateResponse(ObjectId.of(999), "")));
     MyObject update = new MyObject("sys42", "title42");
 
     upserter.upsert(Collections.emptyList(), Collections.singletonList(update));
 
-    verify(session).send(new Batch<>()
+    verify(client).send(new Batch<>()
         .add("update0", new CategorySave(update.general)));
     assertThat(update.getId()).isEqualTo(ObjectId.of(999));
   }

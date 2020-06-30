@@ -65,7 +65,7 @@ public class IdoitJavaApiIT {
   void testCreateObject() {
     ObjectCreate request = new ObjectCreate("C__OBJTYPE__CLIENT", TITLE);
 
-    ObjectCreateResponse response = session.send(request);
+    ObjectCreateResponse response = session.getRpcClient().send(request);
 
     objectId = response.getId();
     assertThat(objectId.toInt()).isPositive();
@@ -77,7 +77,7 @@ public class IdoitJavaApiIT {
     CategoryRead<CategoryGeneral> request = new CategoryRead<>(objectId,
         CategoryGeneral.class);
 
-    CategoryGeneral actual = session.send(request);
+    CategoryGeneral actual = session.getRpcClient().send(request);
 
     CategoryGeneral expected = CategoryGeneral.builder()
         .objId(objectId).title(TITLE)
@@ -97,7 +97,7 @@ public class IdoitJavaApiIT {
     CategoryRead<CategoryGeneralSimple> request = new CategoryRead<>(objectId,
         CategoryGeneralSimple.class);
 
-    CategoryGeneralSimple actual = session.send(request);
+    CategoryGeneralSimple actual = session.getRpcClient().send(request);
 
     CategoryGeneralSimple expected = CategoryGeneralSimple.builder()
         .objId(objectId).title(TITLE).status("Normal").cmdbStatus("in operation")
@@ -112,7 +112,7 @@ public class IdoitJavaApiIT {
     CategoryRead<MyGeneralCategory> request = new CategoryRead<>(objectId,
         MyGeneralCategory.class);
 
-    MyGeneralCategory actual = session.send(request);
+    MyGeneralCategory actual = session.getRpcClient().send(request);
 
     MyGeneralCategory expected = MyGeneralCategory.builder().title(TITLE).objId(objectId)
         .cmdbStatus(new Dialog(6, "in operation", "LC__CMDB_STATUS__IN_OPERATION",
@@ -128,9 +128,10 @@ public class IdoitJavaApiIT {
         .objId(objectId).build();
     CategorySave request = new CategorySave(model);
 
-    CategorySaveResponse response = session.send(request);
+    CategorySaveResponse response = session.getRpcClient().send(request);
 
-    CategoryModel actual = session.send(new CategoryRead<>(objectId, CategoryModel.class));
+    CategoryModel actual = session.getRpcClient()
+        .send(new CategoryRead<>(objectId, CategoryModel.class));
     CategoryModel expected = CategoryModel.builder().manufacturer("Stark Industries")
         .objId(objectId).id(response.getEntry()).productid("").serviceTag("").serial("")
         .firmware("").description("").build();
@@ -144,9 +145,10 @@ public class IdoitJavaApiIT {
         .objId(objectId).build();
     CategorySave request = new CategorySave(model);
 
-    CategorySaveResponse response = session.send(request);
+    CategorySaveResponse response = session.getRpcClient().send(request);
 
-    CategoryModel actual = session.send(new CategoryRead<>(objectId, CategoryModel.class));
+    CategoryModel actual = session.getRpcClient()
+        .send(new CategoryRead<>(objectId, CategoryModel.class));
     CategoryModel expected = CategoryModel.builder().manufacturer("Umbrella Corporation")
         .objId(objectId).id(response.getEntry()).productid("").serviceTag("").serial("")
         .firmware("").description("").build();
@@ -162,12 +164,12 @@ public class IdoitJavaApiIT {
         .add(new CategorySave(CategoryModel.builder().manufacturer("Wayne Enterprises")
             .objId(objectId).build()));
 
-    session.send(batch);
+    session.getRpcClient().send(batch);
 
-    CategoryModel actualModel = session
+    CategoryModel actualModel = session.getRpcClient()
         .send(new CategoryRead<>(objectId, CategoryModel.class));
     assertThat(actualModel.getManufacturer()).isEqualTo("Wayne Enterprises");
-    CategoryGeneral actualGeneral = session.send(new CategoryRead<>(objectId,
+    CategoryGeneral actualGeneral = session.getRpcClient().send(new CategoryRead<>(objectId,
         CategoryGeneral.class));
     assertThat(actualGeneral.getDescription()).isEqualTo("Batch this!");
   }
@@ -177,7 +179,7 @@ public class IdoitJavaApiIT {
   void testPurgeObject() {
     ObjectDelete request = new ObjectDelete(objectId, DeleteAction.PURGE);
 
-    SimpleSuccessResponse actual = session.send(request);
+    SimpleSuccessResponse actual = session.getRpcClient().send(request);
 
     assertThat(actual).isNotNull();
   }
@@ -231,7 +233,7 @@ public class IdoitJavaApiIT {
   }
 
   private List<GeneralObjectData> getGeneralObject(String title) {
-    ObjectsReadResponse response = session.send(getObjectsReadRequest(title));
+    ObjectsReadResponse response = session.getRpcClient().send(getObjectsReadRequest(title));
     return response.getObjects();
   }
 

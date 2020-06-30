@@ -17,10 +17,10 @@ import java.util.Optional;
 
 class ObjectsReader {
 
-  private final IdoitSession session;
+  private final JsonRpcClient rpcClient;
 
-  public ObjectsReader(IdoitSession session) {
-    this.session = session;
+  public ObjectsReader(JsonRpcClient rpcClient) {
+    this.rpcClient = rpcClient;
   }
 
   public <T extends IdoitObject> Collection<T> read(Class<T> objectClass) {
@@ -39,7 +39,7 @@ class ObjectsReader {
   }
 
   private <T extends IdoitObject> Map<ObjectId, T> readObjects(ObjectsRead<T> request) {
-    ObjectsReadResponse response = session.send(request);
+    ObjectsReadResponse response = rpcClient.send(request);
 
     Map<ObjectId, T> objectsById = new HashMap<>();
     response.getObjects().forEach(o -> {
@@ -60,7 +60,7 @@ class ObjectsReader {
             .forEach(read -> requests.addWithPrefix("category", read))
     );
 
-    return session.send(requests);
+    return rpcClient.send(requests);
   }
 
   private <T extends IdoitObject> Collection<T> addCategoriesToObjects(Map<ObjectId, T> objects,

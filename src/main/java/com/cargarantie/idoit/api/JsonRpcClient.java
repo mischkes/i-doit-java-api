@@ -21,7 +21,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import lombok.SneakyThrows;
 
-class JsonRpcClient {
+public class JsonRpcClient {
 
   private final RestClientWrapper restClient;
   private final String apiKey;
@@ -29,36 +29,18 @@ class JsonRpcClient {
   private final JsonRestClientWrapper jsonRestClient;
   private final ObjectMapper mapper = IdoitObjectMapper.getObjectMapper();
 
-  public JsonRpcClient(RestClientWrapper restClient, String apiKey) {
+  JsonRpcClient(RestClientWrapper restClient, String apiKey) {
     this(restClient, apiKey, new JsonRpcResponseCleaner(),
         new JsonRestClientWrapper(restClient));
   }
 
-  public JsonRpcClient(RestClientWrapper restClient, String apiKey,
+  JsonRpcClient(RestClientWrapper restClient, String apiKey,
       JsonRpcResponseCleaner responseCleaner,
       JsonRestClientWrapper jsonRestClient) {
     this.restClient = restClient;
     this.responseCleaner = responseCleaner;
     this.apiKey = apiKey;
     this.jsonRestClient = jsonRestClient;
-  }
-
-  public void login(String username, String password) {
-    MultivaluedMap<String, Object> authHeaders = new MultivaluedHashMap<>();
-    authHeaders.add("X-RPC-Auth-Username", username);
-    authHeaders.add("X-RPC-Auth-Password", password);
-    restClient.setAuthHeaders(authHeaders);
-
-    LoginResponse response = send(new Login());
-
-    MultivaluedMap<String, Object> newHeaders = new MultivaluedHashMap<>();
-    newHeaders.add("X-RPC-Auth-Session", response.getSessionId());
-    restClient.setAuthHeaders(newHeaders);
-  }
-
-  public void logout() {
-    send(new Logout());
-    restClient.setAuthHeaders(new MultivaluedHashMap<>());
   }
 
   public <T> T send(IdoitRequest<T> request) {
@@ -88,6 +70,24 @@ class JsonRpcClient {
     });
 
     return results;
+  }
+
+  void login(String username, String password) {
+    MultivaluedMap<String, Object> authHeaders = new MultivaluedHashMap<>();
+    authHeaders.add("X-RPC-Auth-Username", username);
+    authHeaders.add("X-RPC-Auth-Password", password);
+    restClient.setAuthHeaders(authHeaders);
+
+    LoginResponse response = send(new Login());
+
+    MultivaluedMap<String, Object> newHeaders = new MultivaluedHashMap<>();
+    newHeaders.add("X-RPC-Auth-Session", response.getSessionId());
+    restClient.setAuthHeaders(newHeaders);
+  }
+
+  void logout() {
+    send(new Logout());
+    restClient.setAuthHeaders(new MultivaluedHashMap<>());
   }
 
   private JsonRpcRequest newJsonRpcRequest(IdoitRequest<?> request, String id) {

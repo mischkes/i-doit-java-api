@@ -39,11 +39,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ObjectsReaderTest {
 
   @Mock
-  private IdoitSession session;
+  private JsonRpcClient rpcClient;
 
   @Test
   void readWithClassArg_shouldDelegateWithObjectsReadRequest() {
-    ObjectsReader reader = spy(new ObjectsReader(session));
+    ObjectsReader reader = spy(new ObjectsReader(rpcClient));
     doReturn(null).when(reader).read(any(ObjectsRead.class));
 
     reader.read(TestObject.class);
@@ -54,7 +54,7 @@ class ObjectsReaderTest {
 
   @Test
   void read_shouldThrowException_whenObjectTypeMissing() {
-    ObjectsReader reader = new ObjectsReader(session);
+    ObjectsReader reader = new ObjectsReader(rpcClient);
 
     assertThatThrownBy(() -> reader.read(ObjectsRead.<TestObject>builder().build()))
         .isInstanceOf(IllegalArgumentException.class)
@@ -63,15 +63,15 @@ class ObjectsReaderTest {
 
   @Test
   void read_shouldReadGeneralObjectDate_thenCategories_thenReturnIdoitObjects() {
-    ObjectsReader reader = new ObjectsReader(session);
+    ObjectsReader reader = new ObjectsReader(rpcClient);
     ObjectsReadResponse objectsReadResponse = new ObjectsReadResponse(Arrays.asList(
         newGeneralObjectData(42), newGeneralObjectData(43), newGeneralObjectData(99)));
-    when(session.send(any(ObjectsRead.class))).thenReturn(objectsReadResponse);
-    when(session.send(any(Batch.class))).thenAnswer(this::categoryBatchResponse);
+    when(rpcClient.send(any(ObjectsRead.class))).thenReturn(objectsReadResponse);
+    when(rpcClient.send(any(Batch.class))).thenAnswer(this::categoryBatchResponse);
 
     Collection<TestObject> objects = reader.read(TestObject.class);
 
-    verify(session).send(ObjectsRead.<TestObject>builder().filterType(TestObject.class).build());
+    verify(rpcClient).send(ObjectsRead.<TestObject>builder().filterType(TestObject.class).build());
     assertThat(objects).containsExactlyInAnyOrder(expectedTestObject(42), expectedTestObject(43),
         expectedTestObject(99));
   }

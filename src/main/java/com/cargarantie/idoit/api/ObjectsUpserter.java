@@ -17,10 +17,10 @@ import lombok.SneakyThrows;
 
 class ObjectsUpserter {
 
-  private final IdoitSession session;
+  private final JsonRpcClient rpcClient;
 
-  public ObjectsUpserter(IdoitSession session) {
-    this.session = session;
+  public ObjectsUpserter(JsonRpcClient rpcClient) {
+    this.rpcClient = rpcClient;
   }
 
   @SneakyThrows
@@ -50,7 +50,7 @@ class ObjectsUpserter {
             .peek(category -> IdoitCategoryAccess.setObjId(category, object.getId()))
             .map(CategorySave::new)).collect(Collectors.toList());
 
-    session.send(new Batch<Object>("archive", archiveRequests)
+    rpcClient.send(new Batch<Object>("archive", archiveRequests)
         .addAll("update", updateRequests));
   }
 
@@ -63,7 +63,7 @@ class ObjectsUpserter {
     for (int i = 0; i < createObjects.size(); ++i) {
       createBatch.add(Integer.toString(i), createRequests.get(i));
     }
-    Map<String, ObjectCreateResponse> createResponses = session.send(createBatch);
+    Map<String, ObjectCreateResponse> createResponses = rpcClient.send(createBatch);
     for (int i = 0; i < createObjects.size(); ++i) {
       ObjectCreateResponse response = createResponses.get(Integer.toString(i));
       IdoitObjectAccess.setId(createObjects.get(i), response.getId());
