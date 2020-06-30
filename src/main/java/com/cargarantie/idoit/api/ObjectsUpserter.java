@@ -1,7 +1,5 @@
 package com.cargarantie.idoit.api;
 
-import static com.cargarantie.idoit.api.PrivilegedAccess.idoitObjectAccess;
-
 import com.cargarantie.idoit.api.jsonrpc.Batch;
 import com.cargarantie.idoit.api.jsonrpc.CategorySave;
 import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
@@ -48,7 +46,7 @@ class ObjectsUpserter {
         .collect(Collectors.toList());
 
     List<CategorySave> updateRequests = updateObjects.stream().flatMap(object ->
-        idoitObjectAccess.getCategories(object).peek(category -> category.setObjId(object.getId()))
+        IdoitObjectAccess.getCategories(object).peek(category -> category.setObjId(object.getId()))
             .map(CategorySave::new)).collect(Collectors.toList());
 
     session.send(new Batch<Object>("archive", archiveRequests)
@@ -67,7 +65,7 @@ class ObjectsUpserter {
     Map<String, ObjectCreateResponse> createResponses = session.send(createBatch);
     for (int i = 0; i < createObjects.size(); ++i) {
       ObjectCreateResponse response = createResponses.get(Integer.toString(i));
-      idoitObjectAccess.setId(createObjects.get(i), response.getId());
+      IdoitObjectAccess.setId(createObjects.get(i), response.getId());
     }
   }
 
@@ -80,8 +78,8 @@ class ObjectsUpserter {
     updateObjects.forEach(up -> {
       GeneralObjectData current = currentBySysid.remove(up.getGeneral().getSysid());
       if (current != null) {
-        idoitObjectAccess.setId(up, current.getId());
-        idoitObjectAccess.getCategories(up).forEach(cat -> cat.setObjId(current.getId()));
+        IdoitObjectAccess.setId(up, current.getId());
+        IdoitObjectAccess.getCategories(up).forEach(cat -> cat.setObjId(current.getId()));
       }
     });
 

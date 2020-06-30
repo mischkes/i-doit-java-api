@@ -13,10 +13,10 @@ import lombok.SneakyThrows;
 public class Util {
 
   @SneakyThrows
-  public static Object getStaticField(Class<?> containingClass, String fieldName) {
+  public static Field getField(Class<?> containingClass, String fieldName) {
     Field field = containingClass.getDeclaredField(fieldName);
     field.setAccessible(true);
-    return field.get(null);
+    return field;
   }
 
   @SneakyThrows
