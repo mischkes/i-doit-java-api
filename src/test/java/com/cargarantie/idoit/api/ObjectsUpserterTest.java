@@ -15,7 +15,6 @@ import com.cargarantie.idoit.api.jsonrpc.ObjectDelete.DeleteAction;
 import com.cargarantie.idoit.api.model.CategoryGeneral;
 import com.cargarantie.idoit.api.model.IdoitObject;
 import com.cargarantie.idoit.api.model.annotation.ObjectTypeName;
-import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,14 +60,14 @@ class ObjectsUpserterTest {
     ObjectsUpserter upserter = new ObjectsUpserter(client);
     when(client.send(new Batch<>()
         .add("0", new ObjectCreate("MY_OBJECT", "title42"))))
-        .thenReturn(mapOf("0", new ObjectCreateResponse(ObjectId.of(999), "")));
+        .thenReturn(mapOf("0", new ObjectCreateResponse(of(999), "")));
     MyObject update = new MyObject("sys42", "title42");
 
     upserter.upsert(Collections.emptyList(), Collections.singletonList(update));
 
     verify(client).send(new Batch<>()
         .add("update0", new CategorySave(update.general)));
-    assertThat(update.getId()).isEqualTo(ObjectId.of(999));
+    assertThat(update.getId()).isEqualTo(of(999));
   }
 
   private Map<String, Object> mapOf(String key, Object value) {

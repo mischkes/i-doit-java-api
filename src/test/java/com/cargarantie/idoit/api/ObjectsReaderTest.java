@@ -3,8 +3,6 @@ package com.cargarantie.idoit.api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,17 +38,6 @@ class ObjectsReaderTest {
 
   @Mock
   private JsonRpcClient rpcClient;
-
-  @Test
-  void readWithClassArg_shouldDelegateWithObjectsReadRequest() {
-    ObjectsReader reader = spy(new ObjectsReader(rpcClient));
-    doReturn(null).when(reader).read(any(ObjectsRead.class));
-
-    reader.read(TestObject.class);
-
-    verify(reader).read(ObjectsRead.<TestObject>builder().filterType(TestObject.class)
-        .build());
-  }
 
   @Test
   void read_shouldThrowException_whenObjectTypeMissing() {
