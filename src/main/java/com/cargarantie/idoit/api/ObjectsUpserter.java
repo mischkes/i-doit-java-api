@@ -56,13 +56,11 @@ class ObjectsUpserter {
 
   private <T extends IdoitObject> void createObjects(List<T> createObjects) {
 
-    List<ObjectCreate> createRequests = createObjects.stream()
-        .map(ObjectCreate::new).collect(Collectors.toList());
-
     Batch<ObjectCreateResponse> createBatch = new Batch<>();
     for (int i = 0; i < createObjects.size(); ++i) {
-      createBatch.add(Integer.toString(i), createRequests.get(i));
+      createBatch.add(Integer.toString(i), new ObjectCreate(createObjects.get(i)));
     }
+
     Map<String, ObjectCreateResponse> createResponses = rpcClient.send(createBatch);
     for (int i = 0; i < createObjects.size(); ++i) {
       ObjectCreateResponse response = createResponses.get(Integer.toString(i));

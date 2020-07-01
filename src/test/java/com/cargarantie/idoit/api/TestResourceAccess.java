@@ -9,7 +9,7 @@ import lombok.SneakyThrows;
 
 public class TestResourceAccess {
 
-  private final ObjectMapper mapper;
+  protected final ObjectMapper mapper;
 
   public TestResourceAccess() {
     mapper = IdoitObjectMapper.getObjectMapper();
@@ -18,11 +18,6 @@ public class TestResourceAccess {
 
   @SneakyThrows
   public Object parseJson(String json) {
-    return mapper.readValue(json, Object.class);
-  }
-
-  @SneakyThrows
-  public Object parseJson(InputStream json) {
     return mapper.readValue(json, Object.class);
   }
 
@@ -36,11 +31,11 @@ public class TestResourceAccess {
 
   @SneakyThrows
   public <T> T getJson(String fileName, Class<T> resultClass) {
-    return mapper.readValue(getJson(fileName), resultClass);
+    return mapper.readValue(getJsonString(fileName), resultClass);
   }
 
   @SneakyThrows
-  public String getJson(String fileName) {
+  public String getJsonString(String fileName) {
     return getResourceAsString(getClass().getSimpleName() + "/" + fileName + ".json");
   }
 }

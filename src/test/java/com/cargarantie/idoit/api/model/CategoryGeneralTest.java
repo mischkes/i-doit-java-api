@@ -3,20 +3,16 @@ package com.cargarantie.idoit.api.model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cargarantie.idoit.api.TestResourceAccess;
-import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.cargarantie.idoit.api.jsonrpc.JsonRpcResponse;
 import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
 import com.cargarantie.idoit.api.model.param.ObjectId;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class CategoryGeneralTest extends TestResourceAccess {
-
-  private ObjectMapper mapper = IdoitObjectMapper.getObjectMapper();
 
   public static void setCreatedData(CategoryGeneral category, LocalDateTime createdAt,
       String createdBy) {
