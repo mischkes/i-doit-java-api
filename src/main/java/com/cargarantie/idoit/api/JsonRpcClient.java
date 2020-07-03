@@ -25,20 +25,15 @@ public class JsonRpcClient {
 
   private final RestClientWrapper restClient;
   private final String apiKey;
-  private final JsonRpcResponseCleaner responseCleaner;
   private final JsonRestClientWrapper jsonRestClient;
   private final ObjectMapper mapper = IdoitObjectMapper.getObjectMapper();
 
   JsonRpcClient(RestClientWrapper restClient, String apiKey) {
-    this(restClient, apiKey, new JsonRpcResponseCleaner(),
-        new JsonRestClientWrapper(restClient));
+    this(restClient, apiKey, new JsonRestClientWrapper(restClient));
   }
 
-  JsonRpcClient(RestClientWrapper restClient, String apiKey,
-      JsonRpcResponseCleaner responseCleaner,
-      JsonRestClientWrapper jsonRestClient) {
+  JsonRpcClient(RestClientWrapper restClient, String apiKey, JsonRestClientWrapper jsonRestClient) {
     this.restClient = restClient;
-    this.responseCleaner = responseCleaner;
     this.apiKey = apiKey;
     this.jsonRestClient = jsonRestClient;
   }
@@ -100,12 +95,12 @@ public class JsonRpcClient {
   private <T> T parseResult(JsonRpcResponse jsonRpcResponse, IdoitRequest<T> request) {
 
     if (jsonRpcResponse.hasError()) {
-      throw new IdoitException("Received error <" + jsonRpcResponse.getError()
-          + "> for request <" + request + ">");
+      throw new IdoitException(String.format("Received error <%s> for request <%s>",
+          jsonRpcResponse.getError(), request));
     } else if (jsonRpcResponse.getResult() == null) {
       throw new IdoitException("Result is null for request <" + request + ">");
     } else {
-      return responseCleaner.cleanResult(request, jsonRpcResponse.getResult());
+      return request.mapResponse(jsonRpcResponse.getResult());
     }
   }
 }

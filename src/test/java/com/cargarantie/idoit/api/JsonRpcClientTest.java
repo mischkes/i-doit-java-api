@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.cargarantie.idoit.api.jsonrpc.Batch;
@@ -65,8 +64,7 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldWrapRequestInJsonRpc_and_sendItToRestClientWrapper() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", identityCleaner(),
-        requestMapper);
+    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
     when(requestMapper.send(any(), any())).thenAnswer(this::getTestResponse);
 
     TestResponse response = client.send(new TestRequest(42));
@@ -81,8 +79,7 @@ class JsonRpcClientTest extends TestResourceAccess {
     batch.add("42", new TestRequest(42));
     batch.add("41", new TestRequest(41));
     batch.add("99", new TestRequest(99));
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", identityCleaner(),
-        requestMapper);
+    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
 
     Map<String, TestResponse> response = client.send(batch);
 
@@ -93,8 +90,7 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldReturnEmptyMap_forEmptyBatch() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", nullCleaner(),
-        requestMapper);
+    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
 
     Map<String, TestResponse> response = client.send(new Batch<>());
 
@@ -103,8 +99,7 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldThrowAnException_onErrorResponse() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", nullCleaner(),
-        requestMapper);
+    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
     when(requestMapper.send(any(), any())).thenAnswer(a -> new JsonRpcResponse("id", null,
         "error"));
 
@@ -116,8 +111,7 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldProperlyFormat_onLargeErrorResponses() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", nullCleaner(),
-        requestMapper);
+    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
     when(requestMapper.send(any(), any()))
         .thenAnswer(a -> getJson("constraintViolationErrorMessage", JsonRpcResponse.class));
 
@@ -135,8 +129,7 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldThrowAnException_onNullResultResponse() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", nullCleaner(),
-        requestMapper);
+    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
     when(requestMapper.send(any(), any())).thenAnswer(a -> new JsonRpcResponse("id", null,
         null));
 
@@ -158,17 +151,6 @@ class JsonRpcClientTest extends TestResourceAccess {
   private JsonRpcResponse[] getTestResponseBatched(InvocationOnMock invocationOnMock) {
     List<JsonRpcRequest> requests = invocationOnMock.getArgument(0);
     return requests.stream().map(this::getResponse).toArray(JsonRpcResponse[]::new);
-  }
-
-  private JsonRpcResponseCleaner identityCleaner() {
-    JsonRpcResponseCleaner cleaner = nullCleaner();
-    when(cleaner.cleanResult(any(), any())).then(a -> a.getArgument(1));
-
-    return cleaner;
-  }
-
-  private JsonRpcResponseCleaner nullCleaner() {
-    return mock(JsonRpcResponseCleaner.class);
   }
 
   private MultivaluedMap<String, Object> map(String... keyValue) {
