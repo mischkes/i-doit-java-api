@@ -10,14 +10,16 @@ import com.cargarantie.idoit.api.jsonrpc.Batch;
 import com.cargarantie.idoit.api.jsonrpc.IdoitRequest;
 import com.cargarantie.idoit.api.jsonrpc.JsonRpcRequest;
 import com.cargarantie.idoit.api.jsonrpc.JsonRpcResponse;
+import com.cargarantie.idoit.api.jsonrpc.LoginResponse;
 import com.cargarantie.idoit.api.model.exception.IdoitException;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import lombok.Value;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -29,43 +31,54 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class JsonRpcClientTest extends TestResourceAccess {
 
   @Mock
-  private RestClientWrapper restClient;
+  private JsonRestClientWrapper restClient;
 
-  @Mock
-  private JsonRestClientWrapper requestMapper;
+  private JsonRpcClient client;
+
+
+  @BeforeEach
+  void beforeEach() {
+    client = new JsonRpcClient(restClient, "apiKey");
+  }
 
   @Test
   void login_shouldSendRequestWithBasicAuthCredentials_then_ChangeHeadersToToken() {
-    // given
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey");
-    AtomicReference<MultivaluedMap<String, Object>> latestHeaders = new AtomicReference<>();
-    doAnswer(a -> {
-      latestHeaders.set(a.getArgument(0));
-      return null;
-    }).when(restClient).setAuthHeaders(any());
+    class Headers {
 
-    String expectedLoginRequest = "{\"id\":\"0\",\"method\":\"idoit.login\",\"params\":{\"apikey\":\"apiKey\"},\"jsonrpc\":\"2.0\"}";
-    String loginResponse = "{\"id\":\"0\",\"jsonrpc\":\"2.0\",\"result\":{\"session-id\":\"theNewAndSecretSessionId\"}}";
-    AtomicReference<MultivaluedMap<String, Object>> postHeaders = new AtomicReference<>();
-    when(restClient.post(expectedLoginRequest)).thenAnswer(a -> {
-      postHeaders.set(latestHeaders.get());
-      return loginResponse;
-    });
+      MultivaluedMap<String, Object> latestHeaders;
+      MultivaluedMap<String, Object> sendHeaders;
+      Object loginResponse;
 
-    //when
+      Object setLatest(InvocationOnMock invocation) {
+        latestHeaders = invocation.getArgument(0);
+        return null;
+      }
+
+      Object doLogin(InvocationOnMock invocation) {
+        sendHeaders = latestHeaders;
+        return loginResponse;
+      }
+    }
+
+    Headers headers = new Headers();
+    JsonRpcRequest expectedLoginRequest = new JsonRpcRequest("0", "idoit.login",
+        Collections.singletonMap("apikey", "apiKey"));
+    headers.loginResponse = new JsonRpcResponse("0", LoginResponse.builder()
+        .sessionId("theNewAndSecretSessionId").build(), null);
+    doAnswer(headers::setLatest).when(restClient).setAuthHeaders(any());
+    doAnswer(headers::doLogin).when(restClient).send(expectedLoginRequest, JsonRpcResponse.class);
+
     client.login("username", "password");
 
-    //then
-    assertThat(postHeaders.get()).isEqualTo(map("X-RPC-Auth-Username", "username",
+    assertThat(headers.sendHeaders).isEqualTo(map("X-RPC-Auth-Username", "username",
         "X-RPC-Auth-Password", "password"));
-    assertThat(latestHeaders.get())
+    assertThat(headers.latestHeaders)
         .isEqualTo(map("X-RPC-Auth-Session", "theNewAndSecretSessionId"));
   }
 
   @Test
   void send_shouldWrapRequestInJsonRpc_and_sendItToRestClientWrapper() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
-    when(requestMapper.send(any(), any())).thenAnswer(this::getTestResponse);
+    when(restClient.send(any(), any())).thenAnswer(this::getTestResponse);
 
     TestResponse response = client.send(new TestRequest(42));
 
@@ -74,13 +87,11 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldSendBatchInOneJsonRpc_andReturnResponsesInRequestOrder() {
-    when(requestMapper.send(any(), any())).thenAnswer(this::getTestResponseBatched);
+    when(restClient.send(any(), any())).thenAnswer(this::getTestResponseBatched);
     Batch<TestResponse> batch = new Batch<>();
     batch.add("42", new TestRequest(42));
     batch.add("41", new TestRequest(41));
     batch.add("99", new TestRequest(99));
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
-
     Map<String, TestResponse> response = client.send(batch);
 
     assertThat(response.keySet()).containsExactly("42", "41", "99");
@@ -90,8 +101,6 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldReturnEmptyMap_forEmptyBatch() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
-
     Map<String, TestResponse> response = client.send(new Batch<>());
 
     assertThat(response).isEmpty();
@@ -99,8 +108,7 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldThrowAnException_onErrorResponse() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
-    when(requestMapper.send(any(), any())).thenAnswer(a -> new JsonRpcResponse("id", null,
+    when(restClient.send(any(), any())).thenAnswer(a -> new JsonRpcResponse("id", null,
         "error"));
 
     assertThatThrownBy(() -> client.send(new TestRequest(0)))
@@ -111,8 +119,7 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldProperlyFormat_onLargeErrorResponses() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
-    when(requestMapper.send(any(), any()))
+    when(restClient.send(any(), any()))
         .thenAnswer(a -> getJson("constraintViolationErrorMessage", JsonRpcResponse.class));
 
     assertThatThrownBy(() -> client.send(new TestRequest(0)))
@@ -129,8 +136,7 @@ class JsonRpcClientTest extends TestResourceAccess {
 
   @Test
   void send_shouldThrowAnException_onNullResultResponse() {
-    JsonRpcClient client = new JsonRpcClient(restClient, "apiKey", requestMapper);
-    when(requestMapper.send(any(), any())).thenAnswer(a -> new JsonRpcResponse("id", null,
+    when(restClient.send(any(), any())).thenAnswer(a -> new JsonRpcResponse("id", null,
         null));
 
     assertThatThrownBy(() -> client.send(new TestRequest(0)))

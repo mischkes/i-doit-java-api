@@ -23,17 +23,15 @@ import lombok.SneakyThrows;
 
 public class JsonRpcClient {
 
-  private final RestClientWrapper restClient;
   private final String apiKey;
   private final JsonRestClientWrapper jsonRestClient;
   private final ObjectMapper mapper = IdoitObjectMapper.getObjectMapper();
 
   JsonRpcClient(RestClientWrapper restClient, String apiKey) {
-    this(restClient, apiKey, new JsonRestClientWrapper(restClient));
+    this(new JsonRestClientWrapper(restClient), apiKey);
   }
 
-  JsonRpcClient(RestClientWrapper restClient, String apiKey, JsonRestClientWrapper jsonRestClient) {
-    this.restClient = restClient;
+  JsonRpcClient(JsonRestClientWrapper jsonRestClient, String apiKey) {
     this.apiKey = apiKey;
     this.jsonRestClient = jsonRestClient;
   }
@@ -71,18 +69,18 @@ public class JsonRpcClient {
     MultivaluedMap<String, Object> authHeaders = new MultivaluedHashMap<>();
     authHeaders.add("X-RPC-Auth-Username", username);
     authHeaders.add("X-RPC-Auth-Password", password);
-    restClient.setAuthHeaders(authHeaders);
+    jsonRestClient.setAuthHeaders(authHeaders);
 
     LoginResponse response = send(new Login());
 
     MultivaluedMap<String, Object> newHeaders = new MultivaluedHashMap<>();
     newHeaders.add("X-RPC-Auth-Session", response.getSessionId());
-    restClient.setAuthHeaders(newHeaders);
+    jsonRestClient.setAuthHeaders(newHeaders);
   }
 
   void logout() {
     send(new Logout());
-    restClient.setAuthHeaders(new MultivaluedHashMap<>());
+    jsonRestClient.setAuthHeaders(new MultivaluedHashMap<>());
   }
 
   private JsonRpcRequest newJsonRpcRequest(IdoitRequest<?> request, String id) {

@@ -2,6 +2,7 @@ package com.cargarantie.idoit.api;
 
 import com.cargarantie.idoit.api.config.IdoitObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.ws.rs.core.MultivaluedMap;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +14,10 @@ class JsonRestClientWrapper {
 
   public JsonRestClientWrapper(RestClientWrapper restClient) {
     this.restClient = restClient;
+  }
+
+  public void setAuthHeaders(MultivaluedMap<String, Object> authHeaders) {
+    restClient.setAuthHeaders(authHeaders);
   }
 
   @SneakyThrows
