@@ -157,6 +157,8 @@
               <goal>report</goal>
             </goals>
           </execution>
+
+          <!--codecov wants the reports done like this-->
           <execution>
             <id>report</id>
             <phase>test</phase>
