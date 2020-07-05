@@ -70,6 +70,7 @@
       <version>1.7.30</version>
     </dependency>
 
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -187,6 +188,8 @@
                 <groupId>com.cargarantie.codeanalysis</groupId>
                 <artifactId>build-tools</artifactId>
                 <version>${build-tools.version}</version>
+                <scope>system</scope>
+                <systemPath>${project.basedir}/mvn/resources/build-tools/${build-tools.version}/build-tools-${build-tools.version}.jar</systemPath>
               </dependency>
               <dependency>
                 <groupId>com.puppycrawl.tools</groupId>

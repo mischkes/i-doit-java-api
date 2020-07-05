@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.cargarantie.codeanalysis</groupId>
+	<version>1.2.1</version>
+	<artifactId>build-tools</artifactId>
+
+	<!-- Car Garantie Repositories -->
+	<distributionManagement>
+		<repository>
+			<id>com.cargarantie.repo.releases</id>
+			<url>https://repository.cargarantie.com/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>com.cargarantie.repo.snapshots</id>
+			<url>https://repository.cargarantie.com/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>com.cargarantie.repo.releases</id>
+			<url>https://repository.cargarantie.com/repository/maven-public/</url>
+		</repository>
+	</repositories>
+	<!-- Car Garantie Repositories -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>com.cargarantie.repo.releases</id>
+			<url>https://repository.cargarantie.com/repository/maven-public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>
