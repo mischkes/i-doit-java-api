@@ -1,3 +1,6 @@
+[![Build status](https://travis-ci.com/mischkes/i-doit-java-api.svg?branch=travis-integration)](https://travis-ci.com/github/mischkes/i-doit-java-api)
+ [![codecov.io Code Coverage](https://img.shields.io/codecov/c/github/dwyl/hapi-auth-jwt2.svg?maxAge=2592000)](https://codecov.io/github/dwyl/hapi-auth-jwt2?branch=master)
+[![Known Vulnerabilities](https://snyk.io/test/github/dwyl/hapi-auth-jwt2/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dwyl/hapi-auth-jwt2?targetFile=package.json)
 # i-doit-java-api
 Java Library for i-doit JSON-RPC. The REST API is described at https://kb.i-doit.com/display/en/Methods
 
