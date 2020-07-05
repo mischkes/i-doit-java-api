@@ -10,14 +10,14 @@ Java Library for i-doit JSON-RPC. The REST API is described at https://kb.i-doit
 * Supports batch operations
 * Supports easy modification of full objects / list of objects
 
-##Missing features
+## Missing features
 * Multi-Categories
 * Dialog management
 * Report management
 * Deserializing to int and ObjectId fields, analog to IdoitStringDeserializer
 * Language support
 
-####Parameter type "DialogList"
+#### Parameter type "DialogList"
 Unsupported.
 
 Sample Data
@@ -37,7 +37,7 @@ Sample Data 2
       "type": "C__CATG__NETWORK_PORT"
     }
     
-####Parameter type "Multiselect"
+#### Parameter type "Multiselect"
 No write support.
 
 Sample Data
@@ -53,7 +53,7 @@ Sample Data
       }
     ]
 
-####Parameter type "ObjectBrowser" - custom variants
+#### Parameter type "ObjectBrowser" - custom variants
 
 Only supported as standard variant.
 
@@ -82,7 +82,7 @@ Sample Data
       "con_type": "RJ-45"
     }
     
-####Parameter type "MultiObjectBrowser"
+#### Parameter type "MultiObjectBrowser"
 
 Unsupported.
 
@@ -109,7 +109,7 @@ Sample Data
         }
     ]
     
-####Custom category DTO cleaning
+#### Custom category DTO cleaning
 Custom categories currently have empty parameters, that are only filled with meta information.
 Standard categories do not have that. As a result, java object parameters are parsed as empty,
 not as null. This discrepancy should be fixed by removing parameters from json, that contain
