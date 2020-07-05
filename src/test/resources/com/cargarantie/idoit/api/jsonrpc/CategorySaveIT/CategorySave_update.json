@@ -1,0 +1,16 @@
+{
+  "params": {
+    "data": {
+      "contact": 158,
+      "role": "User",
+      "primary": "no"
+    },
+    "object": 1412,
+    "category": "C__CATG__CONTACT",
+    "apikey": "c1ia5q",
+    "entry": 871
+  },
+  "id": "0",
+  "method": "cmdb.category.save",
+  "jsonrpc": "2.0"
+}

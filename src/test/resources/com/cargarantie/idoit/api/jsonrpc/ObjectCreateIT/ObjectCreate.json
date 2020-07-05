@@ -1,0 +1,10 @@
+{
+  "params": {
+    "type": "C__OBJTYPE__SERVER",
+    "title": "My little server",
+    "apikey": "c1ia5q"
+  },
+  "id": "0",
+  "method": "cmdb.object.create",
+  "jsonrpc": "2.0"
+}

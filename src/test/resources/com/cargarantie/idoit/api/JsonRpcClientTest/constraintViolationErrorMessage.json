@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "error": {
+    "code": -32603,
+    "message": "Internal error: There was a validation error: sysid(text): The given value is not unique and is already being used in other objects: <ul class=\"m0 mt10 list-style-none\"><li><span>Virtual server » My little server</span></li></ul>",
+    "data": {
+      "sysid": "The given value is not unique and is already being used in other objects: <ul class=\"m0 mt10 list-style-none\"><li><span>Virtual server » My little server</span></li></ul>"
+    }
+  }
+}

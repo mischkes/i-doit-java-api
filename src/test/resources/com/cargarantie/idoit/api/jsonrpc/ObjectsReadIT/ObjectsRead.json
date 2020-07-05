@@ -1,0 +1,12 @@
+{
+  "params": {
+    "filter": {
+      "type": "C__OBJTYPE__CLIENT"
+    },
+    "order_by": "title",
+    "apikey": "c1ia5q"
+  },
+  "id": "0",
+  "method": "cmdb.objects.read",
+  "jsonrpc": "2.0"
+}

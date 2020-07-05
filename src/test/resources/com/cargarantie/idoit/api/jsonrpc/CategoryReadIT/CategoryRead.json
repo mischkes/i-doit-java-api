@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "method": "cmdb.category.read",
+  "params": {
+    "objID": 1412,
+    "category": "C__CATG__GLOBAL",
+    "apikey": "c1ia5q"
+  },
+  "id": "0"
+}

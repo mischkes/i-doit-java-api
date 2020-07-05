@@ -1,0 +1,14 @@
+{
+  "id": "0",
+  "jsonrpc": "2.0",
+  "result": {
+    "result": true,
+    "userid": "9",
+    "name": "i-doit Systemadministrator ",
+    "mail": "i-doit@acme-it.example",
+    "username": "admin",
+    "session-id": "37afuc8qfh6r6lgo5sc47gtgj7",
+    "client-id": 1,
+    "client-name": "ACME IT Solutions"
+  }
+}

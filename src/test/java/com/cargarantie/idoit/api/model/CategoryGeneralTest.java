@@ -2,66 +2,54 @@ package com.cargarantie.idoit.api.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.cargarantie.idoit.api.TestResourceAccess;
+import com.cargarantie.idoit.api.jsonrpc.JsonRpcResponse;
+import com.cargarantie.idoit.api.model.param.CategoryId;
 import com.cargarantie.idoit.api.model.param.Dialog;
-import com.cargarantie.idoit.api.jasonrpc.JsonRpcResult;
-import com.cargarantie.idoit.api.util.Util;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.cargarantie.idoit.api.model.param.ObjectId;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class CategoryGeneralTest {
-  @Test
-  void testCategoryName() {
-    //Assertions.assertThat(new CategoryGeneral().categoryName()).isEqualTo("C__CATG__GLOBAL");
+public class CategoryGeneralTest extends TestResourceAccess {
+
+  public static void setCreatedData(CategoryGeneral category, LocalDateTime createdAt,
+      String createdBy) {
+    category.setCreated(createdAt);
+    category.setCreatedBy(createdBy);
+  }
+
+  public static void setChangedData(CategoryGeneral category, LocalDateTime changedAt,
+      String changedBy) {
+    category.setChanged(changedAt);
+    category.setChangedBy(changedBy);
   }
 
   @Test
-  void constructCatGeneral(){
-    //new CategoryGeneral().setCre
-    CategoryGeneral.builder().category(Dialog.fromTitle("Other"));
+  void testReadJson() {
+    CategoryGeneral general = loadCategory();
+
+    assertThat(general.getStatus())
+        .isEqualTo(new Dialog(2, "Normal", "LC__CMDB__RECORD_STATUS__NORMAL", ""));
+    assertThat(general.getCreated()).isEqualTo("2015-05-04T18:02:10");
+    assertThat(general.getId()).isEqualTo(CategoryId.of(1412));
+    assertThat(general.getObjId()).isEqualTo(ObjectId.of(1412));
   }
 
   @Test
-  void testReadJson() throws IOException {
-    ObjectMapper mapper = idoitMapper();
+  void writeJson_shouldWriteCorrectJsonString() throws IOException {
+    CategoryGeneral general = loadCategory();
 
-    JsonRpcResult rpcResult = mapper
-        .readValue(Util.getResource("json/categoryGeneralRead.json"), JsonRpcResult.class);
-    CategoryGeneral general = mapper.convertValue(rpcResult.getResult().get(0), CategoryGeneral.class);
+    String actual = mapper.writeValueAsString(general);
 
-    System.out.println(general);
-
-    System.out.println(mapper.writeValueAsString(general));
+    String expected = "{'description':'<p>some description</p>','title':'Laptop 001','status':2,'purpose':1,'category':2,'sysid':'CLIENT_001412','cmdb_status':6,'type':10,'tag':null}";
+    assertThat(parseJson(actual)).isEqualTo(parseJson(expected));
   }
 
-  public ObjectMapper idoitMapper() {
-    ObjectMapper mapper = new ObjectMapper();
-
-    mapper.setSerializationInclusion(Include.NON_NULL);
-    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
-    mapper.registerModule(idoitMapperJavaTimeModule());
-
-    return mapper;
+  private CategoryGeneral loadCategory() {
+    JsonRpcResponse rpcResult = getJson("categoryGeneralRead", JsonRpcResponse.class);
+    return mapper
+        .convertValue(((List<Object>) (rpcResult.getResult())).get(0), CategoryGeneral.class);
   }
-
-  public JavaTimeModule idoitMapperJavaTimeModule() {
-    JavaTimeModule javaTimeModule = new JavaTimeModule();
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
-    javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
-
-    return javaTimeModule;
-  }
-
-
 }

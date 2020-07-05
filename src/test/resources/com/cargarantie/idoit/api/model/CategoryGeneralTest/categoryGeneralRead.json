@@ -1,0 +1,57 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "id": "1412",
+      "objID": "1412",
+      "title": "Laptop 001",
+      "status": {
+        "id": "2",
+        "title": "Normal",
+        "const": "",
+        "title_lang": "LC__CMDB__RECORD_STATUS__NORMAL"
+      },
+      "created": "2015-05-04 18:02:10",
+      "created_by": "admin",
+      "changed": "2020-06-08 11:01:14",
+      "changed_by": "admin",
+      "purpose": {
+        "id": "1",
+        "title": "Production",
+        "const": null,
+        "title_lang": "LC__CMDB__CATG__PURPOSE_PRODUCTION"
+      },
+      "category": {
+        "id": "2",
+        "title": "Demo",
+        "const": null,
+        "title_lang": "Demo"
+      },
+      "sysid": "CLIENT_001412",
+      "cmdb_status": {
+        "id": "6",
+        "title": "in operation",
+        "const": "C__CMDB_STATUS__IN_OPERATION",
+        "title_lang": "LC__CMDB_STATUS__IN_OPERATION"
+      },
+      "type": {
+        "id": "10",
+        "title": "Client",
+        "const": "C__OBJTYPE__CLIENT",
+        "title_lang": "LC__CMDB__OBJTYPE__CLIENT"
+      },
+      "tag": [
+        {
+          "id": "4",
+          "title": "tag1"
+        },
+        {
+          "id": "5",
+          "title": "tag2"
+        }
+      ],
+      "description": "<p>some description</p>"
+    }
+  ]
+}

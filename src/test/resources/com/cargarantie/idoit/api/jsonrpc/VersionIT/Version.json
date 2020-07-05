@@ -1,0 +1,8 @@
+{
+  "jsonrpc": "2.0",
+  "method": "idoit.version",
+  "params": {
+    "apikey": "c1ia5q"
+  },
+  "id": "0"
+}

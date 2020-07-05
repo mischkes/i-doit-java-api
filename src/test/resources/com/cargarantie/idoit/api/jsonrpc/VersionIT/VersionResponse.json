@@ -1,0 +1,17 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "login": {
+      "userid": "9",
+      "name": "i-doit Systemadministrator ",
+      "mail": "i-doit@acme-it.example",
+      "username": "admin",
+      "tenant": "ACME IT Solutions",
+      "language": "en"
+    },
+    "version": "1.14.2",
+    "step": "",
+    "type": "PRO"
+  }
+}

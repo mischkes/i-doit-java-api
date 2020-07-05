@@ -1,82 +1,73 @@
 package com.cargarantie.idoit.api;
 
-
+import com.cargarantie.idoit.api.jsonrpc.Batch;
+import com.cargarantie.idoit.api.jsonrpc.CategoryRead;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsReadResponse;
+import com.cargarantie.idoit.api.model.IdoitCategory;
 import com.cargarantie.idoit.api.model.IdoitObject;
+import com.cargarantie.idoit.api.model.param.ObjectId;
+import com.cargarantie.idoit.api.util.Util;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
-public class ObjectsReader {
-/*
-  private final ObjectMapper mapper;
+class ObjectsReader {
 
-  @Autowired
-  public ObjectsReader(ObjectMapper mapper) {
-    this.mapper = mapper;
-  }
-*/
-  @SneakyThrows
-  public <T extends IdoitObject> List<T> getObjects(IdoitSession session, Class<T> objectClass) {
-    String objectType = /*someReflection*/ null;
+  private final JsonRpcClient rpcClient;
 
-    return null; //loadObjects(session, objectClass, session.objects().filterType(objectType).read()); //new jsonrpc object
-  }
-/*
-  public <T extends IdoitObject> List<T> loadObjects(IdoitSession session, Class<T> objectClass,
-      List<CMDBObject> idoitObjects) {
-
-    return idoitObjects.parallelStream() //building Batch. Assembly of Result to one Object
-        .map(CMDBObject::getID)
-        .map(id -> collectCategories(session, id, objectClass))
-        .collect(Collectors.toList());
+  public ObjectsReader(JsonRpcClient rpcClient) {
+    this.rpcClient = rpcClient;
   }
 
-  @SneakyThrows
-  protected <T extends IdoitObject> T collectCategories(IdoitSession session, int id,
-      Class<T> objectClass) {
-
-    T target = objectClass.newInstance();
-    target.setId(id);
-
-    ReflectionUtils.doWithFields(objectClass, field -> {
-      if (field.getType().isAnnotationPresent(IdoitCategoryName.class)) {
-        Object categoryDto = getCategoryDtoForId(session, id, field.getType());
-        ReflectionUtils.makeAccessible(field);
-        ReflectionUtils.setField(field, target, categoryDto);
-      }
-    });
-
-    return target;
+  public <T extends IdoitObject> Collection<T> read(Class<T> objectClass) {
+    ObjectsRead<T> request = ObjectsRead.<T>builder().filterType(objectClass).build();
+    return read(request);
   }
 
-  //TODO ITAUF-1113: deal with List<IdoitCategory annotated> typs
-  @SneakyThrows
-  private <T> T getCategoryDtoForId(IdoitSession session, int id, Class<T> targetClass) {
-
-    IdoitCategoryName annotation = AnnotationUtils
-        .findAnnotation(targetClass, IdoitCategoryName.class);
-    Collection<CMDBCategory.Value> values =
-        session.category().read(id, annotation.value())
-            .stream()
-            .map(CMDBCategory::values)
-            .findFirst()
-            .orElseGet(Collections::emptyList);
-
-    if (values.isEmpty()) {
-      log.info("no Data found for id: {} in {}", id, annotation.value());
+  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> objectsReadRequest) {
+    if (objectsReadRequest.getFilterType() == null) {
+      throw new IllegalArgumentException("Request needs to specify filterType");
     }
 
-    return convertCategoryDto(values.stream()
-            //avoid bug JDK-8148463 in Collectors.toMap, which cannot deal with null values
-            .collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll),
-        targetClass);
+    Map<ObjectId, T> objectsById = readObjects(objectsReadRequest);
+    Map<String, IdoitCategory> categories = readCategories(objectsById.values());
+    return addCategoriesToObjects(objectsById, categories);
   }
 
-  private <T> T convertCategoryDto(HashMap<String, Object> values, Class<T> targetDto) {
-    return mapper.convertValue(values, targetDto);
-  }*/
+  private <T extends IdoitObject> Map<ObjectId, T> readObjects(ObjectsRead<T> request) {
+    ObjectsReadResponse response = rpcClient.send(request);
+
+    return response.getObjects().stream().map(o -> {
+      T newObject = Util.newInstance(request.getFilterType());
+      IdoitObjectAccess.setId(newObject, o.getId());
+      return newObject;
+    }).collect(Collectors.toMap(t -> t.getId(), Function.identity()));
+  }
+
+  private <T extends IdoitObject> Map<String, IdoitCategory> readCategories(Collection<T> objects) {
+    Batch<IdoitCategory> requests = new Batch<>();
+
+    objects.forEach(object ->
+        IdoitObjectAccess.getCategoryClasses(object)
+            .map(category -> new CategoryRead(object.getId(), category))
+            .forEach(read -> requests.addWithPrefix("category", read))
+    );
+
+    return rpcClient.send(requests);
+  }
+
+  private <T extends IdoitObject> Collection<T> addCategoriesToObjects(Map<ObjectId, T> objects,
+      Map<String, IdoitCategory> categories) {
+
+    categories.values().stream().filter(Objects::nonNull).forEach(category -> {
+      Optional.ofNullable(objects.get(category.getObjId())).ifPresent(
+          object -> IdoitObjectAccess.setCategory(object, category));
+    });
+
+    return objects.values();
+  }
 }

@@ -1,0 +1,38 @@
+{
+            "id": "3",
+            "objID": "11480",
+            "script_c_1581408795758": null,
+            "f_wysiwyg_c_1581408919430": null,
+            "f_link_c_1581409295897": null,
+            "f_password_c_1581409408159": null,
+            "f_textarea_c_1581409425328": null,
+            "html_c_1581408875950": null,
+            "f_dialog_c_1581409438675": {
+                "title": "-1",
+                "prop_type": "yes-no"
+            },
+            "hr_c_1581409449904": null,
+            "f_popup_c_1581409464441": {
+                "identifier": "Dialog"
+            },
+            "f_popup_c_1581409476867": {
+                "prop_type": "calendar"
+            },
+            "f_popup_c_1581409485551": {
+                "prop_type": "browser_object"
+            },
+            "f_popup_c_1581409497243": {
+                "prop_type": "browser_object"
+            },
+            "f_popup_c_1581409516967": {
+                "prop_type": "browser_object"
+            },
+            "f_popup_c_1581409539683": {
+                "prop_type": "browser_object"
+            },
+            "f_text_c_1581409868088": null,
+            "f_popup_c_1591621467892": {
+                "prop_type": "browser_object"
+            },
+            "description": "<p>description</p>\r\n"
+        }

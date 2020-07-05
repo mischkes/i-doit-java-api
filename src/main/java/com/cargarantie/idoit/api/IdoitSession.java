@@ -1,48 +1,50 @@
 package com.cargarantie.idoit.api;
 
+import com.cargarantie.idoit.api.config.ClientConfig;
+import com.cargarantie.idoit.api.jsonrpc.GeneralObjectData;
+import com.cargarantie.idoit.api.jsonrpc.ObjectsRead;
 import com.cargarantie.idoit.api.model.IdoitObject;
-import com.cargarantie.idoit.api.jasonrpc.Batch;
-import com.cargarantie.idoit.api.jasonrpc.IdoitRequest;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-public interface IdoitSession {
+public class IdoitSession implements AutoCloseable {
+
+  private final JsonRpcClient rpcClient;
+
+  public IdoitSession(ClientConfig cfg) {
+    rpcClient = new JsonRpcClient(new RestClientWrapper(cfg.getApiEndpoint()), cfg.getApiKey());
+    rpcClient.login(cfg.getUsername(), cfg.getPassword());
+  }
+
+  public <T extends IdoitObject> Collection<T> read(Class<T> objectClass) {
+    return new ObjectsReader(rpcClient).read(objectClass);
+  }
+
+  public <T extends IdoitObject> Collection<T> read(ObjectsRead<T> delegateRequest) {
+    return new ObjectsReader(rpcClient).read(delegateRequest);
+  }
+
+  public <T extends IdoitObject> void upsert(Collection<GeneralObjectData> currentObjects,
+      Collection<T> updateObjects) {
+    new ObjectsUpserter(rpcClient).upsert(currentObjects, updateObjects);
+  }
+
   public <T extends IdoitObject> void upsertObjects(Collection<T> currentObjects,
-      Collection<T> updateObjects);
+      Collection<T> updateObjects) {
+    new ObjectsUpserter(rpcClient).upsertObjects(currentObjects, updateObjects);
+  }
 
-  public <T extends IdoitObject> List<T> readObjects(Class<T> objectClass);
-  public <T extends IdoitObject> List<T> readObjects(Class<T> objectClass, Object filterSettings);
-  <T> T send(IdoitRequest<T> request);
-  <T> Map<String, T> send(Batch<T> requests);
+  public void archive(List<GeneralObjectData> clientObjects) {
+    upsert(clientObjects, Collections.emptyList());
+  }
 
-  /*
-  Info: idoit.addons
-  idoit.constants
-idoit.license
-idoit.version
+  public JsonRpcClient getRpcClient() {
+    return rpcClient;
+  }
 
-cmdb.category_info
-object_type_categories
-   */
-
-  /*
-  allgemeiner search: idoit.search
-  cmdb.impact - relations zu einem Objekt. Verwendung unklar
-   */
-
-  /*
-  console.commands.listCommands	Documentation follows
-console.auth.cleanup	Documentation follows
-console.document.compile	Documentation follows
-console.dynamicgroups.sync	Documentation follows
-console.import.csv	Documentation follows
-console.ldap.sync	Documentation follows
-console,logbook.archive	Documentation follows
-console.notifications,send	Documentation follows
-console.report.export	Documentation follows
-console.search.query	Documentation follows
-console.settings.all	Documentation follows
-console.system.autoincrement
-   */
+  @Override
+  public void close() {
+    rpcClient.logout();
+  }
 }

@@ -1,14 +1,16 @@
 package com.cargarantie.idoit.api;
 
-import lombok.SneakyThrows;
+import com.cargarantie.idoit.api.config.ClientConfig;
 
 public class IdoitClient {
 
-  public IdoitClient(String url, String apiKey) {
+  private final ClientConfig cfg;
+
+  public IdoitClient(ClientConfig cfg) {
+    this.cfg = cfg;
   }
 
-  @SneakyThrows
-  public IdoitSession login(String user, String password) {
-    return null;
+  public IdoitSession login() {
+    return new IdoitSession(cfg);
   }
 }
